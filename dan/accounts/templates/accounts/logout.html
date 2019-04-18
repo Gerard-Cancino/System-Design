@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class ="container">
+  <p></p>
+  <p>
+    <h1>You have logged out!</h1>
+  </p>
+</div>
+{% endblock %}
+
+
+
+<html>
+  <head>
+      <title>Login</title>
+
+      {% load static %}
+      <link rel="stylesheet" href="{% static 'accounts/style.css' %}" type="text/css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome</h1>
+      Welcome! You can login here!
+      <button class ="btn-default" type="button" name="button">Log in</button>
+    </div>
+    <h1>{{ myName }}</h1>
+    <ul>
+      {% for number in numbers %}
+      <li>{{ number }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
