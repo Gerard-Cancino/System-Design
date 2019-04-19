@@ -35,7 +35,7 @@ class AdvisorDetails(APIView):
       user = models.User.objects.get(email=student)
       advisor = models.Advisor.objects.get(student_id=user.id)
       return advisor
-    except Advisor.DoesNotExist:
+    except models.Advisor.DoesNotExist:
       raise Http404
   def get(self, request, student):
     advisor = self.get_object(student)
@@ -51,7 +51,7 @@ class AdvisorList(APIView):
     try:
       advisor = models.Advisor.objects.filter(faculty_id=faculty)
       return advisor
-    except Advisor.DoesNotExist:
+    except models.Advisor.DoesNotExist:
       raise Http404
   def get(self, request, faculty):
     advisor = self.get_object(faculty)
@@ -236,13 +236,13 @@ class RoomList(APIView):
       return Response(serializer.data)
 # Will probably not be used RoomDetails
 @method_decorator(csrf_exempt, name='dispatch')
-class StudentDetail(APIView):
+class StudentDetails(APIView):
   def get_object(self, email):
     try:
       user = models.User.objects.get(email=email)
-      student = models.Student.objects.get(id=user.id)
+      student = models.Student.objects.get(user_id=user.id)
       return student
-    except Student.DoesNotExist:
+    except models.Student.DoesNotExist:
       raise Http404
   def get(self, request, email):
     student = self.get_object(email)

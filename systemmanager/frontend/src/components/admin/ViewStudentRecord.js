@@ -21,22 +21,19 @@ class ViewStudentRecord extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    this.setState({'studentUsername': ''})
-    this.setState({'advisor': ''})
     axios
-      .get(`/student-detail.json/${this.state.studentUsername}`)
+      .get(`/student-details.json/${this.state.studentUsername}`)
       .then(res => {
         this.setState({
-          student: res.data
+          student: res.data,
+          isLoaded: true
         })
       })
-    this.setState({isLoaded: false})
     axios
       .get(`/advisor-details.json/${this.state.studentUsername}`)
       .then( res=> {
         this.setState({
           advisor: res.data,
-          isLoaded: true
         })
       })
   }
@@ -57,6 +54,11 @@ class ViewStudentRecord extends Component {
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>
             </form>
+            {this.state.student? (
+              <Info data={this.state} />
+            ) : (
+              <p></p>
+            )}
           </div>
         </section>
         <Footer />
@@ -66,33 +68,29 @@ class ViewStudentRecord extends Component {
 }
 
 const Info = ({data}) =>
-  !data.isLoaded? (
-    <p></p>
+  data.student ==''?(
+    <p>Could not find student</p>
   ) : (
-    data.student==''?(
-      <p>Could not find student</p>
-    ) : (
-      data.student.user.type!='S'?(
-        <p>The user is not a student.</p>
-      ) : ( 
-        <div>
-          <h4><strong>{data.student.user.firstName} {data.student.user.lastName}</strong></h4>
-          <p>{data.student.user.addLine} {data.student.user.city}</p>
-          <p>{data.student.user.state} {data.student.user.zipCode} </p>
-          <p>{data.student.user.country}</p>
-          <p>{data.student.user.phoneNumber}</p>
+    data.student.user.type!='S'?(
+      <p>The user is not a student.</p>
+    ) : ( 
+      <div>
+        <h4><strong>{data.student.user.firstName} {data.student.user.lastName}</strong></h4>
+        <p>{data.student.user.addLine} {data.student.user.city}</p>
+        <p>{data.student.user.state} {data.student.user.zipCode} </p>
+        <p>{data.student.user.country}</p>
+        <p>{data.student.user.phoneNumber}</p>
 
-          {data.advisor==null?(
-            <p>The student is not assigned to an adviser.</p>
-          ) : (
-            <div>
-              <h4>Advisor: </h4>
-              <p>{data.advisor.faculty.user.firstName} {data.advisor.faculty.user.lastName}</p>
-              <p>{data.advisor.faculty.user.email}@garageuniversity.me</p>
-            </div>
-          )}
-        </div>
-      )
+        {data.advisor==''?(
+          <p>The student is not assigned to an adviser.</p>
+        ) : (
+          <div>
+            <h4>Advisor: </h4>
+            <p>{data.advisor.faculty.user.firstName} {data.advisor.faculty.user.lastName}</p>
+            <p>{data.advisor.faculty.user.email}@garageuniversity.me</p>
+          </div>
+        )}
+      </div>
     )
   );
 

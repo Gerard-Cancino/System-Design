@@ -14,14 +14,7 @@ class ViewCourseCatalog extends Component {
 
   componentWillMount() {
     axios
-      .post('slot-list.json')
-      .then(res=>{
-        this.setState({
-          test: res.data,
-        })
-      })
-    axios
-      .get('course.json')
+      .get('course-list.json')
       .then(res => {
         this.setState({
           course: res.data,

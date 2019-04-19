@@ -109,7 +109,6 @@ class ViewStudentHold extends Component {
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>
             </form>
-            <Info data={this.state}/>
           </div>
         </section>
         <Footer />

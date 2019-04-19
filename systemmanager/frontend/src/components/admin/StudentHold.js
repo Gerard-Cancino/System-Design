@@ -4,10 +4,11 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-class AddStudentHold extends Component {
+class StudentHold extends Component {
   state = {
     studentUsername: '',
     holdSelected: '',
+    student: '',
     hold: [],
     isSuccessful: false,
     isLoaded: false
@@ -32,62 +33,51 @@ class AddStudentHold extends Component {
   handleSubmit = event => {
     event.preventDefault();
     axios
-      .post(`/student-details.json/${this.state.studentUsername}`, {
-        data: this.state.holdSelected
-      })
+      .get(`/student-details.json/${this.state.studentUsername}`)
       .then(res => {
         this.setState({
-          isSuccessful: res.data.isSuccessful,
-          isLoaded: true
+          student: res.data
         })
       })
-
+    this.setState({isLoaded: true})
   }
 
   render(){
-    const Info = () =>
-      !this.state.hold.length?(
-        <p>No Holds in system or Could not connect to server to get holds</p>
-      ) : (
+    const FindStudent = () => 
+      this.state.student != ''?(
         <div>
-          <p><strong>Select a Hold</strong></p>
-          <select onChange={this.handleChange1} value={this.state.holdSelected}>
-            {this.state.hold.map(singleHold => (
-              <option key={singleHold.name} value={singleHold.name} selected>{singleHold.name}: {singleHold.description}</option>
-            ))}
-          </select>
+          <p>{this.state.student.user.firstName} {this.state.student.user.lastName}</p>
+          {this.state.student.hold.length != 0?(
+            this.state.student.hold.map(el => {
+              <p>{el.type}</p>
+            })
+          ):(
+            <p>Student has no holds</p>
+          )}
         </div>
-      );
-    const Success = () =>
-      !this.state.isLoaded?(
+      ):(
         <p></p>
-      ) : (
-        !this.state.isSuccessful?(
-          <p>Failed! Hold was not added</p>
-        ) : (
-          <p>Success! Hold was added</p>
-        )
       )
+    
+
     return(
       <React.Fragment>
         <Header />
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
-            <h2 className="col-md-12 text-center">Add Student Hold</h2>
+            <h2 className="col-md-12 text-center">Student Hold</h2>
             <form className="col-md-12" onSubmit={this.handleSubmit}>
               <div className="form-group">
                 <label htmlFor="studentUsername"></label>
                 <input type="text" className="form-control" id="studentUsername" placeholder="Enter Student's Username" onChange={this.handleChange}/>
                 <br />
-                <Info/>
                 <br />
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>
             </form>
-            <Success />
+            <FindStudent />
           </div>
         </section>
-        <Footer />
       </React.Fragment>
     );
   }
@@ -95,4 +85,4 @@ class AddStudentHold extends Component {
 
 
 
-export default AddStudentHold;
+export default StudentHold;

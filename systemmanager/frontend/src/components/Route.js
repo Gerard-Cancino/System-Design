@@ -61,7 +61,7 @@ class MyRoute extends Component {
           
           <Route path="/admin/main" component={AAdminMain} />
           <Route path="/admin/view-student-information" component={AAdminViewStudentRecord} />
-          <Route path="/admin/add-student-hold" component={AAdminStudentHold} />
+          <Route path="/admin/student-hold" component={AAdminStudentHold} />
           <Route path="/admin/lock-unlock-user-account" component={AAdminLockUnlockUserAccount} />
           <Route path="/admin/view-master-schedule" component={AAdminViewMasterSchedule} />
           <Route path="/admin/update-section-master-form" component={AAdminUpdateSectionMasterForm} />
