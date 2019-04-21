@@ -72,7 +72,8 @@ class BuildingDetails(APIView):
     except Building.DoesNotExist:
       raise Http404
   # We wont need a put or a delete
-class BuildingList(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class BuildingList(generics.ListCreateAPIView):
   serializer_class = serializers.BuildingSerializer
   queryset = models.Building.objects.all()
   def list(self, request):
@@ -109,7 +110,7 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
       raise Http404
   def get(self, request,id):
     section = self.get_object(id)
-    serializer = serializers.CourseSectionSerializer(queryset)
+    serializer = serializers.CourseSectionSerializer(section)
     return Response(serializer.data)
   def put(self, request,id):
     if params.get('slot') != '' or params.get('slot') is None:
@@ -125,8 +126,12 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data)
       return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
   def delete(self, request,id):
-    queryset = models.CourseSection.objects.get(id = id).delete()
-    return Response(status=HTTP_204_NO_CONTENT)
+    print(id)
+    queryset = self.get_object(id)
+    print(queryset)
+    queryset.delete()
+    return Response({'isSuccessful': True}, status=status.HTTP_204_NO_CONTENT)
+@method_decorator(csrf_exempt, name='dispatch')
 class CourseSectionList(generics.ListCreateAPIView):
   serializer_class = serializers.CourseSectionSerializer
   def list(self, request):
@@ -208,15 +213,17 @@ class FacultyDetails(APIView):
     serializer = serializers.FacultySerializer(faculty)
     return Response(serializer.data)
   # TODO Create put that allows faculty to change their office hours
-class FacultyList(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class FacultyList(generics.ListCreateAPIView):
   def list(self,request):
     params = request.query_params
     try:
       if params.get('department') != '':
         faculty = models.Faculty.objects.filter(department=params.get('department'))
-        serializer = serializers.FacultySerializer(faculty)
+        print(faculty)
+        serializer = serializers.FacultySerializer(faculty, many=True)
         return Response(serializer.data)
-    except Faculty.DoesNotExist:
+    except models.Faculty.DoesNotExist:
       raise Http404
 class HoldList(generics.ListCreateAPIView):
   queryset = models.Hold.objects.all()
@@ -226,9 +233,9 @@ class RoomList(APIView):
   serializer_class = serializers.RoomSerializer
   def get(self,request):
     params = request.query_params
-    if params.get('building') != '':
-      room = models.Room.objects.filter(department_id=params.get('building'))
-      serializer = serializers.RoomSerializer(room)
+    if params.get('building') is not None:
+      room = models.Room.objects.filter(building=params.get('building'))
+      serializer = serializers.RoomSerializer(room, many=True)
       return Response(serializer.data)
     else:
       room = models.Room.objects.all()
@@ -251,21 +258,28 @@ class StudentDetails(APIView):
   def put(self, request, email):
     params = request.data
     student = self.get_object(email)
-    if params.get('hold') != '':
-      hold = models.Holds.objects.get(params.get('hold'))
+    print(params.get('holdAdd'))
+    print(params.get('holdDelete'))
+    if params.get('holdAdd') is not None:
+      hold = models.Hold.objects.get(name=params.get('holdAdd'))
+      if not student.hold.filter(name=hold.name):
+          hold = models.Hold.objects.get(name=params.get('holdAdd'))
+          student.hold.add(hold)
+          student.save()
+    if params.get('holdDelete') is not None:
+      hold = models.Hold.objects.get(name=params.get('holdDelete'))
       if student.hold.filter(name=hold.name):
-        student.remove(hold)
-      else:
-        student.add(hold)
-    if params.get('isUndergrad') != '':
+        student.hold.remove(hold)
+        student.save()
+    if params.get('isUndergrad') != '' and params.get('isUndergrad') is not None:
       if student.isUndergrad:
         student.isUndergrad = False
+        student.save()
       else:
         student.isUndergrad = True
+        student.save()
     serializer = serializers.StudentSerializer(student)
-    if serializer.is_valid:
-      return Response(serializer.data)
-    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    return Response(serializer.data)
   def delete(self, request, email):
     student = self.get_object(email)
     student.delete()
@@ -285,43 +299,41 @@ class SlotDetails(APIView):
     slot = self.get_object(id)
     serializer = serializers.SlotSerializer(slot)
     return Response(serializer.data)
-class SlotList(APIView):
+class SlotList(generics.ListCreateAPIView):
   def list(self,request):
     try: 
       params = request.query_params
       filters=[]
       days = []
-      if params.get('building') != '':
+      if params.get('building') is not None:
         filters.append(Q(room__building__id=int(params.get('building'))))
-      if params.get('term') != '':
+      if params.get('room') is not None:
+        filters.append(Q(room__id=int(params.get('room'))))
+      if params.get('term') is not None:
         filters.append(Q(term_id=params.get('term')))
-      if params.get('time') != '':
+      if params.get('time') is not None:
         filters.append(Q(slot__time__id=params.get('time')))
-      if params.get('monday') == 'false':
+      if params.get('monday') == False:
         days.append('1')
-      if params.get('tuesday') == 'false':
+      if params.get('tuesday') == False:
         days.append('2')
-      if params.get('wednesday') == 'false':
+      if params.get('wednesday') == False:
         days.append('3')
-      if params.get('thursday') == 'false':
+      if params.get('thursday') == False:
         days.append('4')
       if not filters and len(days) == 0:
         queryset = models.Slot.objects.all()
-        serializer = serializers.CourseSectionSerializer(queryset, many=True)
+        serializer = serializers.SlotSerializer(queryset, many=True)
         return Response(serializer.data)
-      elif len(days) == 4:
-        raise Http404
       else:
         queryset = None
         if len(days) == 0:
-          queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters))
-        elif len(days) != 0:
-          raise Http404
+          queryset = models.Slot.objects.filter(reduce(Q.__and__,filters))
         else: 
-          queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days)
+          queryset = models.Slot.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days)
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
         return Response(serializer.data)
-    except:
+    except models.Slot.DoesNotExist:
       raise Http404
   # def post(self,request):
   #   days = models.Day.objects.all()

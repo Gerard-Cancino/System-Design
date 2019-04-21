@@ -27,6 +27,7 @@ class SearchMasterSchedule extends Component {
     },
     isSuccessful: '',
     isLoading: false,
+    test: '',
   }
 
   componentWillMount() {
@@ -133,15 +134,11 @@ class SearchMasterSchedule extends Component {
   handleDelete = (id) => {
     this.setState({'isLoaded': false})
     axios
-      .delete('/course-section-details.json',{
-        params: {
-          'section': id,
-        },
-      })
+      .delete(`/course-section-details.json/${id}`)
       .then(res => {
         this.setState({'isSuccessful': res})
         axios
-        .get('/master-schedule.json', {
+        .get('/course-section-list.json', {
           params: {
             'department': this.state.department,
             'courseName': this.state.courseName,
@@ -170,21 +167,21 @@ class SearchMasterSchedule extends Component {
   render(){
     const Tables = () => (
       <section className="container-fluid h-100">
-        {this.state.isLoading?(
-          <p>Loading</p>
-        ) : (
-          <p></p>
-        )}
-        {this.state.isSuccessful == ''?(
-            <p></p>
-          ) : (
-          this.state.isSuccessful?(
-            <p>Section Successfully added</p>
-          ):(
-            <p>Failed to remove section</p>
-          )
-        )}
         <div className="row border rounded m-4 p-4 h-100 col-md-12">
+          {this.state.isLoading?(
+            <p>Loading</p>
+          ) : (
+            <p></p>
+          )}
+          {this.state.isSuccessful == ''?(
+              <p></p>
+            ) : (
+            this.state.isSuccessful?(
+              <p>Section Successfully removed</p>
+            ):(
+              <p>Failed to remove section</p>
+            )
+          )}
           {this.state.courseSect.length != 0 ? (
             <div className="col-md-12">
               <h2 className="col-md-12 text-center">Search Results</h2>
@@ -211,7 +208,11 @@ class SearchMasterSchedule extends Component {
                       <td className='col-md-1'>{el.id}</td>
                       <td className='col-md-3'>{el.course.name}</td>
                       <td className='col-md-1'>{el.number}</td>
-                      <td className='col-md-1'>{el.faculty.user.lastName}</td>
+                      {el.faculty?(
+                        <td className='col-md-1'>{el.faculty.user.lastName}</td>
+                      ):(
+                        <td className='col-md-1'>TBA</td>
+                      )}
                       <td className='col-md-1'>{el.course.numberOfCredits}</td>              
                       {el.slot.length == 0?(                      
                       <td className='col-md-2'> 
@@ -245,7 +246,7 @@ class SearchMasterSchedule extends Component {
                       <td className='col-md-1'>{el.numOfSeats - el.numOfTaken}</td>     
                       <td className="col-md-6">
                         <Link to={{
-                          pathname: '/admin/update-section-master-form',
+                          pathname: '/admin/update-section-master',
                           state: {
                             id: el.id
                           }

@@ -17,21 +17,27 @@ import AdminViewStudentRecord from './admin/ViewStudentRecord.js';
 import AdminStudentHold from './admin/StudentHold.js';
 import AdminLockUnlockUserAccount from './admin/LockUnlockUserAccount.js';
 import AdminViewMasterSchedule from './admin/SearchMasterSchedule.js';
-import AdminUpdateSectionMasterForm from './admin/UpdateSectionMasterForm.js';
+import AdminUpdateSectionMaster from './admin/UpdateSectionMaster.js';
 // npm run dev to create main.js
 
 const Authorization = (WrappedComponent, allowedRoles) => {
   return class WithAuthorization extends React.Component {
     state = {
+      props: '',
       user: {
         id: 1,
         role: 'A',
       }  
     }
     render(){
+
       const { role, id} = this.state.user
       if (allowedRoles.includes(role)) {
-        return <WrappedComponent/>
+        if (this.props.location.state!=null){  
+          return <WrappedComponent data={this.props.location}/>
+        }
+        else
+          return <WrappedComponent/>
       }
       else 
         return <Unauthenticated />
@@ -41,13 +47,12 @@ const Authorization = (WrappedComponent, allowedRoles) => {
 
 class MyRoute extends Component {
   render() {
-
     const AAdminMain = Authorization(AdminMain, ['A'])
     const AAdminViewStudentRecord = Authorization(AdminViewStudentRecord, ['A'])
     const AAdminStudentHold = Authorization(AdminStudentHold, ['A'])
     const AAdminLockUnlockUserAccount = Authorization(AdminLockUnlockUserAccount, ['A'])
     const AAdminViewMasterSchedule = Authorization(AdminViewMasterSchedule, ['A'])
-    const AAdminUpdateSectionMasterForm = Authorization(AdminUpdateSectionMasterForm, ['A'])
+    const AAdminUpdateSectionMaster = Authorization(AdminUpdateSectionMaster, ['A'])
     return (
       <BrowserRouter>
         <div>
@@ -64,7 +69,7 @@ class MyRoute extends Component {
           <Route path="/admin/student-hold" component={AAdminStudentHold} />
           <Route path="/admin/lock-unlock-user-account" component={AAdminLockUnlockUserAccount} />
           <Route path="/admin/view-master-schedule" component={AAdminViewMasterSchedule} />
-          <Route path="/admin/update-section-master-form" component={AAdminUpdateSectionMasterForm} />
+          <Route path="/admin/update-section-master" component={AAdminUpdateSectionMaster}/>
 
         </div>
       </BrowserRouter>

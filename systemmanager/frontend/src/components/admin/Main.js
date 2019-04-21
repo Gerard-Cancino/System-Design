@@ -21,7 +21,7 @@ class Main extends Component {
             <div className="col-md-4 p-4">
               <div className="card">
                 <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/view-student-hold">View/Remove Student Hold</Link></p>
+                  <p className="text-center h3"><Link to="/admin/student-hold">Student Hold</Link></p>
                 </div>
               </div>
             </div>

@@ -20,6 +20,7 @@ class User(AbstractBaseUser):
         ('R', 'Researcher'),
     )
     type = models.CharField(max_length=1, choices=TYPE)
+    isLockout = models.BooleanField(default=False)
     firstName = models.CharField(max_length=20)
     lastName = models.CharField(max_length=20)
     address = models.CharField(max_length=40)
@@ -29,7 +30,6 @@ class User(AbstractBaseUser):
     country = models.CharField(max_length=20)
     zipCode = models.CharField(max_length=10)
     phoneNumber = models.CharField(max_length=13)
-    isLockout = models.BooleanField(default=False)
     class Meta:
         db_table = "user"
 
