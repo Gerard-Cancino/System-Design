@@ -131,7 +131,8 @@ class SearchMasterSchedule extends Component {
       })
   }
   
-  handleDelete = (id) => {
+  handleDelete = (id) => (event) => {
+    event.preventDefault()
     this.setState({'isLoaded': false})
     axios
       .delete(`/course-section-details.json/${id}`)
@@ -254,7 +255,15 @@ class SearchMasterSchedule extends Component {
                         className="btn btn-info">Update</Link>
                       </td>
                       <td className="col-md-6">
-                        <button className="btn btn-danger" type="submit" onClick={(e) => this.handleDelete(el.id,e)}>Remove</button>
+                        <button className="btn btn-danger" type="submit" onClick={this.handleDelete(el.id)}>Remove</button>
+                      </td>
+                      <td className="col-md-6">
+                        <Link to={{
+                          pathname: '/admin/student-term',
+                          state: {
+                            id: el.id
+                          }
+                        }}className="btn btn-default">Register</Link>
                       </td>
                     </tr>
                   ))}

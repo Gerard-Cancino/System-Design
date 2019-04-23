@@ -24,6 +24,7 @@ urlpatterns = [
     path('day-list.json', api.DayList.as_view()),
     path('department-details.json/<int:code>', api.DepartmentDetails.as_view()),
     path('department-list.json', api.DepartmentList.as_view()),
+    path('enrollment-list.json', api.EnrollmentList.as_view()),
     path('faculty-details.json/<str:email>', api.FacultyDetails.as_view()),
     path('faculty-list.json', api.FacultyList.as_view()),
     path('hold-list.json', api.HoldList.as_view()),

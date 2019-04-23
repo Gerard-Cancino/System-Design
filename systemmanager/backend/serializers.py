@@ -202,11 +202,11 @@ class StudentMinorSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class EnrollmentSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(many=False)
-    courseSection = CourseSectionSerializer(many=False)
+    student = StudentSerializer(many=False, required=True)
+    courseSection = CourseSectionSerializer(many=False, required=True)
     class Meta:
         model = Enrollment
-        fields = ('__all__')
+        fields = ('student','courseSection','dateEnrolled')
 
 class TranscriptSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False)

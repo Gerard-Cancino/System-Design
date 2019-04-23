@@ -14,21 +14,28 @@ class UpdateSectionMaster extends Component {
     buildingList: [],
     room: undefined,
     roomList: [],
+    slot: undefined,
+    slotList: [],
     term: undefined,
     termList: [],
     time: undefined,
     timeList: [],
     faculty: undefined,
     facultyList: [],
-    slot: undefined,
-    isMon: false,
-    isTues: false,
-    isWed: false,
-    isThurs: false,
+    isMon: true,
+    isTues: true,
+    isWed: true,
+    isThurs: true,
     isLoaded: false,
   }
   componentWillMount(){
     this.setState({'id': this.props.data.state.id})
+    axios
+    .post('/slot-list.json')
+    .then(res => {
+      this.setState({'termList': res.data})
+      this.setState({'term':res.data[0].id})
+    })
     axios
     .get('/term-list.json')
     .then(res => {
@@ -47,12 +54,14 @@ class UpdateSectionMaster extends Component {
       })
       .then(res => {
         this.setState({'roomList': res.data})
+        this.setState({'room': res.data[0].id})
       })
     })
     axios
     .get('/time-list.json')
     .then(res => {
       this.setState({'timeList': res.data})
+      this.setState({'time':res.data[0].id})
     })
     axios
     .get(`/course-section-details.json/${this.props.data.state.id}`)
@@ -75,6 +84,7 @@ class UpdateSectionMaster extends Component {
   }
   handleFind = event => {
     event.preventDefault();
+    console.log('test')
     axios
       .get('/slot-list.json',{
         params: {
@@ -86,6 +96,9 @@ class UpdateSectionMaster extends Component {
           'wednesday': this.state.isWed,
           'thursday': this.state.isThurs,
         }
+      })
+      .then(res => {
+        this.setState({'slotList': res.data})
       })
   }
   handleBuilding = event => {   
@@ -113,59 +126,150 @@ class UpdateSectionMaster extends Component {
   handleFaculty = event => {   
   this.setState({ faculty: event.target.value });
   }
-  handleDay = event => {
-    let selectedDay = this.state.days;
-    if (event.target.value=='MO')
-      if(selectedDay.MO == false)
-        selectedDay.MO = true;
-      else
-        selectedDay.MO = false;
-    else if (event.target.value=='TU')
-      if(selectedDay.TU == false)
-        selectedDay.TU = true;
-      else
-        selectedDay.TU = false;
-    else if (event.target.value=='WE')
-      if(selectedDay.WE == false)
-        selectedDay.WE = true;
-      else
-        selectedDay.WE = false;
-    else if (event.target.value=='TH')
-      if(selectedDay.TH == false)
-        selectedDay.TH = true;
-      else
-        selectedDay.TH = false;
-    this.setState(selectedDay)
+  handleMon = event => {
+    console.log(event.target.value)
+    if (this.state.isMon==true)
+      this.setState({'isMon': false});
+    else
+      this.setState({'isMon': true});
   }
-  handleSubmit = event => {
-    // event.preventDefault();
-    // axios
-    //   .post(`/admin/add-student-hold/${this.state.studentUsername}/${this.state.holdSelected}.json`)
-    //   .then(res => {
-    //     this.setState({
-    //       isSuccessful: res.data.isSuccessful,
-    //       isLoaded: true
-    //     })
-    //   })
+  handleTues = event => {
+    console.log(event.target.value)
+    if (this.state.isTues==true)
+      this.setState({'isTues': false});
+    else
+      this.setState({'isTues': true});
   }
-
-
+  handleWed = event => {
+    console.log(event.target.value)
+    if (this.state.isWed==true)
+      this.setState({'isWed': false});
+    else
+      this.setState({'isWed': true});
+  }
+  handleThurs = event => {
+    console.log(event.target.value)
+    if (this.state.isThurs==true)
+      this.setState({'isThurs': false});
+    else
+      this.setState({'isThurs': true});
+  }
+  handleAdd = (slot) => (event) => {
+    event.preventDefault()
+    axios
+    .put(`/course-section-details.json/${this.state.id}`, {
+      'slot': slot
+    })
+    .then(res => {
+      this.setState({section:res.data})
+      axios
+      .get('/slot-list.json',{
+        params: {
+          'room': this.state.room,
+          'building': this.state.building,
+          'term': this.state.term,
+          'monday': this.state.isMon,
+          'tuesday': this.state.isTues,
+          'wednesday': this.state.isWed,
+          'thursday': this.state.isThurs,
+        }
+      })
+      .then(res => {
+        this.setState({'slotList': res.data})
+      })
+    })
+  }
+  handleRemove = (slot) => (event) => {
+    event.preventDefault()
+    axios
+    .put(`/course-section-details.json/${this.state.id}`, {
+      'slot': slot
+    })
+    .then(res => {
+      this.setState({section:res.data})
+      axios
+      .get('/slot-list.json',{
+        params: {
+          'room': this.state.room,
+          'building': this.state.building,
+          'term': this.state.term,
+          'monday': this.state.isMon,
+          'tuesday': this.state.isTues,
+          'wednesday': this.state.isWed,
+          'thursday': this.state.isThurs,
+        }
+      })
+      .then(res => {
+        this.setState({'slotList': res.data})
+      })
+    })
+  }
 
   render(){
     
-    // const Info = () =>
-    //   !this.state.hold.length?(
-    //     <p>No Holds in system or Could not connect to server to get holds</p>
-    //   ) : (
-    //     <div>
-    //       <p><strong>Select a Hold</strong></p>
-    //       <select onChange={this.handleChange1} value={this.state.holdSelected}>
-    //         {this.state.hold.map(singleHold => (
-    //           <option key={singleHold.name} value={singleHold.name} selected>{singleHold.name}: {singleHold.description}</option>
-    //         ))}
-    //       </select>
-    //     </div>
-    //   );
+    const Slot = () => {
+      return(
+        this.state.slotList.length!=0?(
+          <form >
+            <table>
+              <thead>
+                <tr>
+                  <td>Day</td>
+                  <td>Building - Room</td>
+                  <td>Term</td>
+                  <td>Time</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.slotList.map(el=> (
+                  <tr key={el.id}>
+                    <td>{el.day.name}</td>
+                    <td>{el.room.building.code} - {el.room.number}</td>
+                    <td>{el.term.season} {el.term.year}</td>
+                    <td>{el.time.start} - {el.time.end}</td>
+                    <td><button type="submit" onClick={this.handleAdd(el.id)}>Add</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </form>
+        ) : (
+          <p>Could not find any slots</p>
+        )
+
+      )
+    }
+    const TableSlot = () => {
+      return(
+        this.state.section.slot.length!=0?(
+          <table>
+            <thead>
+              <tr>
+                <td>Day</td>
+                <td>Building - Room</td>
+                <td>Term</td>
+                <td>Time</td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.section.slot.map(el=> (
+                <tr key={el.id}>
+                  <td>{el.day.name}</td>
+                  <td>{el.room.building.code} - {el.room.number}</td>
+                  <td>{el.term.season} {el.term.year}</td>
+                  <td>{el.time.start} - {el.time.end}</td>
+                  <td><button type="submit" onClick={this.handleRemove(el.id)}>Remove</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Does not have selected slots</p>
+        )
+      )
+    }
     return(
       this.state.isLoaded? (
         <React.Fragment>
@@ -192,7 +296,7 @@ class UpdateSectionMaster extends Component {
                 <button className="btn btn-primary">Submit</button>
               </form>
               <hr />
-              <form onSubmit={this.handleFind}>
+              <form className="col-md-12" onSubmit={this.handleFind}>
                 <h2>Search For Openning Slot</h2>
                 {/*previous prereq*/}
                 <label>Term:</label>
@@ -211,40 +315,27 @@ class UpdateSectionMaster extends Component {
                 {/*search if room is available at that slot*/}
                 {/*search if capacity already exceeds the current enrollment*/}
                 <label>Room:</label>
-                <select className="form-control" onChange={this.handleRoom} value={this.state.room} defaultValue={undefined}>
-                  <option value={undefined}>All Room</option>
+                <select className="form-control" onChange={this.handleRoom} value={this.state.room}>
                   {this.state.roomList.map(i => (
                     <option key={i.id} value={i.id}>{i.number}</option>
                   ))}
                 </select>
                 <label>Time:</label>
-                <select className="form-control" onChange={this.handleTime} value={this.state.time} defaultValue={undefined}>
-                  <option value={undefined}>All Times</option>
+                <select className="form-control" onChange={this.handleTime} value={this.state.time}>
                   {this.state.timeList.map(el => (
                     <option key={el.id}>{el.start} - {el.end}</option>
                   ))}
                 </select>
+                <div id="checkboxes">
+                  <input type="checkbox" name="day1" onChange={this.handleMon} checked={this.state.isMon}/>Monday
+                  <input type="checkbox" name="day2" onChange={this.handleTues} checked={this.state.isTues}/>Tuesday
+                  <input type="checkbox" name="day3" onChange={this.handleWed} checked={this.state.isWed}/>Wednesday
+                  <input type="checkbox" name="day4" onChange={this.handleThurs} checked={this.state.isThurs}/>Thursday
+                </div>
                 <button className="btn" type="submit">Search for Slot</button>
               </form>
-              <h2 className="col-md-12 text-center">Add Slot to Section</h2>
-              <form className="col-md-12" onSubmit={this.handleSubmit1}>
-                <label>Slot:</label>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Slot Number</th>
-                      <th>Slot Time</th>
-                      <th>Slot Day</th> 
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
-                <select>
-
-                </select>
-                <button></button>
-              </form>
+              <TableSlot />
+              <Slot />
             </div>
           </section>
           <Footer />

@@ -127,13 +127,13 @@ class StudentHold extends Component {
                 <label htmlFor="studentUsername"></label>
                 <input type="text" className="form-control" id="studentUsername" placeholder="Enter Student's Username" onChange={this.handleChange}/>
                 <br />
-                <br />
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>
             </form>
             <FindStudent />
           </div>
         </section>
+        <Footer />
       </React.Fragment>
     );
   }

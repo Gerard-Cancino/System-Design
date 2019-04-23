@@ -1,5 +1,9 @@
 from backend import models
 
+from datetime import datetime
+import io
+from rest_framework.parsers import JSONParser
+
 from django.db.models import Q
 from functools import reduce
 from django.http import Http404
@@ -113,22 +117,25 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer = serializers.CourseSectionSerializer(section)
     return Response(serializer.data)
   def put(self, request,id):
-    if params.get('slot') != '' or params.get('slot') is None:
-      queryset = models.CourseSection.objects.get(id = params.get('section'))
+    params = request.data
+    if params.get('slot') is not None:
+      queryset = models.CourseSection.objects.get(id = id)
+      print(params.get('slot'))
+      print('param')
       slot = models.Slot.objects.get(id = params.get('slot'))
       if not slot in queryset.slot.all():
-        queryset.Slot.add(slot)
+        slot.isTaken = True
+        slot.save()
+        queryset.slot.add(slot)
       else:
-        queryset.Slot.remove(slot)
+        slot.isTaken = False
+        slot.save()
+        queryset.slot.remove(slot)
+      queryset.save()
       serializer = serializers.CourseSectionSerializer(queryset)
-      if serializer.is_valid:
-        serializer.save()
-        return Response(serializer.data)
-      return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+      return Response(serializer.data)
   def delete(self, request,id):
-    print(id)
     queryset = self.get_object(id)
-    print(queryset)
     queryset.delete()
     return Response({'isSuccessful': True}, status=status.HTTP_204_NO_CONTENT)
 @method_decorator(csrf_exempt, name='dispatch')
@@ -198,6 +205,43 @@ class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
 class DepartmentList(generics.ListCreateAPIView):
   queryset = models.Department.objects.all()
   serializer_class = serializers.DepartmentSerializer
+class EnrollmentList(generics.ListCreateAPIView):
+  queryset = models.Enrollment.objects.all()
+  serializer_class = serializers.EnrollmentSerializer
+  def list(self,request):
+    params = request.query_params
+    if params.get('term') is not None:
+      if params.get('student') is not None:
+        enrollment = models.Enrollment.objects.filter(student_id=student.id, course_section__slot__term=params.get('term'))
+        serializer = serializers.EnrollmentSerializer(enrollment)
+        return Response(serializer.data)
+    if params.get('section') is not None:
+      enrollment = models.Enrollment.objects.filter(course_section=params.get('section'))
+      serializer = serializers.EnrollmentSerializer(enrollment)
+      return Response(serializer.data)
+  def post(self,request):
+    params = request.data
+    if params.get('section') is not None:
+      if params.get('student') is not None:
+        user = models.User.objects.get(email=params.get('student'))
+        student = models.Student.objects.get(user_id=user.id)
+        print(params.get('student'))
+        print(params.get('section'))
+        section = models.CourseSection.objects.get(id = params.get('section'))
+        serializer = serializers.EnrollmentSerializer(data={
+          'student':user.id,
+          'courseSection':str(section.id),
+          'dateEnrolled':str(datetime.now().date())
+        })
+        if serializer.is_valid():
+          serializer.save()
+          return Response( serializer.data)
+
+        print(serializer.data)
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    
 # Skipped FullTime and PartTime Faculty
 # Skipped HoldDetails.  Student Holds will be obtained from student
 class FacultyDetails(APIView):
@@ -305,21 +349,24 @@ class SlotList(generics.ListCreateAPIView):
       params = request.query_params
       filters=[]
       days = []
+      filters.append(Q(isTaken=False))
       if params.get('building') is not None:
-        filters.append(Q(room__building__id=int(params.get('building'))))
+        filters.append(Q(room__building__id=params.get('building')))
       if params.get('room') is not None:
-        filters.append(Q(room__id=int(params.get('room'))))
+        filters.append(Q(room__id=params.get('room')))
       if params.get('term') is not None:
         filters.append(Q(term_id=params.get('term')))
       if params.get('time') is not None:
         filters.append(Q(slot__time__id=params.get('time')))
-      if params.get('monday') == False:
+      print(params.get('monday'))
+      if params.get('monday') == 'false':
+        print('1')
         days.append('1')
-      if params.get('tuesday') == False:
+      if params.get('tuesday') == 'false':
         days.append('2')
-      if params.get('wednesday') == False:
+      if params.get('wednesday') == 'false':
         days.append('3')
-      if params.get('thursday') == False:
+      if params.get('thursday') == 'false':
         days.append('4')
       if not filters and len(days) == 0:
         queryset = models.Slot.objects.all()
@@ -330,8 +377,8 @@ class SlotList(generics.ListCreateAPIView):
         if len(days) == 0:
           queryset = models.Slot.objects.filter(reduce(Q.__and__,filters))
         else: 
-          queryset = models.Slot.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days)
-        serializer = serializers.CourseSectionSerializer(queryset, many=True)
+          queryset = models.Slot.objects.filter(reduce(Q.__and__,filters)).exclude(day_id__in=days)
+        serializer = serializers.SlotSerializer(queryset, many=True)
         return Response(serializer.data)
     except models.Slot.DoesNotExist:
       raise Http404
@@ -346,8 +393,7 @@ class SlotList(generics.ListCreateAPIView):
   #         for term in terms:
   #           slot = models.Slot.objects.create(day_id=day.id,room_id=room.id,term_id=term.id,time_id=time.id)
   #           serializer = serializers.SlotSerializer(data = slot)
-  #           if serializer.is_valid():
-  #             serializer.save()
+  #   print('done')
   #   return Response(status=HTTP_201_CREATED)
     
 class TermList(generics.ListCreateAPIView):

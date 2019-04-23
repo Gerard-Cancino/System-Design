@@ -13,8 +13,10 @@ import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
 import StudentMain from './student/Main.js';
 
 import AdminMain from './admin/Main.js';
+import AdminCourseCatalog from './admin/CourseCatalog.js';
 import AdminViewStudentRecord from './admin/ViewStudentRecord.js';
 import AdminStudentHold from './admin/StudentHold.js';
+import AdminStudentTerm from './admin/StudentTerm.js';
 import AdminLockUnlockUserAccount from './admin/LockUnlockUserAccount.js';
 import AdminViewMasterSchedule from './admin/SearchMasterSchedule.js';
 import AdminUpdateSectionMaster from './admin/UpdateSectionMaster.js';
@@ -48,8 +50,10 @@ const Authorization = (WrappedComponent, allowedRoles) => {
 class MyRoute extends Component {
   render() {
     const AAdminMain = Authorization(AdminMain, ['A'])
+    const AAdminCourseCatalog = Authorization(AdminCourseCatalog, ['A'])
     const AAdminViewStudentRecord = Authorization(AdminViewStudentRecord, ['A'])
     const AAdminStudentHold = Authorization(AdminStudentHold, ['A'])
+    const AAdminStudentTerm = Authorization(AdminStudentTerm, ['A'])
     const AAdminLockUnlockUserAccount = Authorization(AdminLockUnlockUserAccount, ['A'])
     const AAdminViewMasterSchedule = Authorization(AdminViewMasterSchedule, ['A'])
     const AAdminUpdateSectionMaster = Authorization(AdminUpdateSectionMaster, ['A'])
@@ -65,8 +69,10 @@ class MyRoute extends Component {
           <Route path="/student/main" component={StudentMain} />
           
           <Route path="/admin/main" component={AAdminMain} />
+          <Route path="/admin/course-catalog" component={AAdminCourseCatalog} />
           <Route path="/admin/view-student-information" component={AAdminViewStudentRecord} />
           <Route path="/admin/student-hold" component={AAdminStudentHold} />
+          <Route path="/admin/student-term" component={AAdminStudentTerm} />
           <Route path="/admin/lock-unlock-user-account" component={AAdminLockUnlockUserAccount} />
           <Route path="/admin/view-master-schedule" component={AAdminViewMasterSchedule} />
           <Route path="/admin/update-section-master" component={AAdminUpdateSectionMaster}/>
