@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
 import BuildingSearch from '../general/Building_List_Search.js';
+import RoomSearch from '../general/Room_List_Search.js'
 import TermSearch from '../general/Term_Search.js';
 import TimeSearch from '../general/Time_Search.js';
 import DaySearch from '../general/Day_Search.js';
@@ -16,15 +18,15 @@ class UpdateSectionMaster extends Component {
     id: undefined,
     section: [],
     building: undefined,
-    buildingList: [],
+    buildingList: undefined,
     room: undefined,
-    roomList: [],
+    roomList: undefined,
     slot: undefined,
-    slotList: [],
+    slotList: undefined,
     term: undefined,
-    termList: [],
+    termList: undefined,
     time: undefined,
-    timeList: [],
+    timeList: undefined,
     days: {
       MO: true,
       TU: true,
@@ -47,8 +49,8 @@ class UpdateSectionMaster extends Component {
         })
       else
         this.setState({
-          termList: res.data.slot[0].term.id,
-          term: res.data.slot[0].term.id
+          term: res.data.slot[0].term.id,
+          termList: undefined
         })
     })
     axios
@@ -82,10 +84,10 @@ class UpdateSectionMaster extends Component {
           'room': this.state.room,
           'building': this.state.building,
           'term': this.state.term,
-          'monday': this.state.isMon,
-          'tuesday': this.state.isTues,
-          'wednesday': this.state.isWed,
-          'thursday': this.state.isThurs,
+          'monday': this.state.days.MO,
+          'tuesday': this.state.days.TU,
+          'wednesday': this.state.days.WE,
+          'thursday': this.state.days.TH,
         }
       })
       .then(res => {
@@ -145,17 +147,21 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
-      this.setState({section:res.data})
+      this.setState({section:res.data,})
+        this.setState({
+          term: res.data.slot[0].term.id,
+          termList: undefined
+        })
       axios
       .get('/slot-list.json',{
         params: {
           'room': this.state.room,
           'building': this.state.building,
           'term': this.state.term,
-          'monday': this.state.isMon,
-          'tuesday': this.state.isTues,
-          'wednesday': this.state.isWed,
-          'thursday': this.state.isThurs,
+          'monday': this.state.days.MO,
+          'tuesday': this.state.days.TU,
+          'wednesday': this.state.days.WE,
+          'thursday': this.state.days.TH,
         }
       })
       .then(res => {
@@ -170,7 +176,16 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
+      this.setState({term: undefined})
       this.setState({section:res.data})
+      if (res.data.slot.length==0){
+        axios
+        .get('/term-list.json')
+        .then(res => {
+          this.setState({'termList': res.data})
+          this.setState({'term':res.data[0].id})
+        })
+      }
       axios
       .get('/slot-list.json',{
         params: {
@@ -193,64 +208,72 @@ class UpdateSectionMaster extends Component {
     
     const Slot = () => {
       return(
-        this.state.slotList.length!=0?(
-          <form >
-            <table>
-              <thead>
-                <tr>
-                  <td>Day</td>
-                  <td>Building - Room</td>
-                  <td>Term</td>
-                  <td>Time</td>
-                  <td></td>
+        this.state.slotList==undefined?(
+          <p></p>
+        ) : (
+          <form className="col-md-12">
+            <table className="col-md-12">
+              <thead className="col-md-12">
+                <tr className="col-md-12">
+                  <td className="col-md-2">Day</td>
+                  <td className="col-md-3">Building - Room</td>
+                  <td className="col-md-1">Capacity</td>
+                  <td className="col-md-1">Term</td>
+                  <td className="col-md-4">Time</td>
+                  <td className="col-md-1"></td>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="col-md-12">
                 {this.state.slotList.map(el=> (
-                  <tr key={el.id}>
-                    <td>{el.day.name}</td>
-                    <td>{el.room.building.code} - {el.room.number}</td>
-                    <td>{el.term.season} {el.term.year}</td>
-                    <td>{el.time.start} - {el.time.end}</td>
-                    <td><button type="submit" onClick={this.handleAdd(el.id)}>Add</button></td>
+                  <tr className="col-md-12" key={el.id}>
+                    <td className="col-md-2">{el.day.name}</td>
+                    <td className="col-md-3">{el.room.building.code} - {el.room.number}</td>
+                    <td className="col-md-1">{el.room.capacity}</td>
+                    <td className="col-md-1">{el.term.season} {el.term.year}</td>
+                    <td className="col-md-4">{el.time.start} - {el.time.end}</td>
+                    <td className="col-md-1"><button className="col-md-12 btn btn-info" type="submit" onClick={this.handleAdd(el.id)}>Add</button></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </form>
-        ) : (
-          <p>Could not find any slots</p>
         )
-
       )
     }
     const TableSlot = () => {
       return(
-        this.state.section.slot=undefined?(
-          <table>
-            <thead>
-              <tr>
-                <td>Day</td>
-                <td>Building - Room</td>
-                <td>Term</td>
-                <td>Time</td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.section.slot.map(el=> (
-                <tr key={el.id}>
-                  <td>{el.day.name}</td>
-                  <td>{el.room.building.code} - {el.room.number}</td>
-                  <td>{el.term.season} {el.term.year}</td>
-                  <td>{el.time.start} - {el.time.end}</td>
-                  <td><button type="submit" onClick={this.handleRemove(el.id)}>Remove</button></td>
+        this.state.section.slot==undefined? (
+          <p></p>
+        ): (
+          this.state.section.slot.length==0?(
+            <p>Has no assigned slots</p>
+          ) : (
+            <table className="col-md-12">
+              <thead className="col-md-12">
+                <tr className="col-md-12">
+                  <td className="col-md-2">Day</td>
+                  <td className="col-md-3">Building - Room</td>
+                  <td className="col-md-1">Capacity</td>
+                  <td className="col-md-1">Term</td>
+                  <td className="col-md-4">Time</td>
+                  <td className="col-md-1"></td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>Does not have selected slots</p>
+              </thead>
+              <tbody className="col-md-12">
+                {this.state.section.slot.map(el=> (
+                  <tr className="col-md-12" key={el.id}>
+                    <td className="col-md-2">{el.day.name}</td>
+                    <td className="col-md-3">{el.room.building.code} - {el.room.number}</td>
+                    <td className="col-md-1">{el.room.capacity}</td>
+                    <td className="col-md-1">{el.term.season} {el.term.year}</td>
+                    <td className="col-md-4">{el.time.start} - {el.time.end}</td>
+                    <td className="col-md-1"><button className="btn btn-info" type="submit" onClick={this.handleRemove(el.id)}>Remove</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )
+          
         )
       )
     }
@@ -259,25 +282,31 @@ class UpdateSectionMaster extends Component {
         <Header />
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
+            <div className="col-md-12">
+              <Link to={{
+                pathname: '/admin/update-section-master-p2',
+                state: {
+                  id: this.state.id
+                }
+              }} className="col-md-2 btn btn-success float-right">Next</Link>
+            </div>
+            <h2 className="col-md-12 text-center">Current Slots</h2>
+            <TableSlot />
             <form className="col-md-12" onSubmit={this.handleFind}>
-              <h2>Search For Openning Slot</h2>
-              {/*previous prereq*/}
+              <br />
+              <h2 className="col-md-12 text-center">Search For Opening Slot</h2>
+              {this.state.termList==undefined&&this.state.term!=undefined?(
+                <p>{this.state.section.slot[0].term.season} {this.state.section.slot[0].term.year}</p>
+              ) : (
+                <p></p>
+              )}
               <TermSearch onChange={this.handleTerm.bind(this)} termList={this.state.termList} />
-              {/*search rooms in building*/}
               <BuildingSearch onChange={this.handleBuilding.bind(this)} buildingList={this.state.buildingList}/>
-              {/*search if room is available at that slot*/}
-              {/*search if capacity already exceeds the current enrollment*/}
-              <label>Room:</label>
-              <select className="form-control" onChange={this.handleRoom} value={this.state.room}>
-                {this.state.roomList.map(i => (
-                  <option key={i.id} value={i.id}>{i.number}</option>
-                ))}
-              </select>
+              <RoomSearch onChange={this.handleRoom.bind(this)} roomList={this.state.roomList} />
               <TimeSearch onChange={this.handleTime.bind(this)} timeList={this.state.timeList} />
               <DaySearch onChange={this.handleDays.bind(this)} mon={this.state.days.MO} tues={this.state.days.TU} wed={this.state.days.WE} thurs={this.state.days.TH} />
-              <button className="btn" type="submit">Search for Slot</button>
+              <button className="btn btn-info" type="submit">Search for Slot</button>
             </form>
-            <TableSlot />
             <Slot />
           </div>
         </section>

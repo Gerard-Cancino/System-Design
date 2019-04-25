@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 class SearchBuildingList extends PureComponent {
   render () {
-    const {onChange, facultyList} = this.props
+    const {onChange, buildingList} = this.props
   
     return (
       buildingList == undefined?(
@@ -15,7 +15,7 @@ class SearchBuildingList extends PureComponent {
             <label>Building:</label>
             <select className="form-control" onChange={onChange}>
               {buildingList.map(i => (
-                <option key={i.code} value={i.code}>{i.code}</option>
+                <option key={i.code} value={i.code}>{i.name}</option>
               ))}
             </select>
           </div>

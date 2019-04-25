@@ -59,12 +59,13 @@ class TableSection extends PureComponent {
                     <td className='col-md-2'> 
                       <p>TBD</p>
                     </td>
-                    ) : (
-                    el.slot.map(i => (                
+                    ) : (       
                     <td className='col-md-2'>   
+                    {el.slot.map(i => (         
                       <p>{i.day.name} {i.time.start}-{i.time.end}</p>
-                    </td> 
-                    )))}
+                    ))}
+                    </td>
+                    )}
                     {el.slot.length == 0?(
                       <td className='col-md-1'> 
                         <p>TBD</p> 
