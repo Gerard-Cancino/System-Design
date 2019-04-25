@@ -146,21 +146,21 @@ class CourseSectionList(generics.ListCreateAPIView):
     try: 
       filters=[]
       days = []
-      if params.get('courseID') != '':
+      if params.get('courseID') is not None:
         filters.append(Q(course_id=int(params.get('courseID'))))
-      if params.get('creditMin') != '':
+      if params.get('creditMin') is not None:
         filters.append(Q(course__numberOfCredits__gte=int(params.get('creditMin'))))
-      if params.get('creditMax') != '':
+      if params.get('creditMax') is not None:
         filters.append(Q(course__numberOfCredits__lte=int(params.get('creditMax'))))
-      if params.get('facultyLastName') != '':
+      if params.get('facultyLastName') is not None:
         filters.append(Q(faculty__user__lastName=params.get('facultyLastName')))
-      if params.get('courseName') != '':
+      if params.get('courseName') is not None:
         filters.append(Q(course__name__icontains=params.get('courseName')))
-      if params.get('department') != '':
+      if params.get('department') is not None:
         filters.append(Q(faculty__department=params.get('department')))
-      if params.get('term') != '':
-        filters.append(Q(term_id=params.get('term')))
-      if params.get('time') != '':
+      if params.get('term') is not None:
+        filters.append(Q(slot__term_id=params.get('term')))
+      if params.get('time') is not None:
         filters.append(Q(slot__time__id=params.get('time')))
       if params.get('monday') == 'false':
         days.append('1')
@@ -179,15 +179,15 @@ class CourseSectionList(generics.ListCreateAPIView):
       else:
         queryset = None
         if len(days) == 0:
-          queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters))
+          queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).distinct()
         elif len(days) != 0:
           print(days)
         else: 
-          queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days)
+          queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days).distinct()
           print(queryset)
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
         return Response(serializer.data)
-    except CourseSection.DoesNotExist:
+    except models.CourseSection.DoesNotExist:
       raise Http404
 class DayList(generics.ListCreateAPIView):
   serializer_class = serializers.DaySerializer()
@@ -210,12 +210,35 @@ class EnrollmentList(generics.ListCreateAPIView):
   serializer_class = serializers.EnrollmentSerializer
   def list(self,request):
     params = request.query_params
-    if params.get('term') is not None:
-      if params.get('student') is not None:
-        enrollment = models.Enrollment.objects.filter(student_id=student.id, course_section__slot__term=params.get('term'))
-        serializer = serializers.EnrollmentSerializer(enrollment)
+    print('begin')
+    print(params.get('student'))
+    if params.get('student') is not None:
+      if params.get('term') is not None:
+        print(params.get('term'))
+        enrollment = models.Enrollment.objects.filter(student_id=params.get('student'),course_section__slot__term_id=params.get('term')).distinct()
+        print(enrollment)
+        serializer = serializers.EnrollmentSerializer(enrollment, many=True)
         return Response(serializer.data)
+      else: 
+        print('test')
+        currentYear = datetime.today().year
+        springStart = datetime(currentYear, 3, 20)
+        springEnd = datetime(currentYear, 8, 20)
+        fallStart = datetime(currentYear, 11, 20)
+        fallEnd = datetime(currentYear+1, 1, 20)
+        currentDay = datetime.today()
+        term = None
+        if springStart < currentDay < springEnd:
+          term = models.Term.objects.get(year=currentYear, season="SP")
+        if fallStart < currentDay < fallEnd:
+          term = models.Term.objects.get(year=currentYear, season="F")
+        enrollment = models.Enrollment.objects.filter(student_id=student.user_id, course_section__slot__term=term.id)
+        print(enrollment)
+        serializer = serializers.EnrollmentSerializer(enrollment, many=True)
+        return Response(serializer.data)
+        
     if params.get('section') is not None:
+
       enrollment = models.Enrollment.objects.filter(course_section=params.get('section'))
       serializer = serializers.EnrollmentSerializer(enrollment)
       return Response(serializer.data)
@@ -225,21 +248,11 @@ class EnrollmentList(generics.ListCreateAPIView):
       if params.get('student') is not None:
         user = models.User.objects.get(email=params.get('student'))
         student = models.Student.objects.get(user_id=user.id)
-        print(params.get('student'))
-        print(params.get('section'))
         section = models.CourseSection.objects.get(id = params.get('section'))
-        serializer = serializers.EnrollmentSerializer(data={
-          'student':user.id,
-          'courseSection':str(section.id),
-          'dateEnrolled':str(datetime.now().date())
-        })
-        if serializer.is_valid():
-          serializer.save()
-          return Response( serializer.data)
-
-        print(serializer.data)
-        print(serializer.errors)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
+        enrollment = models.Enrollment.objects.get(id=enrollment.id)
+        serializer = serializers.EnrollmentSerializer(enrollment)
+        return Response(serializer.data)
         
     
 # Skipped FullTime and PartTime Faculty

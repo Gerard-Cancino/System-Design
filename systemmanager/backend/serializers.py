@@ -203,10 +203,10 @@ class StudentMinorSerializer(serializers.ModelSerializer):
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False, required=True)
-    courseSection = CourseSectionSerializer(many=False, required=True)
+    course_section = CourseSectionSerializer(many=False, required=True)
     class Meta:
         model = Enrollment
-        fields = ('student','courseSection','dateEnrolled')
+        fields = ('student','course_section','dateEnrolled')
 
 class TranscriptSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False)
