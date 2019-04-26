@@ -1,8 +1,9 @@
-import React,{Component} from 'react'
-import axios from 'axios'
+import React,{Component} from 'react';
+import axios from 'axios';
+import {Link} from 'react-router-dom';
 
-import Header from './layout/Header.js'
-import Footer from './layout/Footer.js'
+import Header from './layout/Header.js';
+import Footer from './layout/Footer.js';
 
 import SearchTerm from '../general/Term_Search.js';
 import SearchStudent from '../general/Student_Search.js';
@@ -56,9 +57,12 @@ class StudentTerm extends Component{
             <form className="col-md-12" onSubmit={this.findStudent}>
               <SearchTerm onChange={this.handleTerm.bind(this)} termList={this.state.termList}/>
               <SearchStudent onChange={this.handleStudent.bind(this)}/>
-              <button className="btn" type="submit">Search Term</button>
+              <button className="btn btn-primary" type="submit">Search Term</button>
             </form>
             <TableEnrollment enrollmentList={this.state.enrollmentList}/>
+            <Link to={{
+              pathname: '/admin/student-enroll-section'
+            }} className="btn btn-info">Enroll Student</Link>
           </div>
         </section>
         <Footer />

@@ -79,6 +79,7 @@ const Info = ({data}) =>
         <p>{data.student.user.addLine} {data.student.user.city}</p>
         <p>{data.student.user.state} {data.student.user.zipCode} </p>
         <p>{data.student.user.country}</p>
+        <p>{data.student.user.email}@garageuniversity.tech</p>
         <p>{data.student.user.phoneNumber}</p>
 
         {data.advisor==''?(

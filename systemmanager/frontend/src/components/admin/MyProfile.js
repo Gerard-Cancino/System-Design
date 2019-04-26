@@ -5,62 +5,44 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
+import ProfileUser from '../general/User_Profile.js';
+import ProfileUserEdit from '../general/User_Profile_Edit.js';
+
 class ViewStudentRecord extends Component {
   state = {
-    username: 'MooreM',
     account : undefined,
+    isEdit: false,
   }
 
-  handleChange = event => {
-    this.setState({ studentUsername: event.target.value });
-    //console.log(this.state.studentUsername);
+  componentDidMount() {
+    axios
+    .get(`/user-details.json/${this.props.user}`)
+    .then(res=>{
+      this.setState({account:res.data})
+    })
   }
+  handleEdit = (address, city, state, zipCode, phoneNumber) => (event) => {
+    event.preventDefault()
+    axios
+    .put(`/user-details.json/${this.props.user}`,{
+      address: address,
+      city: city,
+      state: state,
+      zipCode: zipCode,
+      phoneNumber: phoneNumber
+    })
+    .then(res=>{
+      this.setState({
+        account: res.data,
+        isEdit: false
+      })
+    })
 
+  }
   handleSubmit = event => {
     event.preventDefault();
-    axios
-      .get(`/student-details.json/${this.state.studentUsername}`)
-      .then(res => {
-        this.setState({
-          student: res.data,
-          isLoaded: true
-        })
-      })
-    axios
-      .get(`/advisor-details.json/${this.state.studentUsername}`)
-      .then( res=> {
-        this.setState({
-          advisor: res.data,
-        })
-      })
+    this.setState({isEdit: true})
   }
-  Info = ({data}) => {
-    data.student ==''?(
-      <p>Could not find student</p>
-    ) : (
-      data.student.user.type!='S'?(
-        <p>The user is not a student.</p>
-      ) : ( 
-        <div>
-          <h4><strong>{data.student.user.firstName} {data.student.user.lastName}</strong></h4>
-          <p>{data.student.user.addLine} {data.student.user.city}</p>
-          <p>{data.student.user.state} {data.student.user.zipCode} </p>
-          <p>{data.student.user.country}</p>
-          <p>{data.student.user.phoneNumber}</p>
-
-          {data.advisor==''?(
-            <p>The student is not assigned to an adviser.</p>
-          ) : (
-            <div>
-              <h4>Advisor: </h4>
-              <p>{data.advisor.faculty.user.firstName} {data.advisor.faculty.user.lastName}</p>
-              <p>{data.advisor.faculty.user.email}@garageuniversity.me</p>
-            </div>
-          )}
-        </div>
-      )
-    )
-  };
   render(){
     console.log("reloading page");
     return(
@@ -68,19 +50,12 @@ class ViewStudentRecord extends Component {
         <Header />
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
-            <h2 className="col-md-12 text-center">View Student Information</h2>
-            <form className="col-md-12" onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="studentUsername"></label>
-                <input type="text" className="form-control" id="studentUsername" placeholder="Enter Student's Username" onChange={this.handleChange}/>
-                <br />
-                <button type="submit" className="btn btn-primary">Submit</button> 
-              </div>
-            </form>
-            {this.state.student? (
-              <Info data={this.state} />
+            <h2 className="col-md-12 text-center">My Profile</h2>
+            <ProfileUser account={this.state.account} />
+            {this.state.isEdit==true?(
+              <ProfileUserEdit onSubmit={this.handleEdit.bind(this)} account={this.state.account} />
             ) : (
-              <p></p>
+              <button type="submit" onClick={this.handleSubmit} className="col-md-12 text-center btn btn-primary">Edit Profile</button>
             )}
           </div>
         </section>

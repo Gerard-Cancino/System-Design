@@ -11,14 +11,17 @@ class HeaderHome extends Component {
            <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="collapsibleNavbar">
-           <ul className="navbar-nav ml-auto">
-             <li className="nav-item">
-               <Link className="nav-link" to="/admin/main">Main Page</Link>
-             </li>
-             <li className="nav-item">
-               <Link className="nav-link" to="/logout/">Logout</Link>
-             </li>
-           </ul>
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/main">Main Page</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/logout/">Logout</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/profile">My Profile</Link>
+              </li>
+            </ul>
           </div>
         </nav>
       </header>

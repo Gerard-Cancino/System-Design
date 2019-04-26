@@ -17,10 +17,12 @@ import AdminCourseCatalog from './admin/CourseCatalog.js';
 import AdminViewStudentRecord from './admin/ViewStudentRecord.js';
 import AdminStudentHold from './admin/StudentHold.js';
 import AdminStudentTerm from './admin/StudentTerm.js';
+import AdminStudentEnrollSection from './admin/Student_Enroll_Section.js';
 import AdminLockUnlockUserAccount from './admin/LockUnlockUserAccount.js';
 import AdminMasterSchedule from './admin/MasterSchedule.js';
 import AdminUpdateSectionMasterP1 from './admin/UpdateSectionMasterP1.js';
 import AdminUpdateSectionMasterP2 from './admin/UpdateSectionMasterP2.js';
+import AdminProfile from './admin/MyProfile.js';
 // npm run dev to create main.js
 
 const Authorization = (WrappedComponent, allowedRoles) => {
@@ -28,7 +30,7 @@ const Authorization = (WrappedComponent, allowedRoles) => {
     state = {
       props: '',
       user: {
-        id: 1,
+        email: 'MooreM',
         role: 'A',
       }  
     }
@@ -37,10 +39,10 @@ const Authorization = (WrappedComponent, allowedRoles) => {
       const { role, id} = this.state.user
       if (allowedRoles.includes(role)) {
         if (this.props.location.state!=null){  
-          return <WrappedComponent data={this.props.location}/>
+          return <WrappedComponent user={this.state.user.email} data={this.props.location}/>
         }
         else
-          return <WrappedComponent/>
+          return <WrappedComponent user={this.state.user.email} />
       }
       else 
         return <Unauthenticated />
@@ -55,10 +57,12 @@ class MyRoute extends Component {
     const AAdminViewStudentRecord = Authorization(AdminViewStudentRecord, ['A'])
     const AAdminStudentHold = Authorization(AdminStudentHold, ['A'])
     const AAdminStudentTerm = Authorization(AdminStudentTerm, ['A'])
+    const AAdminStudentEnrollSection = Authorization(AdminStudentEnrollSection, ['A'])
     const AAdminLockUnlockUserAccount = Authorization(AdminLockUnlockUserAccount, ['A'])
     const AAdminMasterSchedule = Authorization(AdminMasterSchedule, ['A'])
     const AAdminUpdateSectionMasterP1 = Authorization(AdminUpdateSectionMasterP1, ['A'])
     const AAdminUpdateSectionMasterP2 = Authorization(AdminUpdateSectionMasterP2, ['A'])
+    const AAdminProfile = Authorization(AdminProfile, ['A'])
     return (
       <BrowserRouter>
         <div>
@@ -75,10 +79,12 @@ class MyRoute extends Component {
           <Route path="/admin/view-student-information" component={AAdminViewStudentRecord} />
           <Route path="/admin/student-hold" component={AAdminStudentHold} />
           <Route path="/admin/student-term" component={AAdminStudentTerm} />
+          <Route path="/admin/student-enroll-section" component={AAdminStudentEnrollSection} />
           <Route path="/admin/lock-unlock-user-account" component={AAdminLockUnlockUserAccount} />
           <Route path="/admin/view-master-schedule" component={AAdminMasterSchedule} />
           <Route path="/admin/update-section-master-p1" component={AAdminUpdateSectionMasterP1}/>
           <Route path="/admin/update-section-master-p2" component={AAdminUpdateSectionMasterP2}/>
+          <Route path="/admin/profile" component={AAdminProfile}/>
 
         </div>
       </BrowserRouter>

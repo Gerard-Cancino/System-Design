@@ -45,7 +45,7 @@ class UpdateSectionMaster extends Component {
         .get('/term-list.json')
         .then(res => {
           this.setState({'termList': res.data})
-          this.setState({'term':res.data[0].id})
+          this.setState({'term':undefined})
         })
       else
         this.setState({
@@ -77,13 +77,13 @@ class UpdateSectionMaster extends Component {
   }
   handleFind = event => {
     event.preventDefault();
-    console.log('test')
     axios
       .get('/slot-list.json',{
         params: {
           'room': this.state.room,
           'building': this.state.building,
           'term': this.state.term,
+          'time': this.state.time,
           'monday': this.state.days.MO,
           'tuesday': this.state.days.TU,
           'wednesday': this.state.days.WE,
@@ -104,7 +104,7 @@ class UpdateSectionMaster extends Component {
     })
     .then( res => {
       this.setState({'roomList': res.data})
-      this.setState({'room': undefined})
+      this.setState({'room': res.data[0].id})
     });
   }
   handleRoom = event => {   
@@ -158,6 +158,7 @@ class UpdateSectionMaster extends Component {
           'room': this.state.room,
           'building': this.state.building,
           'term': this.state.term,
+          'time': this.state.time,
           'monday': this.state.days.MO,
           'tuesday': this.state.days.TU,
           'wednesday': this.state.days.WE,
@@ -176,31 +177,36 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
-      this.setState({term: undefined})
       this.setState({section:res.data})
       if (res.data.slot.length==0){
         axios
         .get('/term-list.json')
         .then(res => {
           this.setState({'termList': res.data})
-          this.setState({'term':res.data[0].id})
+          this.setState({'term':undefined})
+          axios
+          .get('/slot-list.json',{
+            
+            params: {
+              'room': this.state.room,
+              'building': this.state.building,
+              'term': this.state.term,
+              'time': this.state.time,
+              'monday': this.state.days.MO,
+              'tuesday': this.state.days.TU,
+              'wednesday': this.state.days.WE,
+              'thursday': this.state.days.TH,
+            }
+          })
+          .then(res => {
+            this.setState({'slotList': res.data})
+          })
         })
       }
-      axios
-      .get('/slot-list.json',{
-        params: {
-          'room': this.state.room,
-          'building': this.state.building,
-          'term': this.state.term,
-          'monday': this.state.isMon,
-          'tuesday': this.state.isTues,
-          'wednesday': this.state.isWed,
-          'thursday': this.state.isThurs,
-        }
-      })
-      .then(res => {
-        this.setState({'slotList': res.data})
-      })
+      else{
+        this.setState({'term':res.data.slot[0].term.id})
+      }
+
     })
   }
 
@@ -295,7 +301,7 @@ class UpdateSectionMaster extends Component {
             <form className="col-md-12" onSubmit={this.handleFind}>
               <br />
               <h2 className="col-md-12 text-center">Search For Opening Slot</h2>
-              {this.state.termList==undefined&&this.state.term!=undefined?(
+              {this.state.section.slot!=undefined && this.state.section.slot.length!=0?(
                 <p>{this.state.section.slot[0].term.season} {this.state.section.slot[0].term.year}</p>
               ) : (
                 <p></p>

@@ -120,8 +120,6 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     params = request.data
     if params.get('slot') is not None:
       queryset = models.CourseSection.objects.get(id = id)
-      print(params.get('slot'))
-      print('param')
       slot = models.Slot.objects.get(id = params.get('slot'))
       if not slot in queryset.slot.all():
         slot.isTaken = True
@@ -134,6 +132,18 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
       queryset.save()
       serializer = serializers.CourseSectionSerializer(queryset)
       return Response(serializer.data)
+    # if params.get('numOfSeats') is not None:
+    #   data.append(Q(numOfSeats=params.get('numOfSeats')))
+    queryset = self.get_object(id)
+    if params.get('faculty') is not None:
+      faculty = models.Faculty.objects.get(user_id=params.get('faculty'))
+      queryset.faculty=faculty
+      queryset.save()
+    if params.get('numOfSeats') is not None:
+      queryset.numOfSeats = params.get('numOfSeats')
+      queryset.save()
+    serializer = serializers.CourseSectionSerializer(queryset)
+    return Response(serializer.data)
   def delete(self, request,id):
     queryset = self.get_object(id)
     queryset.delete()
@@ -364,13 +374,13 @@ class SlotList(generics.ListCreateAPIView):
       days = []
       filters.append(Q(isTaken=False))
       if params.get('building') is not None:
-        filters.append(Q(room__building__id=params.get('building')))
+        filters.append(Q(room__building_id=params.get('building')))
       if params.get('room') is not None:
-        filters.append(Q(room__id=params.get('room')))
+        filters.append(Q(room=params.get('room')))
       if params.get('term') is not None:
         filters.append(Q(term_id=params.get('term')))
       if params.get('time') is not None:
-        filters.append(Q(slot__time__id=params.get('time')))
+        filters.append(Q(time_id=params.get('time')))
       print(params.get('monday'))
       if params.get('monday') == 'false':
         print('1')
@@ -428,30 +438,30 @@ class UserDetails(APIView):
   def put(self, request, email):
     params = request.data
     user = models.User.objects.get(email=email)
-    if params.get('firstName') != '':
+    if params.get('firstName') is not None:
       user.firstName = params.get('firstName')
-    if params.get('lastName') != '':
+    if params.get('lastName') is not None:
       user.lastName = params.get('lastName')
-    if params.get('address') != '':
+    if params.get('address') is not None:
       user.address = params.get('address')
-    if params.get('city') != '':
+    if params.get('city') is not None:
       user.city = params.get('city')
-    if params.get('state') != '':
+    if params.get('state') is not None:
       user.state = params.get('state')
-    if params.get('country') != '':
+    if params.get('country') is not None:
       user.country = params.get('country')
-    if params.get('phoneNumber') != '':
+    if params.get('phoneNumber') is not None:
       user.phoneNumber = params.get('phoneNumber')
-    if params.get('isLockout') != '':
+    if params.get('zipCode') is not None:
+      user.zipCode = params.get('zipCode')
+    if params.get('isLockout') is not None:
       if user.isLockout:
         user.isLockout = False
       else:
         user.isLockout = True
+    user.save()
     serializer = serializers.UserSerializer(user)
-    if serializer.is_valid():
-      serializer.save()
-      return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.data)
   def delete(self, request,email):
     user = models.User.objects.get(email=email)
     user.delete()

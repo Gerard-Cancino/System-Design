@@ -5,8 +5,15 @@ import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
 class Login extends Component {
+  state = {
+    csrf_token: undefined
+  }
   componentDidMount() {
-    axios.get('127.0.0.1:8000/login/')
+    axios.defaults.xsrfCookieName='csrftoken';
+    axios.defaults.xsrfHeaderName='X-CSRFTOKEN';
+    axios
+    .post('/login.json')
+    console.log(axios.defaults)
   }
   render(){
     return(
