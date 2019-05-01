@@ -5,17 +5,20 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
+import ProfileUser from '../general/User_Profile.js';
+import StudentAdvisor from '../general/Student_Advisor.js';
+
 class ViewStudentRecord extends Component {
   state = {
-    studentUsername: '',
-    student: '',
-    placeholder: '',
-    advisor: '',
+    studentUsername: undefined,
+    student: undefined,
+    placeholder: undefined,
+    advisor: undefined,
     isLoaded: false
   }
 
   handleChange = event => {
-    this.setState({ studentUsername: event.target.value });
+    this.setState({ studentUsername: event.target.value || undefined});
     //console.log(this.state.studentUsername);
   }
 
@@ -37,9 +40,63 @@ class ViewStudentRecord extends Component {
         })
       })
   }
+  handleSubmit0 = event => {
+    event.preventDefault();
+    axios
+      .put(`/user-details.json/${this.state.studentUsername}`, {
+        'isLockout': false,
+      })
+      .then(res => {    
+        axios
+        .get(`/student-details.json/${this.state.studentUsername}`)
+        .then(res => {
+          this.setState({
+            student: res.data,
+            isLoaded: true
+        })
+      })
+    })
+  }  
+  handleSubmit1 = event => {
+    event.preventDefault();
+    axios
+      .put(`/user-details.json/${this.state.studentUsername}`,{
+        'isLockout': true,
+      })
+      .then(res => {
+        axios
+        .get(`/student-details.json/${this.state.studentUsername}`)
+        .then(res => {
+          this.setState({
+            student: res.data,
+            isLoaded: true
+        })
+      })
+    })
+  }
+
 
   render(){
-    console.log("reloading page");
+    const Lock = () =>
+      this.state.student.user.isLockout==true?(
+        <div className="col-md-12">
+          <hr />
+          <form className="col-md-12">
+            <div className="form-group col-md-12"> 
+              <button onClick={this.handleSubmit0} type="submit" className="col-md-12 btn btn-success">Unlock Account</button> 
+            </div>
+          </form>
+        </div>
+      ) : (
+        <div className="col-md-12">
+          <hr />
+          <form className="col-md-12">
+            <div className="form-group col-md-12">
+              <button onClick={this.handleSubmit1} type="submit" className="col-md-12 btn btn-danger">Lock Account</button> 
+            </div>
+          </form>
+        </div>
+      );
     return(
       <React.Fragment>
         <Header />
@@ -54,10 +111,15 @@ class ViewStudentRecord extends Component {
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>
             </form>
-            {this.state.student? (
-              <Info data={this.state} />
-            ) : (
+            {!this.state.student?(
               <p></p>
+            ) : (
+              <div className="col-md-12">
+                <ProfileUser account={this.state.student.user} />
+                <hr />
+                <StudentAdvisor advisor={this.state.advisor} />
+                <Lock/>
+              </div>
             )}
           </div>
         </section>
@@ -66,33 +128,4 @@ class ViewStudentRecord extends Component {
     );
   }
 }
-
-const Info = ({data}) =>
-  data.student ==''?(
-    <p>Could not find student</p>
-  ) : (
-    data.student.user.type!='S'?(
-      <p>The user is not a student.</p>
-    ) : ( 
-      <div>
-        <h4><strong>{data.student.user.firstName} {data.student.user.lastName}</strong></h4>
-        <p>{data.student.user.addLine} {data.student.user.city}</p>
-        <p>{data.student.user.state} {data.student.user.zipCode} </p>
-        <p>{data.student.user.country}</p>
-        <p>{data.student.user.email}@garageuniversity.tech</p>
-        <p>{data.student.user.phoneNumber}</p>
-
-        {data.advisor==''?(
-          <p>The student is not assigned to an adviser.</p>
-        ) : (
-          <div>
-            <h4>Advisor: </h4>
-            <p>{data.advisor.faculty.user.firstName} {data.advisor.faculty.user.lastName}</p>
-            <p>{data.advisor.faculty.user.email}@garageuniversity.me</p>
-          </div>
-        )}
-      </div>
-    )
-  );
-
 export default ViewStudentRecord;

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 class SearchDay extends PureComponent {
   render () {
-    const {onChange, mon, tues, wed, thurs} = this.props
+    const {onChange, mon, tues, wed, thurs, fri} = this.props
   
     return (
       <div className="form-group col-md-12">
@@ -12,6 +12,7 @@ class SearchDay extends PureComponent {
           <input type="checkbox" name="day2" value="TU" onChange={onChange} checked={tues}/>Tuesday
           <input type="checkbox" name="day3" value="WE" onChange={onChange} checked={wed}/>Wednesday
           <input type="checkbox" name="day4" value="TH" onChange={onChange} checked={thurs}/>Thursday
+          <input type="checkbox" name="day5" value="FR" onChange={onChange} checked={fri}/>Friday
         </div>
       </div>
     )

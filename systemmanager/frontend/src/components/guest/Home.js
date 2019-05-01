@@ -4,6 +4,8 @@ import {Link } from "react-router-dom";
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
+import djangoLogo from '../images/django-logo.png';
+
 class Home extends Component {
   render(){
     return(
@@ -18,7 +20,7 @@ class Home extends Component {
             <div className="col-md-4">
               <div className="card">
                 <div className="card-body">
-                  <img alt="Django"/>
+                  <img src={require(djangoLogo)} width="70" heigh="50" alt="django"/>
                 </div>
               </div>
             </div>

@@ -172,7 +172,7 @@ class CourseSectionList(generics.ListCreateAPIView):
       if params.get('department') is not None:
         filters.append(Q(faculty__department=params.get('department')))
       if params.get('term') is not None:
-        filters.append(Q(slot__term_id=params.get('term')))
+        filters.append(Q(term_id=params.get('term')))
       if params.get('time') is not None:
         filters.append(Q(slot__time__id=params.get('time')))
       if params.get('monday') == 'false':
@@ -375,13 +375,6 @@ class SlotList(generics.ListCreateAPIView):
       params = request.query_params
       filters=[]
       days = []
-      filters.append(Q(isTaken=False))
-      if params.get('building') is not None:
-        filters.append(Q(room__building_id=params.get('building')))
-      if params.get('room') is not None:
-        filters.append(Q(room=params.get('room')))
-      if params.get('term') is not None:
-        filters.append(Q(term_id=params.get('term')))
       if params.get('time') is not None:
         filters.append(Q(time_id=params.get('time')))
       print(params.get('monday'))
@@ -458,8 +451,10 @@ class UserDetails(APIView):
     if params.get('zipCode') is not None:
       user.zipCode = params.get('zipCode')
     if params.get('isLockout') is not None:
+      print('test')
       if user.isLockout:
         user.isLockout = False
+        print('1')
       else:
         user.isLockout = True
     user.save()

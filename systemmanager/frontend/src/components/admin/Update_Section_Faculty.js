@@ -5,7 +5,9 @@ import {Link} from 'react-router-dom';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-import SearchFacultyList from '../general/inputs/Faculty_List_Search.js'
+import SearchFacultyList from '../general/inputs/Faculty_List_Search.js';
+import SearchRoomList from '../general/inputs/Room_List_Search.js';
+import SearchBuildingList from '../general/inputs/Building_List_Search.js';
 
 
 // View Course Catalog -> Add (Button) -> Fill out Required 
@@ -40,9 +42,41 @@ class UpdateSectionMaster extends Component {
       if(res.data.faculty!=undefined)
         this.setState({'faculty': res.data.faculty.user.id})
     })
+    axios
+    .get('/building-list.json')
+    .then(res => {
+      this.setState({'buildingList': res.data})
+      axios
+      .get('/room-list.json',{
+        params:{
+          'building': res.data[0].code
+        }
+      })
+      .then(res => {
+        this.setState({'roomList': res.data})
+        this.setState({'room': res.data[0].id})
+      })
+    })
+    
+  }
+  handleBuilding = event => {   
+    this.setState({ building: event.target.value });
+    axios
+    .get('/room-list.json', {
+      params: {
+        'building': event.target.value
+      }
+    })
+    .then( res => {
+      this.setState({'roomList': res.data})
+      this.setState({'room': res.data[0].id})
+    });
+  }
+  handleRoom = event => {   
+    this.setState({ room: event.target.value || undefined});
   }
   handleFaculty = event => {   
-    this.setState({ faculty: event.target.value });
+    this.setState({ faculty: event.target.value || undefined});
   }
   handleNumOfSeats =event => {
     this.setState({numOfSeats: event.target.value})
@@ -53,7 +87,8 @@ class UpdateSectionMaster extends Component {
     axios
     .put(`/course-section-details.json/${this.state.id}`,{
       faculty: this.state.faculty,
-      numOfSeats: this.state.numOfSeats
+      numOfSeats: this.state.numOfSeats,
+      room: this.state.room
     })
     .then(res=> {
       this.setState({section: res.data})
@@ -84,17 +119,30 @@ class UpdateSectionMaster extends Component {
                   ) : (
                     <h4>{this.state.section.course.name} - Section: {this.state.section.number}</h4>
                   )}
-                  <label>Number of Seats:</label>
-                  <input onChange={this.handleNumOfSeats} placeholder={this.state.section.numOfSeats}></input>
-                  <p className="text-secondary">Number of Seats Currently Taken: {this.state.section.numOfTaken}</p>
-                  <label>Faculty's Name:</label>
-                  {this.state.section.faculty==undefined?(
-                    <p>No Faculty submitted</p>
-                  ) : (
-                    <p>Current Professor: {this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
-                  )}
-                  <SearchFacultyList onChange={this.handleFaculty} facultyList={this.state.facultyList} />
-                  
+                  <div className="form-group">
+                    <label>Number of Seats:</label>
+                    <input className="form-control" onChange={this.handleNumOfSeats} placeholder={this.state.section.numOfSeats}></input>
+                    <p className="text-secondary">Number of Seats Currently Taken: {this.state.section.numOfTaken}</p>
+                  </div>
+                  <div className="form-group">
+                    <label>Faculty's Name:</label>
+                    {this.state.section.faculty==undefined?(
+                      <p>No Faculty Assigned</p>
+                    ) : (
+                      <p>Current Professor: {this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
+                    )}
+                    <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} />
+                  </div>
+                  <div className="form-group">
+                    <label>Room</label>
+                    {this.state.section.room==undefined?(
+                      <p>No Room Assigned</p>
+                    ) : (
+                      <p>{this.state.section.room.building.name} {this.state.section.room.number}</p>
+                    )}
+                    <SearchBuildingList onChange={this.handleBuilding.bind()} buildingList={this.state.buildingList} />
+                    <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} />
+                  </div>
                   <button type="submit" className="btn btn-primary">Submit</button>
                 </form>
               </div>

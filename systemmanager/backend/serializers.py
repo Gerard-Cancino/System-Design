@@ -145,8 +145,6 @@ class DaySerializer(serializers.ModelSerializer):
 class SlotSerializer(serializers.ModelSerializer):
     time = TimeSerializer(many=False)
     day = DaySerializer(many=False)
-    room = RoomSerializer(many=False)
-    term = TermSerializer(many=False)
     class Meta:
         model = Slot
         fields = ('__all__')

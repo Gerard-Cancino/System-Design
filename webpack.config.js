@@ -16,10 +16,13 @@ module.exports = {
         }
       },
       {
-        test: /\.(jpg|png)$/,
-        use: [
-          'file-loader'
-        ],
+        test: /\.(png|jpg)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: "[path][name].[ext]"
+          }
+        }],
       }
     ]
   }

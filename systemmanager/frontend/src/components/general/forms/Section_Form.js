@@ -29,6 +29,7 @@ class SectionForm extends Component {
       TU: true,
       WE: true,
       TH: true,
+      FR: true,
     },
     isReload: false
   }
@@ -102,6 +103,11 @@ class SectionForm extends Component {
         selectedDay.TH = true;
       else
         selectedDay.TH = false;
+    else if (event.target.value=='FR')
+      if(selectedDay.FR == false)
+        selectedDay.FR = true;
+      else
+        selectedDay.FR = false;
     this.setState(selectedDay)
   }
   
@@ -121,6 +127,7 @@ class SectionForm extends Component {
           'tuesday': this.state.days.TU,
           'wednesday': this.state.days.WE,
           'thursday': this.state.days.TH,
+          'friday': this.state.days.FR,
           'term': this.state.term,
         }
       })
@@ -147,6 +154,7 @@ class SectionForm extends Component {
           'tuesday': this.state.days.TU,
           'wednesday': this.state.days.WE,
           'thursday': this.state.days.TH,
+          'friday': this.state.days.FR,
           'term': this.state.term,
         }
       })
@@ -175,7 +183,7 @@ class SectionForm extends Component {
                 <FacultyNameSearch onChange={this.handleFacultyName.bind(this)} />
                 <TimeSearch onChange={this.handleTime.bind(this)} timeList={this.state.timeList}/>
                 <CreditsSearch onChangeMin={this.handleCreditMin.bind(this)} onChangeMax={this.handleCreditMax.bind(this)} />
-                <DaySearch onChange={this.handleDays.bind(this)} mon={this.state.days.MO} tues={this.state.days.TU} wed={this.state.days.WE} thurs={this.state.days.TH} />
+                <DaySearch onChange={this.handleDays.bind(this)} mon={this.state.days.MO} tues={this.state.days.TU} wed={this.state.days.WE} thurs={this.state.days.TH} fri={this.state.days.FR}/>
                 <br />
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>

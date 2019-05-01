@@ -100,8 +100,8 @@ class Student(models.Model):
 
 class Advisor(models.Model):
     REQUIRED_FIELDS = ('Faculty',)
-    faculty = models.OneToOneField(Faculty, on_delete=models.CASCADE)
-    student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     dateAssigned = models.DateField(null=True, default=datetime.now)
     class Meta:
         db_table = "advisor"
@@ -194,7 +194,7 @@ class Day(models.Model):
       ("TU", "Tuesday"),
       ("WE", "Wednesday"),
       ("TH", "Thursday"),
-      ("FR", "Friday"),
+      ("F", "Friday"),
       ("SA", "Saturday")
     )
     name = models.CharField(choices=DAY_TYPE, max_length=2, null=False)

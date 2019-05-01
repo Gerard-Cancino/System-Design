@@ -66,24 +66,22 @@ class TableSection extends PureComponent {
                     ))}
                     </td>
                     )}
-                    {el.slot.length == 0?(
+                    {el.term == undefined?(
                       <td className='col-md-1'> 
                         <p>TBD</p> 
                       </td> 
                     ) : (
                       <td className='col-md-1'> 
-                        <p>{el.slot[0].term.season} {el.slot[0].term.year}</p>
+                        <p>{el.term.season} {el.term.year}</p>
                       </td> 
                     )}
-                    {el.slot.length == 0?(                      
+                    {el.room == 0?(                      
                       <td className='col-md-1'> 
                         <p>TBD</p>
                       </td>
                       ) : (      
-                      <td className='col-md-1'> 
-                        {el.slot.map(i => (          
-                          <p>{i.room.building.code} {i.room.number}</p>
-                        ))}
+                      <td className='col-md-1'>      
+                        <p>{el.room.building.code} {el.room.number}</p>
                       </td> 
                     )}
                     <td className='col-md-1'>{el.numOfSeats - el.numOfTaken}</td>     
