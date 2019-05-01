@@ -9,58 +9,58 @@ USE system;
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`) VALUES
 (10001, '5678', 'F', 'cancinog', 'Gerard', 'Cancino', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0),
-(10002,'password','F','email104','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10003,'password','F','email105','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10004,'password','F','email106','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10005,'password','F','email107','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10006,'password','F','email108','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10007,'password','F','email109','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10008,'password','F','email110','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10009,'password','F','email111','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10010,'password','F','email112','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10011,'password','F','email113','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10012,'password','F','email114','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10013,'password','F','email115','first','last','address','city','NY','USA','11568','1234567890', 0),
-(10014,'password','F','email116','first','last','address','city','NY','USA','11568','1234567890', 0);
+(10002, '4584','F','caih','Haojun','Cai','223 store hill rd','old westbury','NY','USA','11568','9293008380', 0),
+(10003,'2324','F','chungs','Sikho','Chung','101 Main St','Lynbrrok','NY','USA','11563','5167900666', 0),
+(10004,'2425','F','harrisond','David','Harrison','546 Hill St','Garden City','NY','USA','11560','5164545555', 0),
+(10005,'2526','F','algare','Edward','Algar','7th Ave','New York','NY','USA','11020','2475684747', 0),
+(10006,'2627','F','lewisg','George','Lewis','87 Fair View','Horton','NY','USA','11400','7188774545', 0),
+(10007,'2728','F','jhonsonk','Carly','Johonsn','4500 Mill Rd','Saw Mill','NY','USA','11760','9144506565', 0),
+(10008,'2829','F','williamsf','Frank','Williams','30 George Rd','Portchester','NY','USA','11789','9195857777', 0),
+(10009,'3031','F','samsd','David','Sams','67 Valentine Lane','Freeport','NY','USA','11545','5164141111', 0),
+(10010,'4501','F','chewy','Yonny','Chew','34 Park Ave','Union','NJ','USA','20560','7064569999', 0),
+(10011,'4502','F','chend','Denna','Chen','59 Moonside St','Valley Stream','NY','USA','11580','5166338080', 0),
+(10012,'4503','F','parkm','Marie','Park','258 Golf Rd','New Rochelle','NY','USA','10530','9145257778', 0),
+(10013,'4504','F','dantet','Thomas','Dante','699 Hill Ave','Toronto','CA','Canada','0015','156-555-0000', 0),
+(10014,'1111','F','sheltond','Dawn','Shelton','529 Newton Street','St Cloud','MN','USA','11178','3202911613', 0);
 
 -- Admin
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`) VALUES
 (20001, '9101', 'A', 'dabrowd', 'Daniel', 'Dabrowski', '50 Hill Ave', 'Forest Hill', 'NY', 'USA', '11568', '7184502569', 0),
-(20002,'password','A','email101','first','last','address','city','NY','USA','11568','1234567890', 0),
-(20003,'password','A','email102','first','last','address','city','NY','USA','11568','1234567890', 0),
-(20004,'password','A','email103','first','last','address','city','NY','USA','11568','1234567890', 0);
+(20002,'9102','A','moorem','Mark','Moore','50 Hill Ave','Forest Hill','NY','USA','11568','7184502570', 0),
+(20003,'2021','A','markj','Jannet','Mark','1000 Horton Ave','Manhattan','NY','USA','11100','2125468900', 0),
+(20004,'3120','A','davism','Maria','Davis','788 Dixie Rd','Farmingdale','NY','USA','11590','516-363-6666', 0);
 
 -- Researcher
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`) VALUES
-(30001, '1213', 'R', 'caih', 'Haojun', 'Cai', '45 Mill Rd', 'Valley', 'NY', 'USA', '11570', '5164506000', 0),
-(30002, 'password','R','email100','first','last','address','city','NY','USA','11568','1234567890', 0);
+(30001, '1213', 'R', 'shawp', 'Paul', 'Shaw', '45 Mill Rd', 'Valley', 'NY', 'USA', '11570', '5164506000', 0),
+(30002, '4010','R','thomase','Eddie','Thomas','112 Carl Ave','Lynbrook','NY','USA','11563','5167122020', 0);
 
 -- Student
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`) VALUES
 (40001, '1234', 'S', 'toothG', 'George', 'Tooth', '223 Grand Ave', 'Garden City', 'NY', 'USA', '11530', '5165601525', 0), -- Chemical Engineering Freshmen // Minor Math
-(40002,'password','S','email1','first','last','address','city','NY','USA','11568','1234567890', 0), 
-(40003,'password','S','email2','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40004,'password','S','email3','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40005,'password','S','email4','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40006,'password','S','email5','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40007,'password','S','email6','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40008,'password','S','email7','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40009,'password','S','email8','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40010,'password','S','email9','first','last','address','city','NY','USA','11568','1234567890', 0),  -- ^ Minor Math ^
-(40011,'password','S','email10','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40012,'password','S','email11','first','last','address','city','NY','USA','11568','1234567890', 0), 
-(40013,'password','S','email12','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40014,'password','S','email13','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40015,'password','S','email14','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40016,'password','S','email15','first','last','address','city','NY','USA','11568','1234567890', 0), 
-(40017,'password','S','email16','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40018,'password','S','email17','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40019,'password','S','email18','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40020,'password','S','email19','first','last','address','city','NY','USA','11568','1234567890', 0),
-(40101,'password','S','email20','first','last','address','city','NY','USA','11568','1234567890', 0), -- Chemical Engineering Juniors
+(40002, '1415', 'S','millH','Harry','Mill','78 Bail Rd','White Plains','NY','USA','11710','9146321550', 0), 
+(40003, '1516', 'S','LynerC','Carl','Lyner','890 Wake Rd', 'Garden City', 'NY', 'USA', '11530', '5169698500', 0),
+(40004,'2223','S','GuzmanG', 'Garry', 'Guzman', '45 Lewis Rd', 'Riverdale', 'NY', 'USA', '11710', '9144507777', 0),
+(40005,'1920','S','KurstJ', 'John', 'Kurst', '8500 Jill Rd', 'Hicksville', 'NY', 'USA', '11598', '5168799999', 0),
+(40006,'1718','S','AlvaR', 'Ron', 'Alva', '1212 North Ave', 'Baldwin', 'NY', 'USA', '11570', '5169600000', 0),
+(40007,'7878','S','LewisP', 'Patrice', 'Lewis', '54 Locust Hill', 'Yonkers', 'NY', 'USA', '10710', '9144845554', 0),
+(40008,'4747','S','MoonL', 'Larry', 'Moon', '4788 Liberty Ave', 'Seattle', 'Washington', 'USA', '98101', '4258585566', 0),
+(40009,'3654','S','MilanO', 'Opina', 'Milan', '458 Bismark Ct', 'Ocean ', 'California', 'USA', '93304', '6618511525', 0),
+(40010,'3971','S','JuneK', 'Kelly', 'June', '5468 Rock Pl', 'Yonkers', 'NY', 'USA', '10706', '91456560000', 0),  -- ^ Minor Math ^
+(40011,'5586','S','KapiloskiU', 'Ubert', 'Kapilski', '300 Moon Lane', 'Brooklyn', 'NY', 'USA', '11209', '212-999-8787', 0),
+(40012,'7784','S','LordC', 'Connie', 'Lord', '227 Place Terrace', 'Queens', 'NY', 'USA', '11405', '718-852-3636', 0), 
+(40013,'7870','S','PewisP', 'Patrice', 'Pewis', '54 Locust Hill', 'Yonkers', 'NY', 'USA', '10710', '914-484-5554', 0),
+(40014,'7411','S','HomerF', 'Fatima', 'Homer', '65 Little Neck Rd', 'White Stone', 'Queens', 'USA', '11406', '212-233-3636', 0),
+(40015,'2512','S','HoltzH', 'Hazel', 'Holtz', '45688 Hillside', 'Long Beach', 'North Carolina', 'USA', '27012', '908-583-9696', 0),
+(40016,'1136','S','GordonH', 'Harriett', 'Gordon', '45 Pine St', 'Valley Stream', 'NY', 'USA', '11881', '516-989-8989', 0), 
+(40017,'2364','S','BursonF', 'Fanny', 'Burson', '1075 Court Lane', 'Connecticut', 'NY', 'USA', '06002', '203-789-8888', 0),
+(40018,'9713','S','VasquezL', 'Letty', 'Vasquez', '14 Caryl Rd', 'FishKill', 'NY', 'USA', '12524', '845-970-8711', 0),
+(40019,'3698','S','MayorI', 'Irma', 'Mayor', '14 Capital Lane', 'Wishkill', 'WI', 'USA', '00081', '706-055-5600', 0),
+(40020,'9636','S','CastroJ', 'Jeannie', 'Castro', '568 Pine Lane', 'Hartford', 'NY', 'USA', '06004', '203-141-4578', 0),
+(40101,'9640','S','brownJ','Joe', 'Brown', '223 Grand Ave', 'Garden City', 'NY', 'USA', '11530', '516-560-1525', 0), -- Chemical Engineering Juniors
 (40102,'password','S','email21','first','last','address','city','NY','USA','11568','1234567890', 0),
 (40103,'password','S','email22','first','last','address','city','NY','USA','11568','1234567890', 0),
 (40104,'password','S','email23','first','last','address','city','NY','USA','11568','1234567890', 0),
