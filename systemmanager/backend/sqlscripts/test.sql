@@ -583,6 +583,7 @@ INSERT INTO `course` (`id`, `department_id`, `number`, `name`, `description`, `n
 ('PH103','PH',103,'Physics III',"Modern Physics. How does light bend around dense masses?",4,0,1);
 
 -- To create more sections, add 1 to the first number in id, and change the term id to + 2, every other/ fall and spring are different
+-- ^ Please insert fall 2018, spring 2019 and fall 2019
 -- Fall 2016
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
 (20001,'CE110',1,10004,30,20,2,'ET16'), 
@@ -625,7 +626,11 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (20038,'EE365',2,10006,30,20,2,'ET35'),
 (20039,'EE395',1,10005,30,30,2,'ET35'),
 (20040,'EE396',1,10005,30,30,2,'ET36'),
-(20041,'EE396',1,10005,30,30,2,'ET36');
+(20041,'EE396',1,10005,30,30,2,'ET36'),
+(20042,'EE101',1,10008,30,30,2,'ET36'),
+(20043,'EE101',1,10008,30,30,2,'ET36'),
+(20044,'EE102',1,10007,30,30,2,'ET35'),
+(20045,'EE102',1,10007,30,30,2,'ET35');
 
 -- Spring 2017
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -738,6 +743,7 @@ INSERT INTO `major_requirements` (`id`,`major_id`,`course_id`) VALUES
 (29,1,'MA303');
 
 INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
+-- Monday
 (1,1,1),
 (2,1,2),
 (3,1,3),
@@ -746,6 +752,7 @@ INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
 (6,1,6),
 (7,1,7),
 (8,1,8),
+-- Tuesday
 (9,2,1),
 (10,2,2),
 (11,2,3),
@@ -754,6 +761,7 @@ INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
 (14,2,6),
 (15,2,7),
 (16,2,8),
+-- Wednesday
 (17,3,1),
 (18,3,2),
 (19,3,3),
@@ -762,6 +770,7 @@ INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
 (22,3,6),
 (23,3,7),
 (24,3,8),
+-- Thursday
 (25,4,1),
 (26,4,2),
 (27,4,3),
@@ -770,6 +779,7 @@ INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
 (30,4,6),
 (31,4,7),
 (32,4,8),
+-- Friday
 (33,5,1),
 (34,5,2),
 (35,5,3),
@@ -778,3 +788,44 @@ INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
 (38,5,6),
 (39,5,7),
 (40,5,8);
+
+-- id - day - time
+  -- time changes first then day ^
+  -- if wed at 9 am = 16 + 2 = 18
+-- NOTE: Go by credits = hours
+  -- if lab then number of slots = Credits * 2
+    -- 2 credits = 4 hours = 4 slots
+-- Please insert from course number 20036 -> 20045, spring of 2019, and fall of 2019
+INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
+(1,20027,1),
+(2,20027,17),
+(3,20027,25),
+(4,20028,2),
+(5,20028,18),
+(6,20028,26),
+(7,20029,1),
+(8,20029,17),
+(9,20029,25),
+(10,20030,2),
+(11,20030,18),
+(12,20030,25),
+(13,20031,3),
+(14,20031,19),
+(15,20031,26),
+(16,20032,4),
+(17,20032,19),
+(18,20032,26),
+(19,20033,9),
+(20,20033,10),
+(21,20033,17),
+(22,20033,18),
+(23,20034,11),
+(24,20034,12),
+(25,20034,19),
+(26,20034,20),
+(27,20035,5),
+(28,20035,20),
+(29,20035,27);
+
+
+
