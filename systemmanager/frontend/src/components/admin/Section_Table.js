@@ -82,7 +82,7 @@ class TableSection extends PureComponent {
                       ) : (      
                       <td className='col-md-1'> 
                         {el.slot.map(i => (          
-                          <p>{i.room.building.name} {i.room.number}</p>
+                          <p>{i.room.building.code} {i.room.number}</p>
                         ))}
                       </td> 
                     )}

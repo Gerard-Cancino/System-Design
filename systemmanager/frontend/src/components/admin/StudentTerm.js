@@ -5,9 +5,9 @@ import {Link} from 'react-router-dom';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-import SearchTerm from '../general/Term_Search.js';
-import SearchStudent from '../general/Student_Search.js';
-import TableEnrollment from '../general/Enrollment_Table.js';
+import SearchTerm from '../general/inputs/Term_List_Search.js';
+import SearchStudent from '../general/inputs/Student_Search.js';
+import TableEnrollment from '../general/tables/Enrollment_Table.js';
 
 class StudentTerm extends Component{
   state = {

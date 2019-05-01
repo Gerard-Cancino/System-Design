@@ -20,8 +20,8 @@ import AdminStudentTerm from './admin/StudentTerm.js';
 import AdminStudentEnrollSection from './admin/Student_Enroll_Section.js';
 import AdminLockUnlockUserAccount from './admin/LockUnlockUserAccount.js';
 import AdminMasterSchedule from './admin/MasterSchedule.js';
-import AdminUpdateSectionMasterP1 from './admin/UpdateSectionMasterP1.js';
-import AdminUpdateSectionMasterP2 from './admin/UpdateSectionMasterP2.js';
+import AdminUpdateSectionMasterP1 from './admin/Update_Section_Slots.js';
+import AdminUpdateSectionMasterP2 from './admin/Update_Section_Faculty.js';
 import AdminProfile from './admin/MyProfile.js';
 // npm run dev to create main.js
 

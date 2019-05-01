@@ -49,7 +49,7 @@ class Room(models.Model):
         ('C', 'Class'),
         ('O', 'Office'),
         ('F', 'Faculty'),
-        ('S', 'Symphony Hall')
+        ('T', 'Theater')
     )
     type = models.CharField(max_length=1, choices=TYPE)
     capacity = models.IntegerField()
@@ -58,7 +58,7 @@ class Room(models.Model):
 
 class Department(models.Model):
     code = models.CharField(max_length=4, primary_key=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=40)
     class Meta:
         db_table = "department"
 
@@ -105,6 +105,7 @@ class Advisor(models.Model):
     dateAssigned = models.DateField(null=True, default=datetime.now)
     class Meta:
         db_table = "advisor"
+        unique_together=('faculty','student')
 
 class UndergradStudent(models.Model):
     REQUIRED_FIELDS = ('Student',)
@@ -204,18 +205,15 @@ class Slot(models.Model):
     id = models.AutoField(primary_key=True)
     time = models.ForeignKey(Time, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
-    term = models.ForeignKey(Term, on_delete=models.CASCADE) 
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    isTaken = models.BooleanField(default=False)
     class Meta:
         db_table = "slot"
 
 class Course(models.Model):
     REQUIRED_FIELDS = ('Department',)
-    id = models.IntegerField(primary_key=True)
+    id = models.CharField(max_length=5, primary_key=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     number = models.CharField(max_length=5, null=False)
-    name = models.CharField(max_length=120, null=False)
+    name = models.CharField(max_length=200, null=False)
     description = models.TextField()
     numberOfCredits = models.IntegerField(max_length=1, null=False)
     isGraduateCourse = models.BooleanField(default=False, null=False)
@@ -232,6 +230,8 @@ class CourseSection(models.Model):
     slot = models.ManyToManyField(Slot)
     numOfSeats = models.IntegerField(null=True)
     numOfTaken = models.IntegerField(default=0)
+    term = models.ForeignKey(Term, on_delete=models.CASCADE) 
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     class Meta:
         db_table = "course_section"
 

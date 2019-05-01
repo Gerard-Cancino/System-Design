@@ -4,11 +4,11 @@ import {Link} from 'react-router-dom';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-import BuildingSearch from '../general/Building_List_Search.js';
-import RoomSearch from '../general/Room_List_Search.js'
-import TermSearch from '../general/Term_Search.js';
-import TimeSearch from '../general/Time_Search.js';
-import DaySearch from '../general/Day_Search.js';
+import BuildingSearch from '../general/inputs/Building_List_Search.js';
+import RoomSearch from '../general/inputs/Room_List_Search.js'
+import TermSearch from '../general/inputs/Term_List_Search.js';
+import TimeSearch from '../general/inputs/Time_List_Search.js';
+import DaySearch from '../general/inputs/Day_Search.js';
 
 
 // View Course Catalog -> Add (Button) -> Fill out Required 
@@ -108,13 +108,13 @@ class UpdateSectionMaster extends Component {
     });
   }
   handleRoom = event => {   
-    this.setState({ room: event.target.value });
+    this.setState({ room: event.target.value || undefined});
   }
   handleTerm = event => {   
-    this.setState({ term: event.target.value });
+    this.setState({ term: event.target.value || undefined});
   }
   handleTime = event => {   
-    this.setState({ time: event.target.value });
+    this.setState({ time: event.target.value || undefined});
   }
   handleDays = event => {
     let selectedDay = this.state.days;

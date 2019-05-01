@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import CreditsSearch from './Credits_Search.js'
-import CourseIDSearch from './Course_ID_Search.js'
-import CourseNameSearch from './Course_Name_Search.js';
-import DaySearch from './Day_Search.js';
-import DepartmentSearch from './Department_Search.js';
-import FacultyNameSearch from './Faculty_Name_Search.js';
-import TermSearch from './Term_Search.js';
-import TimeSearch from './Time_Search.js';
+import CreditsSearch from '../inputs/Credits_Search.js'
+import CourseIDSearch from '../inputs/Course_ID_Search.js'
+import CourseNameSearch from '../inputs/Course_Name_Search.js';
+import DaySearch from '../inputs/Day_Search.js';
+import DepartmentSearch from '../inputs/Department_Search.js';
+import FacultyNameSearch from '../inputs/Faculty_Name_Search.js';
+import TermSearch from '../inputs/Term_List_Search.js';
+import TimeSearch from '../inputs/Time_List_Search.js';
 
-class SearchMasterSchedule extends Component {
+class SectionForm extends Component {
   state = {
     timeList: undefined,
     termList: undefined,
@@ -57,10 +57,10 @@ class SearchMasterSchedule extends Component {
       })
   }
   handleTerm = event => {
-    this.setState({term: event.target.value});
+    this.setState({term: event.target.value || undefined});
   }
   handleDepartment = event => {
-    this.setState({department: event.target.value});
+    this.setState({department: event.target.value || undefined});
   }
   handleCourseName= event => {
     this.setState({courseName: event.target.value});
@@ -78,7 +78,7 @@ class SearchMasterSchedule extends Component {
     this.setState({creditMax: event.target.value});
   }
   handleTime= event => {
-    this.setState({time: event.target.value});
+    this.setState({time: event.target.value || undefined});
   }
   handleDays = event => {
     let selectedDay = this.state.days;
@@ -188,4 +188,4 @@ class SearchMasterSchedule extends Component {
   }
 }
 
-export default SearchMasterSchedule;
+export default SectionForm;

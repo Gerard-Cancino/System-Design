@@ -137,6 +137,9 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = self.get_object(id)
     if params.get('faculty') is not None:
       faculty = models.Faculty.objects.get(user_id=params.get('faculty'))
+      # Get COurse Sections where faculty = this faculty
+      # Get Course slot
+      # Compare the time of slot
       queryset.faculty=faculty
       queryset.save()
     if params.get('numOfSeats') is not None:

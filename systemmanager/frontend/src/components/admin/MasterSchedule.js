@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-import SearchSection from '../general/Section_Form.js';
+import SearchSection from '../general/forms/Section_Form.js';
 import TableSection from './Section_Table.js';
 
 class MasterSchedule extends Component {

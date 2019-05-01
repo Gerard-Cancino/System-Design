@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-import SearchFacultyList from '../general/Faculty_List_Search.js'
+import SearchFacultyList from '../general/inputs/Faculty_List_Search.js'
 
 
 // View Course Catalog -> Add (Button) -> Fill out Required 
