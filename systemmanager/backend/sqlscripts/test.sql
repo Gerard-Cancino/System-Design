@@ -37,6 +37,7 @@ INSERT INTO `user`
 (30001, '1213', 'R', 'shawp', 'Paul', 'Shaw', '45 Mill Rd', 'Valley', 'NY', 'USA', '11570', '5164506000', 0),
 (30002, '4010','R','thomase','Eddie','Thomas','112 Carl Ave','Lynbrook','NY','USA','11563','5167122020', 0);
 
+USE system;
 -- Student
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`) VALUES
@@ -925,9 +926,9 @@ INSERT INTO `prerequisite` (`id`,`requiredGrade`,`course_id`,`prereq_id`) VALUES
 INSERT INTO `minor` (`id`,`name`,`department_id`) VALUES 
 (1,'Mathematics','MA');
 
-INSERT INTO `major` (`id`,`name`,`department_id`) VALUES 
-(1,'Bachelors of Science in Electrical Engineering','EE'),
-(2,'Bachelors of Science in Chemical Engineering','CE');
+INSERT INTO `major` (`id`,`name`,`department_id`,`type`) VALUES 
+(1,'Electrical Engineering','EE','BS'),
+(2,'Chemical Engineering','CE','BS');
 
 -- Please follow major requirements when inserting to minor requirements
 -- INSERT INTO `minor_requirements` (`id`,`minor_id`,`course_id`) VALUES 
@@ -936,7 +937,7 @@ INSERT INTO `major` (`id`,`name`,`department_id`) VALUES
 -- NOTE: Not all courses are in the requirements 
   -- i.e. students need to take 2 '300' or '400' course level
 -- NOTE: Some chemical engineering requirements exist in other departments
-INSERT INTO `major_requirements` (`id`,`major_id`,`course_id`) VALUES
+INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 -- General engineering. All engineers need to take
 -- NOTE: Please add this to CE too
 (1,1,'EE101'),

@@ -247,7 +247,7 @@ class Prerequisite(models.Model):
 class Major(models.Model):
     REQUIRED_FIELDS = ('Department',)
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     requirement = models.ManyToManyField(Course)
     TYPE = (
@@ -261,7 +261,7 @@ class Major(models.Model):
 class Minor(models.Model):
     REQUIRED_FIELDS = ('Department',)
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     requirement = models.ManyToManyField(Course)
     class Meta:

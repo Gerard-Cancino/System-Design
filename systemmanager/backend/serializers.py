@@ -178,6 +178,7 @@ class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
         fields = ('__all__')
+        depth = 2
 
 class MinorSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer(many=False)
