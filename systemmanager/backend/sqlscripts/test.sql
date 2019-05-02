@@ -923,6 +923,18 @@ INSERT INTO `prerequisite` (`id`,`requiredGrade`,`course_id`,`prereq_id`) VALUES
 (14,'C','EE396','EE365'),
 (15,'C','EE399','EE360');
 
+INSERT INTO `prerequisite` (`id`,`requiredGrade`,`course_id`,`prereq_id`) VALUES
+(16,'C','CE241','MA113'),
+(17,'C','CE242','CE241'),
+(18,'C','CE321','CE160'),
+(19,'C','CE322','CE321'),
+(20,'C','CE331','CE232'),
+(21,'C','CE332','CE331'),
+(22,'C','CE342','CE341'),
+(23,'C','CE361','CE352'),
+(24,'C','CE372','CE371'),
+(25,'C','CE382','CE381');
+
 INSERT INTO `minor` (`id`,`name`,`department_id`) VALUES 
 (1,'Mathematics','MA');
 
