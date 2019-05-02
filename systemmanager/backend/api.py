@@ -311,6 +311,9 @@ class RoomList(APIView):
       room = models.Room.objects.all()
       serializer = serializers.RoomSerializer(room)
       return Response(serializer.data)
+class MajorList(generics.ListCreateAPIView):
+  queryset = models.Major.objects.all()
+  serializer_class = serializers.MajorSerializer
 # Will probably not be used RoomDetails
 @method_decorator(csrf_exempt, name='dispatch')
 class StudentDetails(APIView):

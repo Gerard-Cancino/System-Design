@@ -16,11 +16,11 @@ module.exports = {
         }
       },
       {
-        test: /\.(png|jpg)$/,
+        test: /\.(png|jpg)$/i,
         use: [{
-          loader: 'file-loader',
+          loader: 'url-loader',
           options: {
-            name: "[path][name].[ext]"
+            name: "[path][name].[ext]?[hash]"
           }
         }],
       }
