@@ -985,6 +985,40 @@ INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 (28,1,'MA302'),
 (29,1,'MA303');
 
+INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
+-- General engineering. All engineers need to take
+(30,2,'EE101'),
+(31,2,'EE102'),
+-- Actual CE
+(32,2,'CE110'),
+(33,2,'CE111'),
+(34,2,'CE160'),
+(35,2,'CE211'),
+(36,2,'CE221'),
+(37,2,'CE232'),
+(38,2,'CE331'),
+(39,2,'CE341'),
+(40,2,'CE351'),
+(41,2,'CE352'),
+(42,2,'CE361'),
+(43,2,'CE371'),
+(44,2,'CE372'),
+-- General for CE
+(45,2,'PH101'),
+(46,2,'PH102'),
+(47,2,'PH103'),
+(48,2,'HU101'),
+(49,2,'HU102'),
+(50,2,'HU103'),
+(51,2,'HU104'),
+(52,2,'MA110'),
+(53,2,'MA111'),
+(54,2,'MA113'),
+(55,2,'MA223'),
+(56,2,'MA224'),
+(57,2,'MA302'),
+(58,2,'MA303');
+
 INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
 -- Monday
 (1,1,1),
