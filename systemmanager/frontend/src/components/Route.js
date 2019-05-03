@@ -12,17 +12,22 @@ import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
 
 import StudentMain from './student/Main.js';
 
+import AdminCreateCourse from './admin/Create_Course.js';
 import AdminMain from './admin/Main.js';
-import AdminCourseCatalog from './admin/CourseCatalog.js';
-import AdminViewStudentRecord from './admin/ViewStudentRecord.js';
-import AdminStudentHold from './admin/StudentHold.js';
-import AdminStudentTerm from './admin/StudentTerm.js';
-import AdminStudentEnrollSection from './admin/Student_Enroll_Section.js';
-import AdminLockUnlockUserAccount from './admin/LockUnlockUserAccount.js';
-import AdminMasterSchedule from './admin/MasterSchedule.js';
-import AdminUpdateSectionMasterP1 from './admin/Update_Section_Slots.js';
-import AdminUpdateSectionMasterP2 from './admin/Update_Section_Faculty.js';
-import AdminProfile from './admin/MyProfile.js';
+import AdminRegisterStudentEnroll from './admin/Register_Student-Enroll';
+import AdminUpdateCourse from './admin/Update_Course';
+import AdminUpdateSectionInfo from './admin/Update_Section-Info';
+import AdminUpdateSectionSlot from './admin/Update_Section-Slots.js';
+import AdminUpdateStudentGrade from './admin/Update_Student_Grade.js';
+import AdminViewAddStudentHold from './admin/View_Add_Student-Hold';
+import AdminViewCourseList from './admin/View_Course-List.js';
+import AdminViewEditProfile from './admin/View_Edit_Profile.js';
+import AdminViewRemoveStudentEnrollSection from './admin/View_Remove_Student-Enroll-Section.js';
+import AdminViewSectionList from './admin/View_Section-List.js';
+import AdminViewStudentDegreeAudit from './admin/View_Student_Degree-Audit.js';
+import AdminViewStudentGrade from './admin/View_Student_Grade.js';
+import AdminViewStudentInfo from './admin/View_Student_Info.js';
+import AdminViewStudentTerm from './admin/View_Student_Term.js';
 // npm run dev to create main.js
 
 const Authorization = (WrappedComponent, allowedRoles) => {
@@ -52,17 +57,22 @@ const Authorization = (WrappedComponent, allowedRoles) => {
 
 class MyRoute extends Component {
   render() {
-    const AAdminMain = Authorization(AdminMain, ['A'])
-    const AAdminCourseCatalog = Authorization(AdminCourseCatalog, ['A'])
-    const AAdminViewStudentRecord = Authorization(AdminViewStudentRecord, ['A'])
-    const AAdminStudentHold = Authorization(AdminStudentHold, ['A'])
-    const AAdminStudentTerm = Authorization(AdminStudentTerm, ['A'])
-    const AAdminStudentEnrollSection = Authorization(AdminStudentEnrollSection, ['A'])
-    const AAdminLockUnlockUserAccount = Authorization(AdminLockUnlockUserAccount, ['A'])
-    const AAdminMasterSchedule = Authorization(AdminMasterSchedule, ['A'])
-    const AAdminUpdateSectionMasterP1 = Authorization(AdminUpdateSectionMasterP1, ['A'])
-    const AAdminUpdateSectionMasterP2 = Authorization(AdminUpdateSectionMasterP2, ['A'])
-    const AAdminProfile = Authorization(AdminProfile, ['A'])
+    const AAdminCreateCourse = Authorization(AdminCreateCourse,['A']);
+    const AAdminMain = Authorization(AdminMain,['A']);
+    const AAdminRegisterStudentEnroll = Authorization(AdminRegisterStudentEnroll,['A']);
+    const AAdminUpdateCourse = Authorization(AdminUpdateCourse,['A']);
+    const AAdminUpdateSectionInfo = Authorization(AdminUpdateSectionInfo,['A']);
+    const AAdminUpdateSectionSlot = Authorization(AdminUpdateSectionSlot,['A']);
+    const AAdminUpdateStudentGrade = Authorization(AdminUpdateStudentGrade, ['A']);
+    const AAdminViewAddStudentHold = Authorization(AdminViewAddStudentHold,['A']);
+    const AAdminViewCourseList = Authorization(AdminViewCourseList,['A']);
+    const AAdminViewEditProfile = Authorization(AdminViewEditProfile,['A']);
+    const AAdminViewRemoveStudentEnrollSection = Authorization(AdminViewRemoveStudentEnrollSection, ['A']);
+    const AAdminViewSectionList = Authorization(AdminViewSectionList,['A']);
+    const AAdminViewStudentDegreeAudit = Authorization(AdminViewStudentDegreeAudit,['A']);
+    const AAdminViewStudentGrade = Authorization(AdminViewStudentGrade,['A']);
+    const AAdminViewStudentInfo = Authorization(AdminViewStudentInfo,['A']);
+    const AAdminViewStudentTerm = Authorization(AdminViewStudentTerm,['A']);
     return (
       <BrowserRouter>
         <div>
@@ -73,18 +83,23 @@ class MyRoute extends Component {
           <Route path="/login" component={GuestLogin} />
 
           <Route path="/student/main" component={StudentMain} />
-          
+
+          <Route path="/admin/create-course" component={AAdminCreateCourse} />
           <Route path="/admin/main" component={AAdminMain} />
-          <Route path="/admin/course-catalog" component={AAdminCourseCatalog} />
-          <Route path="/admin/view-student-information" component={AAdminViewStudentRecord} />
-          <Route path="/admin/student-hold" component={AAdminStudentHold} />
-          <Route path="/admin/student-term" component={AAdminStudentTerm} />
-          <Route path="/admin/student-enroll-section" component={AAdminStudentEnrollSection} />
-          <Route path="/admin/lock-unlock-user-account" component={AAdminLockUnlockUserAccount} />
-          <Route path="/admin/view-master-schedule" component={AAdminMasterSchedule} />
-          <Route path="/admin/update-section-master-p1" component={AAdminUpdateSectionMasterP1}/>
-          <Route path="/admin/update-section-master-p2" component={AAdminUpdateSectionMasterP2}/>
-          <Route path="/admin/profile" component={AAdminProfile}/>
+          <Route path="/admin/register-student-enroll" component={AAdminRegisterStudentEnroll} />
+          <Route path="/admin/update-course" component={AAdminUpdateCourse} />
+          <Route path="/admin/update-section-info" component={AAdminUpdateSectionInfo} />
+          <Route path="/admin/update-section-slot" component={AAdminUpdateSectionSlot} />
+          <Route path="/admin/update-student-grade" component={AAdminUpdateStudentGrade} />
+          <Route path="/admin/view-add-student-hold" component={AAdminViewAddStudentHold} />
+          <Route path="/admin/view-course-list" component={AAdminViewCourseList} />
+          <Route path="/admin/view-edit-profile" component={AAdminViewEditProfile} />
+          <Route path="/admin/view-remove-student-enroll-section" component={AAdminViewRemoveStudentEnrollSection} />
+          <Route path="/admin/view-section-list" component={AAdminViewSectionList} />
+          <Route path="/admin/view-student-degree-audit" component={AAdminViewStudentDegreeAudit} />
+          <Route path="/admin/view-student-grade" component={AAdminViewStudentGrade} />
+          <Route path="/admin/view-student-info" component={AAdminViewStudentInfo} />
+          <Route path="/admin/view-student-term" component={AAdminViewStudentTerm} />
 
         </div>
       </BrowserRouter>

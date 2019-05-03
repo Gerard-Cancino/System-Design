@@ -99,7 +99,7 @@ class CourseDetails(APIView):
     return Response(serializer.data)
 class CourseList(generics.ListCreateAPIView):
   serializer_class =serializers.CourseSerializer
-  queryset = models.Course.objects.all()
+  queryset = models.Course.objects.all().order_by('department')
   def list(self,requerst):
     queryset = self.get_queryset()
     serializer = serializers.CourseSerializer(queryset,many=True)
@@ -314,6 +314,10 @@ class RoomList(APIView):
 class MajorList(generics.ListCreateAPIView):
   queryset = models.Major.objects.all()
   serializer_class = serializers.MajorSerializer
+  def list(self, request):
+    major = models.Major.objects.all().order_by('department')
+    serializer = serializers.MajorSerializer(major,many=True)
+    return Response(serializer.data)
 # Will probably not be used RoomDetails
 @method_decorator(csrf_exempt, name='dispatch')
 class StudentDetails(APIView):

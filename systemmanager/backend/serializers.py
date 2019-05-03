@@ -173,13 +173,16 @@ class PrerequisiteSerializer(serializers.ModelSerializer):
         model = Prerequisite
         fields = ('__all__')
 
-class MajorSerializer(serializers.ModelSerializer):
+class MajorSerializer(serializers.ModelSerializer):  
+    type = serializers.SerializerMethodField()
     department = DepartmentSerializer(many=False)
+    def get_type(self,obj):
+      return obj.get_type_display()
     class Meta:
         model = Major
         fields = ('__all__')
-        depth = 2
-
+        depth = 1
+        
 class MinorSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer(many=False)
     class Meta:
