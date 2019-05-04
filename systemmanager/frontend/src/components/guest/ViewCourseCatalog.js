@@ -4,7 +4,6 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-
 const Catalog = ({data}) => {
   let currDepart = undefined;
   return(

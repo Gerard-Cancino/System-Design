@@ -19,7 +19,7 @@ class HeaderHome extends Component {
                 <Link className="nav-link" to="/logout/">Logout</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/admin/profile">My Profile</Link>
+                <Link className="nav-link" to="/admin/view-edit-profile">My Profile</Link>
               </li>
             </ul>
           </div>
