@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom'; 
 import axios from 'axios';
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
 import CreateCourseForm from '../general/forms/Create_Course_Form.js';
-import SearchCourseList from '../general/forms/Search_Course-List.js';
+import AddPrereq from './Add_Prereq.js';
+
 // need to add prereq
 class CreateCourse extends Component {
   state = {
     department: undefined,
     departmentList: undefined,
-    number: undefined,
+    courseID: undefined,
+    courseList: undefined,
     description: undefined,
     courseName: undefined,
     numOfCredits: undefined,
     isGraduate: false,
     isShowPrereq: false,
+    isRequired: false,
   }
 
   componentDidMount() {
@@ -48,24 +52,36 @@ class CreateCourse extends Component {
     else
       this.setState({isGraduate: true})
   }
-  handleCreateCourse = (event) => {
-    event.preventDefault();
-    this.setState({isShowPrereq: true})
-  }
   handleSubmit = (event) => {
     event.preventDefault();
-    axios
-    .put("/course-list.json",{
-      department: this.state.department
-    })
+    if(this.state.department==undefined||this.state.courseName==undefined||this.state.courseID==undefined||this.state.description==undefined||this.state.numOfCredits==undefined){
+      this.setState({isRequired:false});
+    }
+    else{
+      axios
+      .post("/course-list.json",{
+        department: this.state.department,
+        number: this.state.courseID,
+        name: this.state.courseName,
+        description: this.state.description,
+        numberOfCredits: this.state.numOfCredits,
+        isGraduate: this.state.isGraduate
+      })
+      .then(res => (
+        this.setState({course:res.data})
+      ))
+      this.setState({isShowPrereq:true})
+    }
   }
+  
   render(){
     return(
       <React.Fragment>
         <Header />
         <section className="container-fluid h-100">
-          <div className="row m-4 p-4 h-100">
-            {!this.state.isShowPrereq?(
+          <div className="row border rounded m-4 p-4 h-100">
+          {this.state.course==undefined?(
+            <div className="col-md-12">
               <CreateCourseForm 
                 departmentList={this.state.departmentList} 
                 handleDepartment={this.handleDepartment.bind()}
@@ -73,12 +89,26 @@ class CreateCourse extends Component {
                 handleCourseID={this.handleCourseID.bind()}
                 handleDescription={this.handleDescription.bind()}
                 handleNumOfCredits={this.handleNumOfCredits.bind()}
-                handleSubmit={this.handleCreateCourse.bind()}
+                handleSubmit={this.handleSubmit.bind()}
                 handleisGraduate={this.handleisGraduate.bind()}
-                isGraduate={this.state.isGraduate}/>
-            ):(
-              <SearchCourseList />
-            )}
+                isGraduate={this.state.isGraduate} />
+              {this.state.isRequired?(
+                <p>Please fill out all forms</p>
+              ) : (
+                <p></p>
+              )}
+            </div>
+          ):(
+            <div>
+              <p>Added Successfully into the database</p>
+              <a className="col-md-12 btn btn-info">
+                <Link to={{
+                  pathname: '/admin/add-prerequisite',
+                  state: {courseID: this.state.course.id}
+                }}>Add Prerequisites</Link>
+              </a>
+            </div>
+          )}
           </div>
         </section>
         <Footer />
@@ -86,5 +116,6 @@ class CreateCourse extends Component {
     );
   }
 }
+
 
 export default CreateCourse;

@@ -301,9 +301,7 @@ class Transcript(models.Model):
     gradeReceived = models.CharField(max_length=2)
     year = models.IntegerField()
     SEASON = (
-        ('W','WINTER'),
         ('SP','SPRING'),
-        ('SU','SUMMER'),
         ('F','FALL'),
     )
     season = models.CharField(max_length=1, choices=SEASON)
@@ -313,7 +311,8 @@ class Transcript(models.Model):
 
 class Attendance(models.Model):
     REQUIRED_FIELDS = ('Enrollment')
-    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, primary_key=True)
+    id = models.AutoField(primary_key=True)
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     isPresent = models.BooleanField()
     dayAttended = models.DateField(default=datetime.now)
     class Meta:

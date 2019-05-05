@@ -85,7 +85,7 @@ class BuildingList(generics.ListCreateAPIView):
     serializer = serializers.BuildingSerializer(queryset, many=True)
     return Response(serializer.data)
   # def post is not needed.  No user will create a building
-class CourseDetails(APIView):
+class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = serializers.CourseSectionSerializer
   def get_object(self,id):
     try:
@@ -100,10 +100,41 @@ class CourseDetails(APIView):
 class CourseList(generics.ListCreateAPIView):
   serializer_class =serializers.CourseSerializer
   queryset = models.Course.objects.all().order_by('department')
-  def list(self,requerst):
-    queryset = self.get_queryset()
-    serializer = serializers.CourseSerializer(queryset,many=True)
-    return Response(serializer.data)
+  def list(self,request):
+    params = request.query_params
+    if params.get('department') is not None:
+      queryset = models.Course.objects.filter(department=params.get('department'))
+      serializer = serializers.CourseSerializer(queryset,many=True)
+      return Response(serializer.data)
+    else:
+      queryset = models.Course.objects.all().order_by('department')
+      serializer = serializers.CourseSerializer(queryset,many=True)
+      return Response(serializer.data)
+  def post(self,request):
+    params = request.data
+    if params.get('department') is not None or \
+      params.get('number') is not None or \
+      params.get('name') is not None or \
+      params.get('description') is not None or \
+      params.get('numberOfCredits') is not None or \
+      params.get('isGraduate') is not None:
+      department = models.Department.objects.get(code=params.get('department'))
+      id = str(params.get('department')) + str(params.get('number'))
+      course = models.Course.objects.create(
+        id = id,
+        department=department,
+        number=params.get('number'),
+        name=params.get('name'),
+        description=params.get('description'),
+        numberOfCredits=params.get('numberOfCredits'),
+        isGraduateCourse=params.get('isGraduate'),
+        isActive=True
+      )
+      course.save()
+      course = models.Course.objects.get(id=course.id)
+      print(course)
+      serializer = serializers.CourseSerializer(course)
+      return Response(serializer.data)
 @method_decorator(csrf_exempt, name='dispatch')
 class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self,id):
@@ -486,3 +517,41 @@ class UserList(APIView):
 
 
 # Prereq and below in models
+@method_decorator(csrf_exempt, name='dispatch')
+class PrerequisiteDetails(generics.RetrieveUpdateDestroyAPIView):
+  def get_object(self, id):
+    prerequisite = models.Prerequisite.objects.get(id=id)
+    return prerequisite
+  def get(self,request,id):
+    prerequisite = self.get_object(id) 
+    serializer = serializers.PrerequisiteSerializer(prerequisite)
+    return Response(serializer.data) 
+  def delete(self,request,id):
+    prerequisite = self.get_object(id).delete()
+    return Response(status=HTTP_204_NO_CONTENT)
+
+@method_decorator(csrf_exempt,name='dispatch')
+class PrerequisiteList(generics.ListCreateAPIView):
+  def list(self,request):
+    params = request.query_params
+    if params.get('course') is not None:
+      prerequisite = models.Prerequisite.objects.filter(course_id=params.get('course'))
+      serializer = serializers.PrerequisiteSerializer(prerequisite,many=True)
+      return Response(serializer.data)
+  def create(self, request):
+    params = request.data
+    print(params.get('course'))
+    if params.get('course') is not None and params.get('prerequisite') is not None:
+      course = models.Course.objects.get(id=params.get('course'))
+      prerequisite = models.Course.objects.get(id=params.get('prerequisite'))
+      print(course)
+      print(prerequisite)
+      prerequisite = models.Prerequisite.objects.create( \
+        requiredGrade = 'C', 
+        course = course,
+        prereq = prerequisite
+      )
+      prerequisite.save()
+      serializer = serializers.PrerequisiteSerializer(prerequisite)
+      return Response(serializer.data)
+    

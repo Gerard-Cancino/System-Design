@@ -8,6 +8,7 @@ import DepartmentSearch from '../inputs/Department_Search.js';
 
 
 class CreateCourseForm extends Component {
+  
   componentDidMount() {
   }
 
@@ -20,7 +21,10 @@ class CreateCourseForm extends Component {
           <DepartmentSearch onChange={handleDepartment.bind(this)} departmentList={departmentList}/>
           <CourseNameSearch onChange={handleCourseName.bind(this)} />
           <CourseIDSearch onChange={handleCourseID.bind(this)} />
-          <CreditsSearch onChange={handleNumOfCredits.bind(this)}/>
+          <div className="form-group col-md-12">
+            <label>Number Of Credits</label>
+            <input className="form-control" onChange={handleNumOfCredits} placeholder="1,2,3,4"/> 
+          </div>
           <div className="form-group col-md-12">
             <label>Description</label>
             <textarea className="form-control" onChange={handleDescription} placeholder="Description" row="3"></textarea>

@@ -1073,7 +1073,7 @@ INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
   -- if lab then number of slots = Credits * 2
     -- 2 credits = 4 hours = 4 slots
 -- Please insert from course number 20036 -> 20045, spring of 2019, and fall of 2019
---fall 2016
+-- fall 2016
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (1,20027,1),  
 (2,20027,17),
@@ -1081,21 +1081,18 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (4,20028,2),
 (5,20028,18),
 (6,20028,26),
-
 (7,20029,1),
 (8,20029,17),
 (9,20029,25),
 (10,20030,2),
 (11,20030,18),
 (12,20030,25),
-
 (13,20031,3),
 (14,20031,19),
 (15,20031,26),
 (16,20032,4),
 (17,20032,19),
 (18,20032,26),
-
 (19,20033,9),
 (20,20033,10),
 (21,20033,17),
@@ -1104,48 +1101,41 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (24,20034,12),
 (25,20034,19),
 (26,20034,20),
-
 (27,20035,5),
 (28,20035,20),
 (29,20035,27),
 (30,20036,6),  
 (31,20036,21),
 (32,20036,28),
-
 (33,20037,7),  
 (34,20037,23),
 (35,20037,31),
 (36,20038,8),  
 (37,20038,24),
 (38,20038,32),
-
 (39,20039,33),  
 (40,20039,37),
 (41,20039,40),
-
 (42,20040,2),
 (43,20040,18),
 (44,20040,25),
 (45,20041,3),
 (46,20041,19),
 (47,20041,26),
-
 (48,20042,4),
 (49,20042,19),
 (50,20042,26),
 (51,20043,9),
 (52,20043,10),
 (53,20043,17),
-
 (54,20044,13),
 (55,20044,14),
 (56,20044,15),
 (57,20045,27),
 (58,20045,28),
-(59,20045,29)
-;
+(59,20045,29);
 
---spring 2017
+-- spring 2017
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (60,21029,1),  
 (61,21029,17),
@@ -1153,21 +1143,18 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (63,21030,2),
 (64,21030,18),
 (65,21030,26),
-
 (66,21031,1),
 (67,21031,17),
 (68,21031,25),
 (69,21032,2),
 (70,21032,18),
 (71,21032,25),
-
 (72,21033,3),
 (73,21033,19),
 (74,21033,26),
 (75,21034,4),
 (76,21034,19),
 (77,21034,26),
-
 (78,21035,9),
 (79,21035,10),
 (80,21035,17),
@@ -1176,28 +1163,23 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (83,21036,12),
 (84,21036,19),
 (85,21036,20),
-
 (86,21037,5),
 (87,21037,20),
 (89,21037,27),
-
 (90,21038,6),  
 (91,21038,21),
 (92,21038,28),
-
 (93,21039,7),  
 (94,21039,23),
 (95,21039,31),
-
 (96,21040,8),  
 (97,21040,24),
 (98,21040,32),
-
 (99,21041,33),  
 (100,21041,37),
-(101,21041,40)
-;
---fall 2017
+(101,21041,40);
+
+-- fall 2017
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (102,30027,1),  
 (103,30027,17),
@@ -1257,9 +1239,9 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (157,30044,15),
 (158,30045,27),
 (159,30045,28),
-(160,30045,29)
-;
---spring 2018
+(160,30045,29);
+
+-- spring 2018
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (161,31029,1),  
 (162,31029,17),
@@ -1301,9 +1283,9 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (198,31040,32),
 (199,31041,33),  
 (200,31041,37),
-(201,31041,40)
-;
---fall 2018
+(201,31041,40);
+
+-- fall 2018
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (202,40027,1),  
 (203,40027,17),
@@ -1363,9 +1345,9 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (257,40044,15),
 (258,40045,27),
 (259,40045,28),
-(260,40045,29)
-;
---spring 2019
+(260,40045,29);
+
+-- spring 2019
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (261,41029,1),  
 (262,41029,17),
@@ -1407,10 +1389,9 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (298,41040,32),
 (299,41041,33),  
 (300,41041,37),
-(301,41041,40)
-;
+(301,41041,40);
 
---fall 2019
+-- fall 2019
 INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (302,50027,1),  
 (303,50027,17),
@@ -1470,6 +1451,5 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (357,50044,15),
 (358,50045,27),
 (359,50045,28),
-(360,50045,29)
-;
+(360,50045,29);
 

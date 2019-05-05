@@ -47,6 +47,7 @@ class SearchCourseList extends PureComponent {
             </form>
           </div>
         </section>
+        <CourseTable />
       </React.Fragment>
     )
   }

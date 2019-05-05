@@ -12,6 +12,7 @@ import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
 
 import StudentMain from './student/Main.js';
 
+import AdminAddPrereq from './admin/Add_Prereq.js';
 import AdminCreateCourse from './admin/Create_Course.js';
 import AdminMain from './admin/Main.js';
 import AdminRegisterStudentEnroll from './admin/Register_Student-Enroll';
@@ -57,6 +58,7 @@ const Authorization = (WrappedComponent, allowedRoles) => {
 
 class MyRoute extends Component {
   render() {
+    const AAdminAddPrereq = Authorization(AdminAddPrereq,['A']);
     const AAdminCreateCourse = Authorization(AdminCreateCourse,['A']);
     const AAdminMain = Authorization(AdminMain,['A']);
     const AAdminRegisterStudentEnroll = Authorization(AdminRegisterStudentEnroll,['A']);
@@ -84,6 +86,7 @@ class MyRoute extends Component {
 
           <Route path="/student/main" component={StudentMain} />
 
+          <Route path="/admin/add-prerequisite" component={AAdminAddPrereq} />
           <Route path="/admin/create-course" component={AAdminCreateCourse} />
           <Route path="/admin/main" component={AAdminMain} />
           <Route path="/admin/register-student-enroll" component={AAdminRegisterStudentEnroll} />
