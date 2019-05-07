@@ -614,8 +614,6 @@ class GradeList(generics.ListCreateAPIView):
 
 
 # Prereq and below in models
-<<<<<<< HEAD
-=======
 @method_decorator(csrf_exempt, name='dispatch')
 class PrerequisiteDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self, id):
@@ -654,4 +652,3 @@ class PrerequisiteList(generics.ListCreateAPIView):
       serializer = serializers.PrerequisiteSerializer(prerequisite)
       return Response(serializer.data)
     
->>>>>>> 748c56383e8eefa030d56005c681b1b80b520207

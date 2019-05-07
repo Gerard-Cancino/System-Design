@@ -76,7 +76,7 @@ class MyRoute extends Component {
     const AAdminViewRemoveStudentEnrollSection = Authorization(AdminViewRemoveStudentEnrollSection, ['A']);
     const AAdminViewSectionList = Authorization(AdminViewSectionList,['A']);
     const AAdminViewStudentDegreeAudit = Authorization(AdminViewStudentDegreeAudit,['A']);
-    const AAdminViewStudentGrade = Authorization(AdminViewStudentGrade,['A']);
+    const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades,['A']);
     const AAdminViewStudentInfo = Authorization(AdminViewStudentInfo,['A']);
     const AAdminViewStudentTerm = Authorization(AdminViewStudentTerm,['A']);
     const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades, ['A'])

@@ -41,6 +41,7 @@ class UpdateCourse extends Component {
       numberOfCredits:this.state.numberOfCredits
     })
     .then(res=>{
+      status:
     })
   }
   render(){
