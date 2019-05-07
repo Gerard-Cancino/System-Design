@@ -21,13 +21,13 @@ class SearchCourseList extends PureComponent {
     ));
   }
   handleDepartment = (event) => {
-    this.setState({department: event.target.value})
+    this.setState({department: event.target.value || undefined})
   }
   handleCourseName = (event) => {
-    this.setState({courseName: event.target.value})
+    this.setState({courseName: event.target.value || undefined})
   }
   handleCourseID = (event) => {
-    this.setState({courseID: event.target.value})
+    this.setState({courseID: event.target.value || undefined})
   }
   render () {
     const {CourseTable} = this.props

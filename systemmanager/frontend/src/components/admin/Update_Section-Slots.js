@@ -226,11 +226,8 @@ class UpdateSectionMaster extends Component {
           <div className="row border rounded m-4 p-4 h-100">
             <div className="col-md-12">
               <Link to={{
-                pathname: '/admin/update-section-master-p2',
-                state: {
-                  id: this.state.id
-                }
-              }} className="col-md-2 btn btn-success float-right">Next</Link>
+                pathname: '/admin/view-section-list'
+              }} className="col-md-2 btn btn-success float-right">Back to Master Schedule</Link>
             </div>
             <h2 className="col-md-12 text-center">Current Slots</h2>
             <TableSlot />

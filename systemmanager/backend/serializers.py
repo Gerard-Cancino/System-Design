@@ -169,6 +169,7 @@ class CourseSectionSerializer(serializers.ModelSerializer):
 
 class PrerequisiteSerializer(serializers.ModelSerializer):
     course = CourseSerializer()
+    prereq = CourseSerializer()
     class Meta:
         model = Prerequisite
         fields = ('__all__')

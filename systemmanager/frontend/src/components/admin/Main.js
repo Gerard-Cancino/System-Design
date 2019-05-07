@@ -101,27 +101,6 @@ class Main extends Component {
             <div className="col-md-4 p-4">
               <div className="card">
                 <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/student-hold">Student Hold</Link></p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/student-term">Student Term</Link></p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/lock-unlock-user-account">Lock/Unlock User Account</Link></p>
-                </div>
-              </div>
-            </div> 
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
                   <p className="text-center h3"><Link to="/admin/course-catalog">Course Catalog</Link></p>
                 </div>
               </div>
@@ -129,7 +108,7 @@ class Main extends Component {
             <div className="col-md-4 p-4">
               <div className="card">
                 <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/view-master-schedule">Master Schedule</Link></p>
+                  <p className="text-center h3"><Link to="/admin/view-section-list">Master Schedule</Link></p>
                 </div>
               </div>
             </div>

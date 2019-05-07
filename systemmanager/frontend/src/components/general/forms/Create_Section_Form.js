@@ -12,7 +12,7 @@ import SearchBuildingList from '../general/inputs/Building_List_Search.js';
 
 // View Course Catalog -> Add (Button) -> Fill out Required 
 // -> (optional inputs) -> submit -> return json of for course id to master
-class UpdateSectionMaster extends Component {
+class CreateSectionForm extends Component {
   state = {
     id: undefined,
     section: undefined,
@@ -23,14 +23,13 @@ class UpdateSectionMaster extends Component {
   componentDidMount(){
     this.setState({'id': this.props.data.state.id})
     axios
-    .get(`/course-section-details.json/${this.props.data.state.id}`)
+    .get(`/course-details.json/${this.props.data.state.id}`)
     .then(res => {
-      this.setState({section: res.data})
-      this.setState({numOfSeats: res.data.numOfSeats})
+      this.setState({course: res.data})
       axios
       .get('/faculty-list.json', {
         params: {
-          'department': res.data.course.department.code
+          'department': res.data.department.code
         }
       })
       .then( res => {
@@ -85,16 +84,13 @@ class UpdateSectionMaster extends Component {
   handleSubmit = event => {
     event.preventDefault()
     axios
-    .put(`/course-section-details.json/${this.state.id}`,{
+    .post(`/course-section-list.json`,{
       faculty: this.state.faculty,
       numOfSeats: this.state.numOfSeats,
       room: this.state.room
     })
     .then(res=> {
       this.setState({section: res.data})
-      this.setState({numOfSeats: res.data.numOfSeats})
-      if(res.data.faculty!=undefined)
-        this.setState({'faculty': res.data.faculty.user.id})
     })
     
   }
@@ -108,12 +104,19 @@ class UpdateSectionMaster extends Component {
             ) : (
               <div className="row border rounded m-4 p-4 h-100">
                 <div className="col-md-12">
-                  <Link to={{
-                    pathname: '/admin/update-section-slot',
-                    state: {
-                      id: this.state.id
-                    }
-                  }} className="col-md-2 btn btn-success float-right">Next</Link>
+                {this.state.section==undefined?(
+                  <p></p>
+                ):(
+                  <div className="col-md-12">
+                    <h3 className="col-md-4 float-left">Successful!</h3>
+                    <Link to={{
+                      pathname: '/admin/update-section-slot',
+                      state: {
+                        id: this.state.id
+                      }
+                    }} className="col-md-2 btn btn-success float-right">Next</Link>
+                  </div>
+                )}
                 </div>
                 <h2 className="col-md-12 text-center">Update Section to Master</h2>
                 <form className="col-md-12" onSubmit={this.handleSubmit}>

@@ -14,6 +14,7 @@ import StudentMain from './student/Main.js';
 
 import AdminAddPrereq from './admin/Add_Prereq.js';
 import AdminCreateCourse from './admin/Create_Course.js';
+import AdminCreateSection from './admin/Create_Section.js';
 import AdminMain from './admin/Main.js';
 import AdminRegisterStudentEnroll from './admin/Register_Student-Enroll';
 import AdminUpdateCourse from './admin/Update_Course';
@@ -60,6 +61,7 @@ class MyRoute extends Component {
   render() {
     const AAdminAddPrereq = Authorization(AdminAddPrereq,['A']);
     const AAdminCreateCourse = Authorization(AdminCreateCourse,['A']);
+    const AAdminCreateSection = Authorization(AdminCreateSection, ['A'])
     const AAdminMain = Authorization(AdminMain,['A']);
     const AAdminRegisterStudentEnroll = Authorization(AdminRegisterStudentEnroll,['A']);
     const AAdminUpdateCourse = Authorization(AdminUpdateCourse,['A']);
@@ -88,6 +90,7 @@ class MyRoute extends Component {
 
           <Route path="/admin/add-prerequisite" component={AAdminAddPrereq} />
           <Route path="/admin/create-course" component={AAdminCreateCourse} />
+          <Route path="/admin/create-section" component={AAdminCreateSection} />
           <Route path="/admin/main" component={AAdminMain} />
           <Route path="/admin/register-student-enroll" component={AAdminRegisterStudentEnroll} />
           <Route path="/admin/update-course" component={AAdminUpdateCourse} />

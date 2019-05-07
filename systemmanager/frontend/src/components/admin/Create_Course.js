@@ -26,9 +26,10 @@ class CreateCourse extends Component {
   componentDidMount() {
     axios
     .get('/department-list.json')
-    .then(res => (
+    .then(res => {
       this.setState({departmentList: res.data})
-    ));
+      this.setState({department:res.data[0].code})
+    });
   }
 
   handleDepartment = (event) => {

@@ -174,6 +174,7 @@ class SectionForm extends Component {
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <form className="col-md-12" onSubmit={this.handleSubmit}>
+              <h2 className="text-center">Search Master Schedule</h2>
               <div className="form-group">
                 <TermSearch onChange={this.handleTerm.bind()} termList={this.state.termList}/>
                 <DepartmentSearch onChange={this.handleDepartment.bind(this)} departmentList={this.state.departmentList}/>

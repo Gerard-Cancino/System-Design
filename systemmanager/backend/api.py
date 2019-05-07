@@ -85,6 +85,7 @@ class BuildingList(generics.ListCreateAPIView):
     serializer = serializers.BuildingSerializer(queryset, many=True)
     return Response(serializer.data)
   # def post is not needed.  No user will create a building
+@method_decorator(csrf_exempt, name='dispatch')
 class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = serializers.CourseSectionSerializer
   def get_object(self,id):
@@ -97,6 +98,9 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
     course = self.get_object(id)
     serializer = serializers.CourseSerializer(course)
     return Response(serializer.data)
+  def delete(self,request,id):
+    course = self.get_object(id).delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 class CourseList(generics.ListCreateAPIView):
   serializer_class =serializers.CourseSerializer
   queryset = models.Course.objects.all().order_by('department')
@@ -191,7 +195,7 @@ class CourseSectionList(generics.ListCreateAPIView):
       filters=[]
       days = []
       if params.get('courseID') is not None:
-        filters.append(Q(course_id=int(params.get('courseID'))))
+        filters.append(Q(course_id=params.get('courseID')))
       if params.get('creditMin') is not None:
         filters.append(Q(course__numberOfCredits__gte=int(params.get('creditMin'))))
       if params.get('creditMax') is not None:
@@ -233,6 +237,23 @@ class CourseSectionList(generics.ListCreateAPIView):
         return Response(serializer.data)
     except models.CourseSection.DoesNotExist:
       raise Http404
+  def post(self,request):
+    params = request.data
+    term = params.get('term')
+    course = params.get('course')
+    room = params.get('room')
+    number = models.CourseSection.objects.filter(course_id=course).count()
+    section = models.CourseSection.objects.create(course_id=course,number=number+1,term_id=term,room_id=room)
+    numOfSeats = params.get('numOfSeats')
+    if numOfSeats is not None:
+      section.numOfSeats = numOfSeats
+    faculty = params.get('faculty')
+    if faculty is not None:
+      faculty = models.Faculty.objects.get(user_id=faculty)
+      section.faculty = faculty_id=faculty
+    section.save()
+    serializer = serializers.CourseSectionSerializer(section)
+    return Response(serializer.data)
 class DayList(generics.ListCreateAPIView):
   serializer_class = serializers.DaySerializer()
   queryset = models.Day.objects.all()
@@ -391,7 +412,7 @@ class StudentDetails(APIView):
   def delete(self, request, email):
     student = self.get_object(email)
     student.delete()
-    return Response(status=HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Skipped all the Students
 # Admin + Researcher + DepartmentChair is also needed for use cases
@@ -528,7 +549,7 @@ class PrerequisiteDetails(generics.RetrieveUpdateDestroyAPIView):
     return Response(serializer.data) 
   def delete(self,request,id):
     prerequisite = self.get_object(id).delete()
-    return Response(status=HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 @method_decorator(csrf_exempt,name='dispatch')
 class PrerequisiteList(generics.ListCreateAPIView):

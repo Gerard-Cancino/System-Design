@@ -18,7 +18,18 @@ class CreateCourseForm extends Component {
       <React.Fragment>
         <h2 className="text-center">Create Course</h2>
         <form className="col-md-12" onSubmit={handleSubmit}>
-          <DepartmentSearch onChange={handleDepartment.bind(this)} departmentList={departmentList}/>
+          <div className="form-group col-md-12">
+            <label>Department</label>
+            {departmentList==undefined?(
+              <p></p>
+            ):(
+              <select className="form-control" onChange={handleDepartment}>
+                {departmentList.map(el=>(
+                  <option key={el.code} value={el.code}>{el.code} {el.name}</option>
+                ))}
+              </select> 
+            )}
+          </div>
           <CourseNameSearch onChange={handleCourseName.bind(this)} />
           <CourseIDSearch onChange={handleCourseID.bind(this)} />
           <div className="form-group col-md-12">

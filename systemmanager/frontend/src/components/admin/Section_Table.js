@@ -87,7 +87,7 @@ class TableSection extends PureComponent {
                     <td className='col-md-1'>{el.numOfSeats - el.numOfTaken}</td>     
                     <td className="col-md-6">
                       <Link to={{
-                        pathname: '/admin/update-section-master-p1',
+                        pathname: '/admin/update-section-info',
                         state: {
                           id: el.id
                         }
