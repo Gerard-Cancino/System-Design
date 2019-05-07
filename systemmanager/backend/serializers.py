@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_auth.registration.serializers import RegisterSerializer
 from backend.models import (User, Student, Building, Room, UndergradStudent, GradStudent, FullTimeUndergradStudent, PartTimeUndergradStudent,
     FullTimeGradStudent, PartTimeGradStudent, Department, Faculty, FullTimeFaculty, PartTimeFaculty, Advisor,
-    Admin, Researcher, DepartmentChair, Major, Minor, Time, Term, Day, Slot, Course, CourseSection, Prerequisite,
+    Admin, Researcher, DepartmentChair, Major, Minor, Grade, Time, Term, Day, Slot, Course, CourseSection, Prerequisite,
     StudentMajor, StudentMinor, Enrollment, Transcript, Attendance, Hold, Grade)
 
 class UserSerializer(serializers.ModelSerializer):
@@ -65,7 +65,7 @@ class AdvisorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advisor
         fields = ('__all__')
-        
+
 class UndergradStudentSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False)
     class Meta:
@@ -134,7 +134,7 @@ class TermSerializer(serializers.ModelSerializer):
         model = Term
         fields = ('__all__')
 
-class DaySerializer(serializers.ModelSerializer):    
+class DaySerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     def get_name(self,obj):
         return obj.get_name_display()
@@ -226,7 +226,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 class GradeSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False)
-    courseSection = CourseSectionSerializer(many=False)
+    course_section = CourseSectionSerializer(many=False)
     class Meta:
         model = Grade
         fields = ('__all__')
