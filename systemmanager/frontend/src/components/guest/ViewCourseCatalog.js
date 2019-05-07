@@ -4,66 +4,69 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
+const Catalog = ({data}) => {
+  let currDepart = undefined;
+  return(
+    data.map(course => (
+      <div className="text-center col-md-12">
+        {currDepart == course.department.code?(
+          <p></p>
+        ):(
+          <div>
+            <h3>{course.department.name}</h3>
+            <p style={{display:'none'}}>{currDepart=course.department.code}</p>
+          </div>
+        )}
+        <table>
+          <thead>
+            <tr>
+              <td>Name</td>
+              <td>Description</td>
+              <td>Credit</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{course.name}</td>
+              <td>{course.description}</td>
+              <td>{course.numberOfCredits}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    ))
+  )
+}
+
 class ViewCourseCatalog extends Component {
   state = {
-    termList: [],
-    course: [],
-    test: [],
+    department: undefined,
+    course: undefined,
   }
-
-
-  componentWillMount() {
+  componentDidMount() {
     axios
       .get('course-list.json')
       .then(res => {
         this.setState({
-          course: res.data,
-        })
+          course: res.data
       })
+    })
   }
-
   render(){
-    const Tables = () => (
-      this.state.course.length != 0 ? (
-        <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
-            <h2 className="col-md-12 text-center">View Course Catalog</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <td className='col-md-1'>ID</td>
-                    <td className='col-md-3'>Course Name</td>
-                    <td className='col-md-7'>Course Description</td>
-                    <td className='col-md-1'># of Credits</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.course.map(el => (
-                    <tr key={el.number}>
-                      <td className='col-md-1'>{el.department_id}{el.number}</td>
-                      <td className='col-md-3'>{el.name}</td>
-                      <td className='col-md-7'>{el.description}</td>
-                      <td className='col-md-1'>{el.numberOfCredits}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-      ) : (
-        this.state.isLoaded?(
-          <p>Cannot find any courses. This is an error. Please let admin know.</p>
-        ) : (
-          <p></p>
-        )
-      )
-    )
-    console.log("reloading page");
     return(
       <React.Fragment>
         <Header />
-        <Tables />
+        <section className="container-fluid h-100">
+          <div className="row border rounded m-4 p-4 h-100">
+            <h2 className="col-md-12 text-center">Course Catalog</h2>
+            {this.state.course==undefined?(
+              <p></p>
+            ):(
+              <Catalog data={this.state.course} />
+            )}
+          </div>
+
+        </section>
         <Footer />
       </React.Fragment>
     );

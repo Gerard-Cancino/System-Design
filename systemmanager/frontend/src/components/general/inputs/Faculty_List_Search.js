@@ -12,7 +12,9 @@ class SearchFacultyList extends PureComponent {
           <p>Could not find faculty</p>
         ) : (
           <div className="form-group col-md-12">
+            <label>Faculty's Name:</label>
             <select className="form-control" onChange={onChange}>
+            <option value=''>TBA</option>
             {facultyList.map(i => (
               <option key={i.user.id} value={i.user.id}>{i.user.firstName} {i.user.lastName}</option>
             ))}

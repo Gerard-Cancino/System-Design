@@ -1,29 +1,43 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom'; 
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
 class ViewCourseCatalog extends Component {
   state = {
-    termList: [],
-    course: [],
-    test: [],
+    course: undefined,
+    status: undefined
   }
 
-  componentWillMount() {
+  getCourseList(){
     axios
-      .get('/course-list.json')
-      .then(res => {
-        this.setState({
-          course: res.data,
-        })
+    .get('/course-list.json')
+    .then(res => {
+      this.setState({
+        course: res.data,
       })
+    })
+  }
+  componentWillMount() {
+    this.getCourseList()
   }
 
+  handleRemove = (e,course) => {
+    e.preventDefault()
+    axios
+    .delete(`/course-details.json/${course}`)
+    .then(res=>{
+      this.setState({
+        status:res.data
+      })
+      this.getCourseList()
+    })
+  }
   render(){
     const Tables = () => (
-      this.state.course.length != 0 ? (
+      this.state.course != undefined && this.state.course.length != 0? (
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <h2 className="col-md-12 text-center">View Course Catalog</h2>
@@ -32,24 +46,34 @@ class ViewCourseCatalog extends Component {
                   <tr>
                     <td className='col-md-1'>ID</td>
                     <td className='col-md-3'>Course Name</td>
-                    <td className='col-md-7'>Course Description</td>
+                    <td className='col-md-4'>Course Description</td>
                     <td className='col-md-1'># of Credits</td>
+                    <td className='col-md-1'></td>
                     <td className='col-md-1'></td>
                     <td className='col-md-1'></td>
                   </tr>
                 </thead>
                 <tbody>
                   {this.state.course.map(el => (
-                    <tr key={el.number}>
-                      <td className='col-md-1'>{el.department_id}{el.number}</td>
+                    <tr key={el.id}>
+                      <td className='col-md-1'>{el.id}</td>
                       <td className='col-md-3'>{el.name}</td>
-                      <td className='col-md-7'>{el.description}</td>
+                      <td className='col-md-4'>{el.description}</td>
                       <td className='col-md-1'>{el.numberOfCredits}</td>
                       <td className='col-md-1'>
-                        <button>Update</button>
+                        <Link to={{
+                          pathname: '/admin/create-section',
+                          state: {courseID: el.id}
+                        }} className="btn btn-success">Create Section</Link>
                       </td>
                       <td className='col-md-1'>
-                        <button>Remove</button>
+                        <Link to={{
+                          pathname: '/admin/update-course',
+                          state: {courseID: el.id}
+                        }} className="btn btn-info">Update</Link>
+                      </td>
+                      <td className='col-md-1'>
+                        <button className="btn btn-danger" onClick={e=>this.handleRemove(e,el.id)}>Remove</button>
                       </td>
                     </tr>
                   ))}

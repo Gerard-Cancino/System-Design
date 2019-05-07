@@ -85,7 +85,8 @@ class BuildingList(generics.ListCreateAPIView):
     serializer = serializers.BuildingSerializer(queryset, many=True)
     return Response(serializer.data)
   # def post is not needed.  No user will create a building
-class CourseDetails(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
   serializer_class = serializers.CourseSectionSerializer
   def get_object(self,id):
     try:
@@ -97,13 +98,47 @@ class CourseDetails(APIView):
     course = self.get_object(id)
     serializer = serializers.CourseSerializer(course)
     return Response(serializer.data)
+  def delete(self,request,id):
+    course = self.get_object(id).delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 class CourseList(generics.ListCreateAPIView):
   serializer_class =serializers.CourseSerializer
-  queryset = models.Course.objects.all()
-  def list(self,requerst):
-    queryset = self.get_queryset()
-    serializer = serializers.CourseSerializer(queryset,many=True)
-    return Response(serializer.data)
+  queryset = models.Course.objects.all().order_by('department')
+  def list(self,request):
+    params = request.query_params
+    if params.get('department') is not None:
+      queryset = models.Course.objects.filter(department=params.get('department'))
+      serializer = serializers.CourseSerializer(queryset,many=True)
+      return Response(serializer.data)
+    else:
+      queryset = models.Course.objects.all().order_by('department')
+      serializer = serializers.CourseSerializer(queryset,many=True)
+      return Response(serializer.data)
+  def post(self,request):
+    params = request.data
+    if params.get('department') is not None or \
+      params.get('number') is not None or \
+      params.get('name') is not None or \
+      params.get('description') is not None or \
+      params.get('numberOfCredits') is not None or \
+      params.get('isGraduate') is not None:
+      department = models.Department.objects.get(code=params.get('department'))
+      id = str(params.get('department')) + str(params.get('number'))
+      course = models.Course.objects.create(
+        id = id,
+        department=department,
+        number=params.get('number'),
+        name=params.get('name'),
+        description=params.get('description'),
+        numberOfCredits=params.get('numberOfCredits'),
+        isGraduateCourse=params.get('isGraduate'),
+        isActive=True
+      )
+      course.save()
+      course = models.Course.objects.get(id=course.id)
+      print(course)
+      serializer = serializers.CourseSerializer(course)
+      return Response(serializer.data)
 @method_decorator(csrf_exempt, name='dispatch')
 class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self,id):
@@ -137,6 +172,9 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = self.get_object(id)
     if params.get('faculty') is not None:
       faculty = models.Faculty.objects.get(user_id=params.get('faculty'))
+      # Get COurse Sections where faculty = this faculty
+      # Get Course slot
+      # Compare the time of slot
       queryset.faculty=faculty
       queryset.save()
     if params.get('numOfSeats') is not None:
@@ -157,7 +195,7 @@ class CourseSectionList(generics.ListCreateAPIView):
       filters=[]
       days = []
       if params.get('courseID') is not None:
-        filters.append(Q(course_id=int(params.get('courseID'))))
+        filters.append(Q(course_id=params.get('courseID')))
       if params.get('creditMin') is not None:
         filters.append(Q(course__numberOfCredits__gte=int(params.get('creditMin'))))
       if params.get('creditMax') is not None:
@@ -169,7 +207,7 @@ class CourseSectionList(generics.ListCreateAPIView):
       if params.get('department') is not None:
         filters.append(Q(faculty__department=params.get('department')))
       if params.get('term') is not None:
-        filters.append(Q(slot__term_id=params.get('term')))
+        filters.append(Q(term_id=params.get('term')))
       if params.get('time') is not None:
         filters.append(Q(slot__time__id=params.get('time')))
       if params.get('monday') == 'false':
@@ -199,6 +237,23 @@ class CourseSectionList(generics.ListCreateAPIView):
         return Response(serializer.data)
     except models.CourseSection.DoesNotExist:
       raise Http404
+  def post(self,request):
+    params = request.data
+    term = params.get('term')
+    course = params.get('course')
+    room = params.get('room')
+    number = models.CourseSection.objects.filter(course_id=course).count()
+    section = models.CourseSection.objects.create(course_id=course,number=number+1,term_id=term,room_id=room)
+    numOfSeats = params.get('numOfSeats')
+    if numOfSeats is not None:
+      section.numOfSeats = numOfSeats
+    faculty = params.get('faculty')
+    if faculty is not None:
+      faculty = models.Faculty.objects.get(user_id=faculty)
+      section.faculty = faculty_id=faculty
+    section.save()
+    serializer = serializers.CourseSectionSerializer(section)
+    return Response(serializer.data)
 class DayList(generics.ListCreateAPIView):
   serializer_class = serializers.DaySerializer()
   queryset = models.Day.objects.all()
@@ -308,6 +363,13 @@ class RoomList(APIView):
       room = models.Room.objects.all()
       serializer = serializers.RoomSerializer(room)
       return Response(serializer.data)
+class MajorList(generics.ListCreateAPIView):
+  queryset = models.Major.objects.all()
+  serializer_class = serializers.MajorSerializer
+  def list(self, request):
+    major = models.Major.objects.all().order_by('department')
+    serializer = serializers.MajorSerializer(major,many=True)
+    return Response(serializer.data)
 # Will probably not be used RoomDetails
 @method_decorator(csrf_exempt, name='dispatch')
 class StudentDetails(APIView):
@@ -350,7 +412,7 @@ class StudentDetails(APIView):
   def delete(self, request, email):
     student = self.get_object(email)
     student.delete()
-    return Response(status=HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Skipped all the Students
 # Admin + Researcher + DepartmentChair is also needed for use cases
@@ -372,13 +434,6 @@ class SlotList(generics.ListCreateAPIView):
       params = request.query_params
       filters=[]
       days = []
-      filters.append(Q(isTaken=False))
-      if params.get('building') is not None:
-        filters.append(Q(room__building_id=params.get('building')))
-      if params.get('room') is not None:
-        filters.append(Q(room=params.get('room')))
-      if params.get('term') is not None:
-        filters.append(Q(term_id=params.get('term')))
       if params.get('time') is not None:
         filters.append(Q(time_id=params.get('time')))
       print(params.get('monday'))
@@ -455,8 +510,10 @@ class UserDetails(APIView):
     if params.get('zipCode') is not None:
       user.zipCode = params.get('zipCode')
     if params.get('isLockout') is not None:
+      print('test')
       if user.isLockout:
         user.isLockout = False
+        print('1')
       else:
         user.isLockout = True
     user.save()
@@ -557,3 +614,44 @@ class GradeList(generics.ListCreateAPIView):
 
 
 # Prereq and below in models
+<<<<<<< HEAD
+=======
+@method_decorator(csrf_exempt, name='dispatch')
+class PrerequisiteDetails(generics.RetrieveUpdateDestroyAPIView):
+  def get_object(self, id):
+    prerequisite = models.Prerequisite.objects.get(id=id)
+    return prerequisite
+  def get(self,request,id):
+    prerequisite = self.get_object(id) 
+    serializer = serializers.PrerequisiteSerializer(prerequisite)
+    return Response(serializer.data) 
+  def delete(self,request,id):
+    prerequisite = self.get_object(id).delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@method_decorator(csrf_exempt,name='dispatch')
+class PrerequisiteList(generics.ListCreateAPIView):
+  def list(self,request):
+    params = request.query_params
+    if params.get('course') is not None:
+      prerequisite = models.Prerequisite.objects.filter(course_id=params.get('course'))
+      serializer = serializers.PrerequisiteSerializer(prerequisite,many=True)
+      return Response(serializer.data)
+  def create(self, request):
+    params = request.data
+    print(params.get('course'))
+    if params.get('course') is not None and params.get('prerequisite') is not None:
+      course = models.Course.objects.get(id=params.get('course'))
+      prerequisite = models.Course.objects.get(id=params.get('prerequisite'))
+      print(course)
+      print(prerequisite)
+      prerequisite = models.Prerequisite.objects.create( \
+        requiredGrade = 'C', 
+        course = course,
+        prereq = prerequisite
+      )
+      prerequisite.save()
+      serializer = serializers.PrerequisiteSerializer(prerequisite)
+      return Response(serializer.data)
+    
+>>>>>>> 748c56383e8eefa030d56005c681b1b80b520207

@@ -1,2 +1,9 @@
  
 https://www.valentinog.com/blog/tutorial-api-django-rest-react/
+
+https://docs.google.com/spreadsheets/d/12sgav8Oz43j3nCmqOe6SX1MC_IC_W2kcHDIfa6fbKww/edit?usp=sharing
+
+--user manual
+https://docs.google.com/document/d/1fV_2zO5wHyPLZ-RwgiymnTEByGzekYBD1UldGAa-DyY/edit?usp=sharing
+
+--
