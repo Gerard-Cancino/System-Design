@@ -23,6 +23,7 @@ import AdminMasterSchedule from './admin/MasterSchedule.js';
 import AdminUpdateSectionMasterP1 from './admin/UpdateSectionMasterP1.js';
 import AdminUpdateSectionMasterP2 from './admin/UpdateSectionMasterP2.js';
 import AdminProfile from './admin/MyProfile.js';
+import AdminViewStudentGrades from './admin/StudentGrade.js';
 // npm run dev to create main.js
 
 const Authorization = (WrappedComponent, allowedRoles) => {
@@ -32,19 +33,19 @@ const Authorization = (WrappedComponent, allowedRoles) => {
       user: {
         email: 'MooreM',
         role: 'A',
-      }  
+      }
     }
     render(){
 
       const { role, id} = this.state.user
       if (allowedRoles.includes(role)) {
-        if (this.props.location.state!=null){  
+        if (this.props.location.state!=null){
           return <WrappedComponent user={this.state.user.email} data={this.props.location}/>
         }
         else
           return <WrappedComponent user={this.state.user.email} />
       }
-      else 
+      else
         return <Unauthenticated />
     }
   }
@@ -63,6 +64,7 @@ class MyRoute extends Component {
     const AAdminUpdateSectionMasterP1 = Authorization(AdminUpdateSectionMasterP1, ['A'])
     const AAdminUpdateSectionMasterP2 = Authorization(AdminUpdateSectionMasterP2, ['A'])
     const AAdminProfile = Authorization(AdminProfile, ['A'])
+    const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades, ['A'])
     return (
       <BrowserRouter>
         <div>
@@ -73,7 +75,7 @@ class MyRoute extends Component {
           <Route path="/login" component={GuestLogin} />
 
           <Route path="/student/main" component={StudentMain} />
-          
+
           <Route path="/admin/main" component={AAdminMain} />
           <Route path="/admin/course-catalog" component={AAdminCourseCatalog} />
           <Route path="/admin/view-student-information" component={AAdminViewStudentRecord} />
@@ -85,6 +87,7 @@ class MyRoute extends Component {
           <Route path="/admin/update-section-master-p1" component={AAdminUpdateSectionMasterP1}/>
           <Route path="/admin/update-section-master-p2" component={AAdminUpdateSectionMasterP2}/>
           <Route path="/admin/profile" component={AAdminProfile}/>
+          <Route path="/admin/view-student-grades" compononent={AdminViewStudentGrades}/>
 
         </div>
       </BrowserRouter>
