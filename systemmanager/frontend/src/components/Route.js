@@ -79,7 +79,6 @@ class MyRoute extends Component {
     const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades,['A']);
     const AAdminViewStudentInfo = Authorization(AdminViewStudentInfo,['A']);
     const AAdminViewStudentTerm = Authorization(AdminViewStudentTerm,['A']);
-    const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades, ['A'])
 
     return (
       <BrowserRouter>
