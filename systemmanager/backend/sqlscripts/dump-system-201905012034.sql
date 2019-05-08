@@ -908,7 +908,7 @@ CREATE TABLE `transcript` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gradeReceived` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `year` int(11) NOT NULL,
-  `season` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `season` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `course_id` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
   `student_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
