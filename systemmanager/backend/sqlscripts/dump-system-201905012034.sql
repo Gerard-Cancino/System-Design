@@ -98,10 +98,11 @@ DROP TABLE IF EXISTS `attendance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attendance` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `enrollment_id` int(11) NOT NULL,
   `isPresent` tinyint(1) NOT NULL,
   `dayAttended` date NOT NULL,
-  PRIMARY KEY (`enrollment_id`),
+  PRIMARY KEY (`id`),
   CONSTRAINT `attendance_enrollment_id_be7ff56a_fk_enrollment_id` FOREIGN KEY (`enrollment_id`) REFERENCES `enrollment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
