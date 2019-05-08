@@ -4,9 +4,23 @@ INSERT INTO `student_major` (`id`,`dateDeclared`,`major_id`,`student_id`) VALUES
 INSERT INTO `student_minor` (`id`,`dateDeclared`,`minor_id`,`student_id`) VALUES
 (1,'2016-08-04',1,40201);
 
--- Just one student.  Populate transcript for minor and student?
+-- one student
+-- should change dump.sql`season` varchar(1) to (2)
 INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`student_id`) VALUES 
-(1,'B','2016','F','EE101','40201');
+(1,'B','2018','F','MA110','40201'),
+(2,'A','2018','F','HU103','40201'),
+(3,'B','2018','F','PH102','40201'),
+(4,'B','2018','F','EE101','40201'),
+(5,'B','2018','F','EE102','40201'),
+
+(6,'B','2019','SP','MA223','40201'),
+(7,'B','2019','SP','MA303','40201'),
+(8,'A','2019','SP','EE300','40201'),
+(9,'A','2019','SP','EE310','40201'),
+(10,'A','2019','SP','EE342','40201')
+;
+
+
 
 -- 2 semesters 
 -- One Class 20 students
@@ -105,7 +119,8 @@ INSERT INTO `attendance` (`id`,`isPresent`, `dayAttended`, `enrollment_id`) VALU
 
 
 -- Grade for just the previous semester and the current semester (spring 2019)
--- 5 courses?
+-- 5 courses
+--should change in the dump.sql beacuse the old one is 'numberGrade'
 INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`) VALUES
 --previous(fall 2018)
 (1,'M','B',40014,40201),
