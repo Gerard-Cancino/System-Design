@@ -1,12 +1,12 @@
 INSERT INTO `student_major` (`id`,`dateDeclared`,`major_id`,`student_id`) VALUES 
-(1,'2016-08-04',1,40001);
+(1,'2016-08-04',1,40201);
 
 INSERT INTO `student_minor` (`id`,`dateDeclared`,`minor_id`,`student_id`) VALUES
-(1,'2016-08-04',1,40001);
+(1,'2016-08-04',1,40201);
 
 -- Just one student.  Populate transcript for minor and student?
 INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`student_id`) VALUES 
-(1,'B','2016','F','EE101','40001');
+(1,'B','2016','F','EE101','40201');
 
 -- Maybe 2 semesters?  if you want maybe a little more
 -- One Class 20 students
