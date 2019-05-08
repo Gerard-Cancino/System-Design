@@ -30,21 +30,27 @@ class Home extends Component {
         </section>
         <section id="explore" className="container-fluid">
           <div className="row p-4">
-            <div className="col-md-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><a>View Academic Calendar</a></p>
+            <div className="col-md-12">
+              <h2 className="text-center">View Academic Calendar</h2>
+              <div className="dropdown">
+                <button id="spring2019Calendar" className="btn btn-second dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Spring 2019
+                </button>
+                <div>
+                  
                 </div>
               </div>
             </div>
-            <div className="col-md-4">
+          </div>
+          <div className="row-p-4">
+            <div className="col-md-6">
               <div className="card">
                 <div className="card-body">
                   <p className="text-center h3"><Link to="/course-catalog">View Catalog</Link></p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-6">
               <div className="card">
                 <div className="card-body">
                   <p className="text-center h3"><Link to="/master-schedule">Search Master Schedule</Link></p>
@@ -57,7 +63,7 @@ class Home extends Component {
           <div className="row p-4 col-md-12">
             <div className="col-md-4">
               <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
-                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" src={require('../images/django-logo.jpg')}/>
+                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" style={{height:'100%'}} src={require('../images/django-logo.jpg')}/>
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>Django</h3>
@@ -67,7 +73,7 @@ class Home extends Component {
             </div>
             <div className="col-md-4">
               <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
-                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" src={require('../images/react-logo.jpg')}/>
+                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" style={{height:'100%'}} src={require('../images/react-logo.jpg')}/>
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>React</h3>
@@ -77,7 +83,7 @@ class Home extends Component {
             </div>
             <div className="col-md-4">
               <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
-                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" src={require('../images/mysql-logo.jpg')}/>
+                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" style={{height:'100%'}} src={require('../images/mysql-logo.jpg')}/>
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>MySQL</h3>

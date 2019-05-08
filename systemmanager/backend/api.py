@@ -98,6 +98,21 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
     course = self.get_object(id)
     serializer = serializers.CourseSerializer(course)
     return Response(serializer.data)
+  def put(self,request,id):
+    params = request.data
+    course = self.get_object(id)
+    name = params.get('name')
+    description = params.get('description')
+    numberOfCredits = params.get('numberOfCredits')
+    if name is not None:
+      course.name = name
+    if description is not None:
+      course.description = description
+    if numberOfCredits is not None:
+      course.numberOfCredits = numberOfCredits
+    course.save()
+    serializer = serializers.CourseSerializer(course)
+    return Response(serializer.data)
   def delete(self,request,id):
     course = self.get_object(id).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
@@ -279,8 +294,10 @@ class EnrollmentList(generics.ListCreateAPIView):
     print(params.get('student'))
     if params.get('student') is not None:
       if params.get('term') is not None:
+        user=models.User.objects.get(email=params.get('student'))
+        student=models.Student.objects.get(user_id=user.id)
         print(params.get('term'))
-        enrollment = models.Enrollment.objects.filter(student_id=params.get('student'),course_section__slot__term_id=params.get('term')).distinct()
+        enrollment = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term_id=params.get('term')).distinct()
         print(enrollment)
         serializer = serializers.EnrollmentSerializer(enrollment, many=True)
         return Response(serializer.data)

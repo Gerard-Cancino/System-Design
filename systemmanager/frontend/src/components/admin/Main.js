@@ -45,14 +45,7 @@ class Main extends Component {
                   <p className="text-center h3"><Link to="/admin/view-course-list">View Course List</Link></p>
                 </div>
               </div>
-            </div>            
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/view-remove-student-endroll-section">View Student's Enrollment</Link></p>
-                </div>
-              </div>
-            </div>                 
+            </div>                        
             <div className="col-md-4 p-4">
               <div className="card">
                 <div className="card-body">

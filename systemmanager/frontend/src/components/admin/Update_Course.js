@@ -30,7 +30,7 @@ class UpdateCourse extends Component {
     this.setState({courseDescription:event.target.value||undefined})
   }
   handleCourseCredits=(event)=>{
-    this.setState({credits:event.target.value||undefined})
+    this.setState({courseCredits:event.target.value||undefined})
   }
   handleSubmit=(event)=>{
     event.preventDefault();
@@ -38,7 +38,7 @@ class UpdateCourse extends Component {
     .put(`/course-details.json/${this.state.course.id}`,{
       name:this.state.courseName,
       description:this.state.courseDescription,
-      numberOfCredits:this.state.numberOfCredits
+      numberOfCredits:this.state.courseCredits
     })
     .then(res=>{
       this.setState({status:res.data})
@@ -50,11 +50,24 @@ class UpdateCourse extends Component {
         <Header />
         <section className="container-fluid h-100">
           <div className="row h-100 p-4 m-4 border rounded">
+            <div className="col-md-12">
+              {this.state.status==undefined?(
+                <p></p>
+              ):(
+                <h3 className="col-md-3 float-left">Successfully Updated!</h3>
+              )}
+              <Link to={{
+                pathname: '/admin/add-prerequisite',
+                state: {
+                  courseID:this.state.courseID
+                }
+              }} className="col-md-2 btn btn-success float-right">Add Prerequisites</Link>
+            </div>
             <h2 className="col-md-12 text-center">Update Course</h2>
           {this.state.course==undefined?(
             <p></p>
           ):(
-            <form className="col-md-12">
+            <form className="col-md-12" onSubmit={this.handleSubmit}>
               <div className="form-group col-md-12">
                 <label>Course Name</label>
                 <input className="form-control" onChange={this.handleCourseName} placeholder={this.state.course.name}/>
@@ -67,7 +80,7 @@ class UpdateCourse extends Component {
                 <label>Course Credits</label>
                 <input className="form-control" onChange={this.handleCourseCredits} placeholder={this.state.course.numberOfCredits}/>
               </div>
-              <button className="btn btn-primary col-md-12">Update Course</button>
+              <button className="btn btn-primary col-md-12" type="submit">Update Course</button>
             </form>
           )}
           </div>

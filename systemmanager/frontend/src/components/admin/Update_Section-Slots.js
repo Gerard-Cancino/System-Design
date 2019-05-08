@@ -148,8 +148,8 @@ class UpdateSectionMaster extends Component {
       let currentSlotList = this.state.section.slot
       for(let i=0;i<currentSlotList.length;i++){
         for(let j=0;j<slotList.length;j++){
-          if(slotList[j].id==slotList[i].id){
-            slotList.splice(slotList[j],1)
+          if(slotList[j].id==currentSlotList[i].id){
+            slotList.splice(j,1)
           }
         }
       }

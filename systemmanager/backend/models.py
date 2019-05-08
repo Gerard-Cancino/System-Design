@@ -327,7 +327,7 @@ class Grade(models.Model):
       ('F', 'Final'),
     )
     type = models.CharField(max_length=1, choices=TEST_NAME)
-    numberGrade = models.IntegerField()
+    letterGrade = models.CharField(max_length=1)
     class Meta:
         unique_together = (("student","course_section"))
         db_table = "grade"

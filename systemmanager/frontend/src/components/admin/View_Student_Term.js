@@ -23,16 +23,15 @@ class StudentTerm extends Component{
     .get('/term-list.json')
     .then(res => {
       this.setState({
-        termList: res.data,
-        term: res.data[0].id
+        termList: res.data
       })
     })
   }
   handleTerm = event => {
-    this.setState({term: event.target.value});
+    this.setState({term: event.target.value || undefined});
   }
   handleStudent = event => {
-    this.setState({studentUsername: event.target.value})
+    this.setState({studentUsername: event.target.value || undefined})
   }
   findStudent = event => {
     event.preventDefault()
@@ -57,12 +56,19 @@ class StudentTerm extends Component{
             <form className="col-md-12" onSubmit={this.findStudent}>
               <SearchTerm onChange={this.handleTerm.bind(this)} termList={this.state.termList}/>
               <SearchStudent onChange={this.handleStudent.bind(this)}/>
-              <button className="btn btn-primary" type="submit">Search Term</button>
+              <button className="col-md-12 btn btn-primary" type="submit">Search Term</button>
             </form>
-            <TableEnrollment enrollmentList={this.state.enrollmentList}/>
-            <Link to={{
-              pathname: '/admin/student-enroll-section'
-            }} className="btn btn-info">Enroll Student</Link>
+            <hr />
+            {this.state.enrollmentList==undefined?(
+              <p></p>
+            ):(
+              <div>
+                <TableEnrollment enrollmentList={this.state.enrollmentList}/>
+                <Link to={{
+                  pathname: '/admin/student-enroll-section'
+                }} className="btn btn-info">Enroll Student</Link>
+              </div>
+            )}
           </div>
         </section>
         <Footer />

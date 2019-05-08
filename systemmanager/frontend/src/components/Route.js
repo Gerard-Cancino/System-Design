@@ -106,7 +106,7 @@ class MyRoute extends Component {
           <Route path="/admin/view-remove-student-enroll-section" component={AAdminViewRemoveStudentEnrollSection} />
           <Route path="/admin/view-section-list" component={AAdminViewSectionList} />
           <Route path="/admin/view-student-degree-audit" component={AAdminViewStudentDegreeAudit} />
-          <Route path="/admin/view-student-grades" compononent={AAdminViewStudentGrades}/>
+          <Route path="/admin/view-student-grade" compononent={AAdminViewStudentGrades}/>
           <Route path="/admin/view-student-info" component={AAdminViewStudentInfo} />
           <Route path="/admin/view-student-term" component={AAdminViewStudentTerm} />
 
