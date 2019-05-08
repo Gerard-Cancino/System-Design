@@ -21,4 +21,35 @@ INSERT INTO `attendance` (`id`,`isPresent`, `dayAttended`, `enrollment_id`) VALU
 -- Grade for just the previous semester and the current semester (spring 2019)
 -- 5 courses?
 INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`) VALUES
-(1,'M','B',20014,40001);
+--previous(fall 2018)
+(1,'M','B',40014,40201),
+(2,'F','B',40014,40201),
+
+(3,'M','A',40042,40201),
+(4,'F','B',40042,40201),
+
+(5,'M','B',40045,40201),
+(6,'F','B',40045,40201),
+
+(7,'M','C',40025,40201),
+(8,'F','A',40025,40201),
+
+(9,'M','B',40023,40201),
+(10,'F','B',40023,40201),
+
+--the current semester (spring 2019)
+(11,'M','B',40018,40201),
+(12,'F','A',40018,40201),
+
+(13,'M','B',40020,40201),
+(14,'F','B',40020,40201),
+
+(15,'M','A',40030,40201),
+(16,'F','A',40030,40201),
+
+(17,'M','A',40031,40201),
+(18,'F','A',40031,40201),
+
+(19,'M','B',40033,40201),
+(20,'F','A',40033,40201)
+;
