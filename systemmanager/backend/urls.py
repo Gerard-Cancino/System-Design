@@ -11,8 +11,10 @@ from backend import api
 
 
 urlpatterns = [
-    path('login.json/', LoginView.as_view()),
-    path('token-auth/', obtain_jwt_token),
+    path('login.json', LoginView.as_view()),
+    path('token-auth', obtain_jwt_token),
+    path('current-user', api.current_user),
+    path('user-list.json', api.UserList.as_view()),
 
     path('advisee-details.json/<str:faculty>', api.AdviseeDetailsFaculty.as_view()),
     path('advisor-details.json/<str:student>', api.AdvisorDetails.as_view()),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('day-list.json', api.DayList.as_view()),
     path('department-details.json/<int:code>', api.DepartmentDetails.as_view()),
     path('department-list.json', api.DepartmentList.as_view()),
+    path('enrollment-details.json/<int:section_id>/<int:student_id>',api.EnrollmentDetails.as_view()),
     path('enrollment-list.json', api.EnrollmentList.as_view()),
     path('faculty-details.json/<str:email>', api.FacultyDetails.as_view()),
     path('faculty-list.json', api.FacultyList.as_view()),
@@ -43,6 +46,5 @@ urlpatterns = [
     path('time-list.json', api.TimeList.as_view()),
     path('term-list.json', api.TermList.as_view()),
     path('user-details.json/<str:email>', api.UserDetails.as_view()),
-    path('user-list.json', api.UserList.as_view()),
 
 ]

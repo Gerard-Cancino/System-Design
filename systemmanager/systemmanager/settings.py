@@ -85,17 +85,14 @@ WSGI_APPLICATION = 'systemmanager.wsgi.application'
 
 # Authentication # Part of Django-Rest-Framework
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    #     'rest_framework.authentication.SessionAuthentication',
-    #     'rest_framework.authentication.BasicAuthentication',
-    # ),
-    'DEFAULT_PERMISSION_CLASSES': (
-    'rest_framework.permissions.AllowAny',
-)
+  'DEFAULT_PERMISSION_CLASSES': (
+      'rest_framework.permissions.IsAuthenticated',
+  ),
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+      'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+      'rest_framework.authentication.SessionAuthentication',
+      'rest_framework.authentication.BasicAuthentication',
+  ),
 }
 
 CSRF_COOKIE_NAME = "csrftoken"
@@ -165,6 +162,11 @@ STATICFILES_DIRS = (
 )
 
 # Cross Origin Policy
+CORS_ORIGIN_WHITELIST = (
+  'localhost:8000',
+)
 CORS_ORIGIN_ALLOW_ALL = True
 
-LOGIN_REDIRECT_URL = '/account/'
+JWT_AUTH = {
+  'JWT_RESPONSE_PAYLOAD_HANLDER': 'backend.utils.my_jwt_response_handler'
+}

@@ -9,7 +9,7 @@ class Main extends Component {
     return(
       <React.Fragment>
         <Header />
-        <section className="container-fluid">
+        <section className="container-fluid d-flex align-items-stretch">
           <div className="row">
             <div className="col-md-4 p-4">
               <div className="card">
@@ -45,21 +45,7 @@ class Main extends Component {
                   <p className="text-center h3"><Link to="/admin/view-course-list">View Course List</Link></p>
                 </div>
               </div>
-            </div>            
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/view-remove-student-endroll-section">View Student's Enrollment</Link></p>
-                </div>
-              </div>
-            </div>                 
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/view-section-list">View Master Schedule</Link></p>
-                </div>
-              </div>
-            </div>                
+            </div>                       
             <div className="col-md-4 p-4">
               <div className="card">
                 <div className="card-body">
@@ -85,23 +71,6 @@ class Main extends Component {
               <div className="card">
                 <div className="card-body">
                   <p className="text-center h3"><Link to="/admin/view-student-term">View Student's Term</Link></p>
-                </div>
-              </div>
-            </div>
-
-
-
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/view-student-information">View Student Information</Link></p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/admin/course-catalog">Course Catalog</Link></p>
                 </div>
               </div>
             </div>
