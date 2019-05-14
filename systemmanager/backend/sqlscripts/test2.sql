@@ -17,8 +17,7 @@ INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`stud
 (7,'B','2019','SP','MA303','40201'),
 (8,'A','2019','SP','EE300','40201'),
 (9,'A','2019','SP','EE310','40201'),
-(10,'A','2019','SP','EE342','40201')
-;
+(10,'A','2019','SP','EE342','40201');
 
 
 
@@ -26,7 +25,7 @@ INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`stud
 -- One Class 20 students
 -- 5 classes for 40001(is not EE majot so i change to 40201)
 INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
---2018 fall
+-- 2018 fall
 (1,'2018-05-20',40014,'40201'),
 (2,'2018-05-20',40023,'40201'),
 (3,'2018-05-20',40025,'40201'),
@@ -53,7 +52,7 @@ INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) 
 (23,'2018-05-20',40014,'40218'),
 (24,'2018-05-20',40014,'40219'),
 (25,'2018-05-20',40014,'40220'),
---2019 spring
+-- 2019 spring
 (26,'2018-12-20',40018,'40001'),
 (27,'2018-12-20',40018,'40202'),
 (28,'2018-12-20',40018,'40203'),
@@ -79,9 +78,7 @@ INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) 
 (47,'2018-12-20',40020,'40201'),
 (48,'2018-12-20',40030,'40201'),
 (49,'2018-12-20',40031,'40201'),
-(50,'2018-12-20',40033,'40201')
-
-;
+(50,'2018-12-20',40033,'40201');
 
 
 
@@ -120,10 +117,9 @@ INSERT INTO `attendance` (`id`,`isPresent`, `dayAttended`, `enrollment_id`) VALU
 
 -- Grade for just the previous semester and the current semester (spring 2019)
 -- 5 courses
---should change in the dump.sql beacuse the old one is 'numberGrade'
+-- should change in the dump.sql beacuse the old one is 'numberGrade'
 INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`) VALUES
---previous(fall 2018)
-(1,'M','B',40014,40201),
+(1,'M','B',40014,40201), -- previous(fall 2018)
 (2,'F','B',40014,40201),
 
 (3,'M','A',40042,40201),
@@ -137,8 +133,7 @@ INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`)
 
 (9,'M','B',40023,40201),
 (10,'F','B',40023,40201),
-
---the current semester (spring 2019)
+-- the current semester (spring 2019)
 (11,'M','B',40018,40201),
 (12,'F','A',40018,40201),
 
@@ -152,5 +147,4 @@ INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`)
 (18,'F','A',40031,40201),
 
 (19,'M','B',40033,40201),
-(20,'F','A',40033,40201)
-;
+(20,'F','A',40033,40201);

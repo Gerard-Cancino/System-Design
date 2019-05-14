@@ -7,12 +7,25 @@ from datetime import datetime
 # isFaculty
 # Create your models here.
 
-
+class UserAccountManager(models.Manager):
+    def create_user(self,email,password, **extra_fields):
+      if not email:
+        return ValueError(_("The email must be set"))
+      email = self.normalize_email(email)
+      user = self.model(email=email, **extra_fields)
+      user.set_password(password)
+      user.save()
+      return user
+    def create_superuser(self,email,password):
+      user = self.create_user(email,password=password)
+    def get_by_natural_key(self, email):
+      return self.get(email=email)
+      
 class User(AbstractBaseUser):
-    USERNAME_FIELD = ('email')
+    USERNAME_FIELD = 'email'
     id = models.AutoField(primary_key=True)
-    email = models.EmailField(max_length=30, unique=True)
-    password = models.CharField(max_length=20)
+    email = models.CharField(max_length=40, unique=True)
+    password = models.CharField(max_length=256)
     TYPE = (
         ('S', 'Student'),
         ('F', 'Faculty'),
@@ -30,6 +43,8 @@ class User(AbstractBaseUser):
     country = models.CharField(max_length=20)
     zipCode = models.CharField(max_length=10)
     phoneNumber = models.CharField(max_length=13)
+
+    objects = UserAccountManager()
     class Meta:
         db_table = "user"
 
@@ -304,7 +319,7 @@ class Transcript(models.Model):
         ('SP','SPRING'),
         ('F','FALL'),
     )
-    season = models.CharField(max_length=1, choices=SEASON)
+    season = models.CharField(max_length=2, choices=SEASON)
     class Meta:
         unique_together = (("student","course"))
         db_table = "transcript"
@@ -329,5 +344,5 @@ class Grade(models.Model):
     type = models.CharField(max_length=1, choices=TEST_NAME)
     letterGrade = models.CharField(max_length=1)
     class Meta:
-        unique_together = (("student","course_section"))
+        unique_together = (("student","course_section","type"))
         db_table = "grade"

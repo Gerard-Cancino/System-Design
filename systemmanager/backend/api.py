@@ -3,6 +3,7 @@ from backend import models
 from datetime import datetime
 import io
 from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
 
 from django.db.models import Q
 from functools import reduce
@@ -31,6 +32,13 @@ class TODOViewSet(viewsets.ModelViewSet):
         permissions.AllowAny
     ]
     serializer_class = serializers.UserSerializer
+
+# Authentication
+@method_decorator(csrf_exempt, name='dispatch')
+@api_view(['GET'])
+def current_user(request):
+  serializer = UserSerializer(request.user)
+  return Response(serializer.data)
 
 class AdvisorDetails(APIView):
   serializer_class = serializers.AdvisorSerializer
@@ -272,7 +280,9 @@ class CourseSectionList(generics.ListCreateAPIView):
 class DayList(generics.ListCreateAPIView):
   serializer_class = serializers.DaySerializer()
   queryset = models.Day.objects.all()
+@method_decorator(csrf_exempt, name='dispatch')
 class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
+  permission_classes = (IsAuthenticated,)
   def get(self, request, code):
     try:
       department = models.Department.get(code=code)
@@ -282,47 +292,56 @@ class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
       raise Http404
   #def put
   #def delete
+@method_decorator(csrf_exempt, name='dispatch')
 class DepartmentList(generics.ListCreateAPIView):
   queryset = models.Department.objects.all()
   serializer_class = serializers.DepartmentSerializer
+
+@method_decorator(csrf_exempt, name='dispatch')
+class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
+  def delete(self,request,section_id,student_id):
+    enrollment = models.Enrollment.objects.get(student_id=student_id,course_section_id=section_id)
+    print(enrollment)
+    enrollment.delete()
+    return Response(True,status=status.HTTP_204_NO_CONTENT)
+
+@method_decorator(csrf_exempt, name='dispatch')
 class EnrollmentList(generics.ListCreateAPIView):
   queryset = models.Enrollment.objects.all()
   serializer_class = serializers.EnrollmentSerializer
   def list(self,request):
     params = request.query_params
-    print('begin')
-    print(params.get('student'))
     if params.get('student') is not None:
       if params.get('term') is not None:
         user=models.User.objects.get(email=params.get('student'))
         student=models.Student.objects.get(user_id=user.id)
-        print(params.get('term'))
         enrollment = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term_id=params.get('term')).distinct()
-        print(enrollment)
         serializer = serializers.EnrollmentSerializer(enrollment, many=True)
         return Response(serializer.data)
-      else:
-        print('test')
-        currentYear = datetime.today().year
-        springStart = datetime(currentYear, 3, 20)
-        springEnd = datetime(currentYear, 8, 20)
-        fallStart = datetime(currentYear, 11, 20)
-        fallEnd = datetime(currentYear+1, 1, 20)
-        currentDay = datetime.today()
-        term = None
-        if springStart < currentDay < springEnd:
-          term = models.Term.objects.get(year=currentYear, season="SP")
-        if fallStart < currentDay < fallEnd:
-          term = models.Term.objects.get(year=currentYear, season="F")
-        enrollment = models.Enrollment.objects.filter(student_id=student.user_id, course_section__slot__term=term.id)
-        print(enrollment)
-        serializer = serializers.EnrollmentSerializer(enrollment, many=True)
-        return Response(serializer.data)
+      # else:
+      #   currentYear = datetime.today().year
+      #   springStart = datetime(currentYear, 3, 20)
+      #   springEnd = datetime(currentYear, 8, 20)
+      #   fallStart = datetime(currentYear, 11, 20)
+      #   fallEnd = datetime(currentYear+1, 1, 20)
+      #   currentDay = datetime.today()
+      #   term = None
+      #   if springStart < currentDay < springEnd:
+      #     term = models.Term.objects.get(year=currentYear, season="SP")
+      #   if fallStart < currentDay < fallEnd:
+      #     term = models.Term.objects.get(year=currentYear, season="F")
+      #   enrollment = models.Enrollment.objects.filter(student_id=params.get('student'), course_section__slot__term=term.id)
+      #   serializer = serializers.EnrollmentSerializer(enrollment, many=True)
+      #   return Response(serializer.data)
 
     if params.get('section') is not None:
-
       enrollment = models.Enrollment.objects.filter(course_section=params.get('section'))
       serializer = serializers.EnrollmentSerializer(enrollment)
+      return Response(serializer.data)
+    if params.get('student') is not None:
+      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('student')))
+      enrollment = models.Enrollment.objects.filter(student_id=student.user.id)
+      serializer = serializers.EnrollmentSerializer(enrollment, many=True)
       return Response(serializer.data)
   def post(self,request):
     params = request.data
@@ -331,10 +350,14 @@ class EnrollmentList(generics.ListCreateAPIView):
         user = models.User.objects.get(email=params.get('student'))
         student = models.Student.objects.get(user_id=user.id)
         section = models.CourseSection.objects.get(id = params.get('section'))
-        enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
-        enrollment = models.Enrollment.objects.get(id=enrollment.id)
-        serializer = serializers.EnrollmentSerializer(enrollment)
-        return Response(serializer.data)
+        if section.numOfTaken < section.numOfSeats:
+          enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
+          enrollment = models.Enrollment.objects.get(id=enrollment.id)
+          serializer = serializers.EnrollmentSerializer(enrollment)
+          section.numOfTaken = section.numOfTaken+1
+          section.save()
+          return Response(serializer.data)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 # Skipped FullTime and PartTime Faculty
@@ -547,11 +570,12 @@ class UserList(APIView):
     serializer = serializers.UserSerializer(user)
     return Response(serializer.data)
   def post(self, request):
-    serializer = serializers.UserSerializer(data=request.data)
+    serializer = serializers.UserSerializerWithToken(data=request.data)
+    print(serializer)
     if serializer.is_valid():
       serializer.save()
       return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Reponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class GradeDetails(APIView):
 #     serializer_class = serializers.GradeSerializer

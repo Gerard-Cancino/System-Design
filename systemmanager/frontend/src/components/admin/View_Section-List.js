@@ -11,7 +11,14 @@ class MasterSchedule extends Component {
     return(
       <React.Fragment>
         <Header />
-        <SearchSection SectionTable={TableSection} />
+        <section className="container-fluid">
+          <div className="row justify-content-center">
+            <div className="col-md-10 rounded border p-4 m-4">
+              <h2 className="col-md-12 text-center">Master Schedule</h2>
+              <SearchSection SectionTable={TableSection} />
+            </div>
+          </div>
+        </section>
         <Footer />
       </React.Fragment>
     );

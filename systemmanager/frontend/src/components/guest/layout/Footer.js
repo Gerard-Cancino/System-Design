@@ -5,18 +5,24 @@ class Footer extends Component {
   render(){
     return(
       <footer className="container-fluid border-top">
-        <ul className="list-inline text-center">
+        <ul className="list-inline text-center mb-0">
           <li className="list-inline-item">
             <Link className="text-muted" to="/">Home</Link>
           </li>
           <li className="list-inline-item">
-            <Link className="text-muted" to="/#explore">Explore</Link>
+            <a className="text-muted" href="/#calendar">Calendar</a>
           </li>
           <li className="list-inline-item">
-            <Link className="text-muted" to="/#about">About Us</Link>
+            <a className="text-muted" href="/#explore">Explore</a>
           </li>
           <li className="list-inline-item">
-            <Link className="text-muted" to="/login">Login</Link>
+            <a className="text-muted" href="/#languages">Languages</a>
+          </li>
+          <li className="list-inline-item">
+            <a className="text-muted" href="/#profile">Hire Us</a>
+          </li>
+          <li className="list-inline-item">
+            <Link className="text-muted" to="/login/">Login</Link>
           </li>
         </ul>
       </footer>

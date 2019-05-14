@@ -35,6 +35,7 @@ class SectionForm extends Component {
   }
 
   componentDidMount() {
+    
     axios
       .get('/department-list.json')
       .then(res => {
@@ -168,29 +169,30 @@ class SectionForm extends Component {
   }
 
   render(){
-    const {SectionTable} = this.props
+    const {student, SectionTable} = this.props
     return(
       <React.Fragment>
-        <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
-            <form className="col-md-12" onSubmit={this.handleSubmit}>
-              <h2 className="text-center">Search Master Schedule</h2>
-              <div className="form-group">
-                <TermSearch onChange={this.handleTerm.bind()} termList={this.state.termList}/>
-                <DepartmentSearch onChange={this.handleDepartment.bind(this)} departmentList={this.state.departmentList}/>
-                <CourseNameSearch onChange={this.handleCourseName.bind(this)} />
-                <CourseIDSearch onChange={this.handleCourseID.bind(this)} />
-                <FacultyNameSearch onChange={this.handleFacultyName.bind(this)} />
-                <TimeSearch onChange={this.handleTime.bind(this)} timeList={this.state.timeList}/>
-                <CreditsSearch onChangeMin={this.handleCreditMin.bind(this)} onChangeMax={this.handleCreditMax.bind(this)} />
-                <DaySearch onChange={this.handleDays.bind(this)} mon={this.state.days.MO} tues={this.state.days.TU} wed={this.state.days.WE} thurs={this.state.days.TH} fri={this.state.days.FR}/>
-                <br />
-                <button type="submit" className="btn btn-primary">Submit</button> 
-              </div>
-            </form>
-            <SectionTable sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
-          </div>
-        </section>
+        <div className="col-md-12">
+          <form className="col-md-12" onSubmit={this.handleSubmit}>
+            <div className="form-group">
+              <TermSearch onChange={this.handleTerm.bind()} termList={this.state.termList}/>
+              <DepartmentSearch onChange={this.handleDepartment.bind(this)} departmentList={this.state.departmentList}/>
+              <CourseNameSearch onChange={this.handleCourseName.bind(this)} />
+              <CourseIDSearch onChange={this.handleCourseID.bind(this)} />
+              <FacultyNameSearch onChange={this.handleFacultyName.bind(this)} />
+              <TimeSearch onChange={this.handleTime.bind(this)} timeList={this.state.timeList}/>
+              <CreditsSearch onChangeMin={this.handleCreditMin.bind(this)} onChangeMax={this.handleCreditMax.bind(this)} />
+              <DaySearch onChange={this.handleDays.bind(this)} mon={this.state.days.MO} tues={this.state.days.TU} wed={this.state.days.WE} thurs={this.state.days.TH} fri={this.state.days.FR}/>
+              <br />
+              <button type="submit" className="btn btn-primary">Submit</button> 
+            </div>
+          </form>
+          {this.state.courseSect==undefined?(
+            <p></p>
+          ):(
+            <SectionTable student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+          )}
+        </div>
       </React.Fragment>
     );
   }

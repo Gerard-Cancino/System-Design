@@ -13,6 +13,7 @@ import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
 import StudentMain from './student/Main.js';
 
 import AdminAddPrereq from './admin/Add_Prereq.js';
+import AdminCreateAccount from './admin/Create_Account.js';
 import AdminCreateCourse from './admin/Create_Course.js';
 import AdminCreateSection from './admin/Create_Section.js';
 import AdminMain from './admin/Main.js';
@@ -25,7 +26,6 @@ import AdminUpdateStudentGrade from './admin/Update_Student_Grade.js';
 import AdminViewAddStudentHold from './admin/View_Add_Student-Hold';
 import AdminViewCourseList from './admin/View_Course-List.js';
 import AdminViewEditProfile from './admin/View_Edit_Profile.js';
-import AdminViewRemoveStudentEnrollSection from './admin/View_Remove_Student-Enroll-Section.js';
 import AdminViewSectionList from './admin/View_Section-List.js';
 import AdminViewStudentDegreeAudit from './admin/View_Student_Degree-Audit.js';
 import AdminViewStudentGrades from './admin/StudentGrade.js';
@@ -62,6 +62,7 @@ class MyRoute extends Component {
   render() {
 
     const AAdminAddPrereq = Authorization(AdminAddPrereq,['A']);
+    const AAdminCreateAccount = Authorization(AdminCreateAccount,['A']);
     const AAdminCreateCourse = Authorization(AdminCreateCourse,['A']);
     const AAdminCreateSection = Authorization(AdminCreateSection, ['A'])
     const AAdminMain = Authorization(AdminMain,['A']);
@@ -73,7 +74,6 @@ class MyRoute extends Component {
     const AAdminViewAddStudentHold = Authorization(AdminViewAddStudentHold,['A']);
     const AAdminViewCourseList = Authorization(AdminViewCourseList,['A']);
     const AAdminViewEditProfile = Authorization(AdminViewEditProfile,['A']);
-    const AAdminViewRemoveStudentEnrollSection = Authorization(AdminViewRemoveStudentEnrollSection, ['A']);
     const AAdminViewSectionList = Authorization(AdminViewSectionList,['A']);
     const AAdminViewStudentDegreeAudit = Authorization(AdminViewStudentDegreeAudit,['A']);
     const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades,['A']);
@@ -92,6 +92,7 @@ class MyRoute extends Component {
           <Route path="/student/main" component={StudentMain} />
 
           <Route path="/admin/add-prerequisite" component={AAdminAddPrereq} />
+          <Route path="/admin/create-account" component={AAdminCreateAccount} />
           <Route path="/admin/create-course" component={AAdminCreateCourse} />
           <Route path="/admin/create-section" component={AAdminCreateSection} />
           <Route path="/admin/main" component={AAdminMain} />
@@ -103,7 +104,6 @@ class MyRoute extends Component {
           <Route path="/admin/view-add-student-hold" component={AAdminViewAddStudentHold} />
           <Route path="/admin/view-course-list" component={AAdminViewCourseList} />
           <Route path="/admin/view-edit-profile" component={AAdminViewEditProfile} />
-          <Route path="/admin/view-remove-student-enroll-section" component={AAdminViewRemoveStudentEnrollSection} />
           <Route path="/admin/view-section-list" component={AAdminViewSectionList} />
           <Route path="/admin/view-student-degree-audit" component={AAdminViewStudentDegreeAudit} />
           <Route path="/admin/view-student-grade" compononent={AAdminViewStudentGrades}/>
