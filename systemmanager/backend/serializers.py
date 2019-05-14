@@ -174,7 +174,7 @@ class PrerequisiteSerializer(serializers.ModelSerializer):
         model = Prerequisite
         fields = ('__all__')
 
-class MajorSerializer(serializers.ModelSerializer):  
+class MajorSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
     department = DepartmentSerializer(many=False)
     def get_type(self,obj):
@@ -183,7 +183,7 @@ class MajorSerializer(serializers.ModelSerializer):
         model = Major
         fields = ('__all__')
         depth = 1
-        
+
 class MinorSerializer(serializers.ModelSerializer):
     department = DepartmentSerializer(many=False)
     class Meta:
@@ -207,21 +207,24 @@ class StudentMinorSerializer(serializers.ModelSerializer):
 class EnrollmentSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False, required=True)
     course_section = CourseSectionSerializer(many=False, required=True)
+    #attendance = AttendanceSerializer(many=False, required=True)
     class Meta:
         model = Enrollment
-        fields = ('student','course_section','dateEnrolled')
-
-class TranscriptSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(many=False)
-    course = CourseSerializer(many=False)
-    class Meta:
-        model = Transcript
-        fields = ('__all__')
+        fields = ('student','course_section')#'__all__')
 
 class AttendanceSerializer(serializers.ModelSerializer):
     enrollment = EnrollmentSerializer(many=False)
     class Meta:
         model = Attendance
+        fields = ('__all__')
+
+
+class TranscriptSerializer(serializers.ModelSerializer):
+    student = StudentSerializer(many=False)
+    course = CourseSerializer(many=False)
+    course_section = CourseSectionSerializer(many=False)
+    class Meta:
+        model = Transcript
         fields = ('__all__')
 
 class GradeSerializer(serializers.ModelSerializer):

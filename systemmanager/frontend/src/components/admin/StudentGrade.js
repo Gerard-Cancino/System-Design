@@ -11,35 +11,37 @@ class ViewStudentGrades extends Component {
     coursesect: undefined,
     numbergrade:undefined,
     finalgrade:undefined,
-    gradeString:undefined
+    gradeString:undefined,
+    cs_ID: undefined,
+    id: undefined
   }
 
   componentDidMount(){
-    axios
-      .get(`/grade-details.json/${this.state.gradeString}`)
-      .then(res => {
-        this.setState({
-          gradeString: res.data,
-        })
-        console.log(this.state.gradeString)
-      })
+    // console.log('loaded');
+    // axios
+    //   .get(`/grade-details.json/${this.state.student}/${this.state.cs_ID}`)
+    //   .then(res => {
+    //     this.setState({
+    //       gradeString: res.data,
+    //     })
+    //     console.log(this.state.gradeString)
+    //   })
 }
   handleStudent = (event) => {
     this.setState({ student: event.target.value || undefined});
     //console.log(this.state.studentUsername);
   }
-
-  handleGrade = (event) => {
-    this.setState({ gradeString: event.target.value})
+  handleCourseSection_ID = (event) => {
+    this.setState({ cs_ID: event.target.value || undefined});
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .get(`/student-details.json/${this.state.student}`)
+      .get(`/grade-details.json/${this.state.student}/${this.state.cs_ID}`)
       .then(res => {
         this.setState({
-          student: res.data
+          gradeString: res.data
         })
       })
     this.setState({isLoaded: true})
@@ -59,6 +61,7 @@ class ViewStudentGrades extends Component {
         })
       })
   }
+
   render(){
     return(
       <React.Fragment>
@@ -66,14 +69,30 @@ class ViewStudentGrades extends Component {
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
           <h2 className="col-md-12 text-center">Student Grade</h2>
-          <form className="col-md-12" onSubmit={this.handleStudent}>
+          <form className="col-md-12" onSubmit={this.handleSubmit}>
             <div className="form-group">
-              <label htmlFor="studentUsername"></label>
-              <input type="text" className="form-control" id="studentUsername" placeholder="Enter Student's Username" onChange={this.handleChange}/>
+              <label htmlFor="studentCourseSection">Enter course section for the grade you wish to view</label>
+              <input type="text" className="form-control" id="studentCourseSection" placeholder="Enter Course Section ID" onChange={this.handleCourseSection_ID}/>
               <br />
-              <button type="submit" className="btn btn-primary">Submit</button>
+              <label htmlFor="studentEmail">Enter Student Email to search by</label>
+              <input type="text" className="form-control" id="studentEmail" placeholder="Enter Student email" onChange={this.handleStudent}/>
             </div>
+            <button type="submit" className="btn btn-primary">Submit</button>
           </form>
+          {this.state.gradeString==undefined?(
+            <p></p>
+          ):(
+            <div>
+              <br></br>
+              <h4>Student: {this.state.gradeString.student.user.lastName}, {this.state.gradeString.student.user.firstName}</h4>
+              <p>Department Name: {this.state.gradeString.course_section.course.department.name}</p>
+              <p>Class Name: {this.state.gradeString.course_section.course.name}</p>
+              <p>Number of Credits: {this.state.gradeString.course_section.course.numberOfCredits}</p>
+              <p>Final Grade: {this.state.gradeString.letterGrade}</p>
+            </div>
+
+          )}
+
           </div>
         </section>
         <Footer />

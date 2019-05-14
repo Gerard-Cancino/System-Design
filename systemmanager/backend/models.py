@@ -99,13 +99,13 @@ class Student(models.Model):
         db_table = "student"
 
 class Advisor(models.Model):
-    REQUIRED_FIELDS = ('Faculty',)
+    REQUIRED_FIELDS = ('faculty',)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     dateAssigned = models.DateField(null=True, default=datetime.now)
     class Meta:
         db_table = "advisor"
-        unique_together=('faculty','student')
+        unique_together=(('faculty','student'))
 
 class UndergradStudent(models.Model):
     REQUIRED_FIELDS = ('Student',)
@@ -230,7 +230,7 @@ class CourseSection(models.Model):
     slot = models.ManyToManyField(Slot)
     numOfSeats = models.IntegerField(null=True)
     numOfTaken = models.IntegerField(default=0)
-    term = models.ForeignKey(Term, on_delete=models.CASCADE) 
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     class Meta:
         db_table = "course_section"
@@ -291,7 +291,7 @@ class Enrollment(models.Model):
     course_section = models.ForeignKey(CourseSection, on_delete=models.CASCADE)
     dateEnrolled = models.DateField(default=datetime.now)
     class Meta:
-        unique_together = (("student","course_section"))
+        unique_together = ("student","course_section")
         db_table = "enrollment"
 
 class Transcript(models.Model):
@@ -327,7 +327,7 @@ class Grade(models.Model):
       ('F', 'Final'),
     )
     type = models.CharField(max_length=1, choices=TEST_NAME)
-    numberGrade = models.IntegerField()
+    letterGrade = models.CharField(max_length=1)
     class Meta:
         unique_together = (("student","course_section"))
         db_table = "grade"

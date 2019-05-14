@@ -29,8 +29,10 @@ import AdminViewRemoveStudentEnrollSection from './admin/View_Remove_Student-Enr
 import AdminViewSectionList from './admin/View_Section-List.js';
 import AdminViewStudentDegreeAudit from './admin/View_Student_Degree-Audit.js';
 import AdminViewStudentGrades from './admin/StudentGrade.js';
+import AdminViewAdviseeDetails from './admin/Advisees.js';
 import AdminViewStudentInfo from './admin/View_Student_Info.js';
 import AdminViewStudentTerm from './admin/View_Student_Term.js';
+import AdminViewAdviseeList from './admin/View_Advisees_List.js';
 // npm run dev to create main.js
 
 const Authorization = (WrappedComponent, allowedRoles) => {
@@ -79,6 +81,8 @@ class MyRoute extends Component {
     const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades,['A']);
     const AAdminViewStudentInfo = Authorization(AdminViewStudentInfo,['A']);
     const AAdminViewStudentTerm = Authorization(AdminViewStudentTerm,['A']);
+    const AAdminViewAdviseeDetails = Authorization(AdminViewAdviseeDetails,['A']);
+    const AAdminViewAdviseeList= Authorization(AdminViewAdviseeList, ['A']);
 
     return (
       <BrowserRouter>
@@ -106,10 +110,11 @@ class MyRoute extends Component {
           <Route path="/admin/view-remove-student-enroll-section" component={AAdminViewRemoveStudentEnrollSection} />
           <Route path="/admin/view-section-list" component={AAdminViewSectionList} />
           <Route path="/admin/view-student-degree-audit" component={AAdminViewStudentDegreeAudit} />
-          <Route path="/admin/view-student-grades" compononent={AAdminViewStudentGrades}/>
+          <Route path="/admin/view-student-grades" component={AAdminViewStudentGrades}/>
           <Route path="/admin/view-student-info" component={AAdminViewStudentInfo} />
           <Route path="/admin/view-student-term" component={AAdminViewStudentTerm} />
-
+          <Route path="/admin/view-advisee-details" component={AAdminViewAdviseeDetails} />
+          <Route path="/admin/view-advisee-list" component={AAdminViewAdviseeList} />
         </div>
       </BrowserRouter>
     );
