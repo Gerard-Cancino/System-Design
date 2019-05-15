@@ -344,10 +344,5 @@ class Grade(models.Model):
     type = models.CharField(max_length=1, choices=TEST_NAME)
     letterGrade = models.CharField(max_length=1)
     class Meta:
-<<<<<<< HEAD
         unique_together = (("student","course_section"))
         db_table = "grade"
-=======
-        unique_together = (("student","course_section","type"))
-        db_table = "grade"
->>>>>>> refs/remotes/origin/master

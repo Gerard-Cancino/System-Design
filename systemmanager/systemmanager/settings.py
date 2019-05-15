@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'systemmanager.wsgi.application'
 # Authentication # Part of Django-Rest-Framework
 REST_FRAMEWORK = {
   'DEFAULT_PERMISSION_CLASSES': (
-      'rest_framework.permissions.IsAuthenticated',
+      'rest_framework.permissions.AllowAny',
   ),
   'DEFAULT_AUTHENTICATION_CLASSES': (
       'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -168,5 +168,8 @@ CORS_ORIGIN_WHITELIST = (
 CORS_ORIGIN_ALLOW_ALL = True
 
 JWT_AUTH = {
-  'JWT_RESPONSE_PAYLOAD_HANLDER': 'backend.utils.my_jwt_response_handler'
+  'JWT_DECODE_HANDLER':
+    'rest_framework_jwt.utils.jwt_decode_handler',
+  'JWT_RESPONSE_PAYLOAD_HANLDER': 
+    'backend.utils.my_jwt_response_handler'
 }

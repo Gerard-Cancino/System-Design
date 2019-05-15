@@ -2,6 +2,7 @@ from backend import models
 
 from datetime import datetime
 import io
+import jwt
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 
@@ -21,20 +22,11 @@ from django.db.models import Prefetch
 from rest_framework import generics
 
 from rest_framework import viewsets, permissions
+from rest_framework.authtoken.models import Token
 
 from django.views import View;
 from backend import serializers
 
-# Base ViewSet
-class TODOViewSet(viewsets.ModelViewSet):
-    queryset = models.User.objects.all()
-    permission_classes = [
-        permissions.AllowAny
-    ]
-    serializer_class = serializers.UserSerializer
-
-<<<<<<< HEAD
-=======
 # Authentication
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET'])
@@ -42,41 +34,16 @@ def current_user(request):
   serializer = UserSerializer(request.user)
   return Response(serializer.data)
 
-class AdvisorDetails(APIView):
-  serializer_class = serializers.AdvisorSerializer
-  def get_object(self,student):
-    try:
-      user = models.User.objects.get(email=student)
-      advisor = models.Advisor.objects.get(student_id=user.id)
-      return advisor
-    except models.Advisor.DoesNotExist:
-      raise Http404
-  def get(self, request, student):
-    advisor = self.get_object(student)
-    serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
-  # No put - Student's Advisor should be deleted then readded to a new faculty
-  def delete(self, request, student):
-    advisor = self.get_object(student)
-    advisor.delete()
-    return Reponse(status=status.HTTP_204_NO_CONTENT)
-class AdvisorList(APIView):
-  def get_object(self,faculty):
-    try:
-      advisor = models.Advisor.objects.filter(faculty_id=faculty)
-      return advisor
-    except models.Advisor.DoesNotExist:
-      raise Http404
-  def get(self, request, faculty):
-    advisor = self.get_object(faculty)
-    serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
-  def post(self, request):
-    serializer = serializer.AdvisorSerializer(data=request.data)
-    if serializer.is_valid:
-      return Response(serializer.data,status=HTTP_201_CREATED)
-    return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
->>>>>>> refs/remotes/origin/master
+class TokenUser(generics.RetrieveUpdateDestroyAPIView):
+  def get(self, request):
+    params = request.query_params
+    if params.get('token') is not None:
+      token = jwt.decode(str(params.get('token')),SECRET_KEY)
+      user = models.User.objects.get(id=token['id'])
+      print(user)
+      serializer = serializers.UserSerializer(user)
+      return Response(serializer.data)
+
 class BuildingDetails(APIView):
   serializer_class = serializers.BuildingSerializer
   def get(self, request, code):
@@ -285,7 +252,6 @@ class DayList(generics.ListCreateAPIView):
   queryset = models.Day.objects.all()
 @method_decorator(csrf_exempt, name='dispatch')
 class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
-  permission_classes = (IsAuthenticated,)
   def get(self, request, code):
     try:
       department = models.Department.get(code=code)

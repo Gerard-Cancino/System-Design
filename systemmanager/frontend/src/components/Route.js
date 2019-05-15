@@ -110,11 +110,7 @@ class MyRoute extends Component {
           <Route path="/admin/view-edit-profile" component={AAdminViewEditProfile} />
           <Route path="/admin/view-section-list" component={AAdminViewSectionList} />
           <Route path="/admin/view-student-degree-audit" component={AAdminViewStudentDegreeAudit} />
-<<<<<<< HEAD
           <Route path="/admin/view-student-grades" component={AAdminViewStudentGrades}/>
-=======
-          <Route path="/admin/view-student-grade" compononent={AAdminViewStudentGrades}/>
->>>>>>> refs/remotes/origin/master
           <Route path="/admin/view-student-info" component={AAdminViewStudentInfo} />
           <Route path="/admin/view-student-term" component={AAdminViewStudentTerm} />
           <Route path="/admin/view-advisee-details" component={AAdminViewAdviseeDetails} />
