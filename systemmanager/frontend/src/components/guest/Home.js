@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Link } from "react-router-dom";
+import axios from 'axios';
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
@@ -14,6 +15,35 @@ const MainBackground = {
   width:'100%'
 }
 class Home extends Component {
+  componentDidMount(){
+    axios
+    .post('/user-list.json',{
+      email: 'toothQ',
+      password: 'password',
+      firstName: 'Tooth',
+      lastName: 'Q',
+      address: 'Random',
+      city: 'Floral Park',
+      state: 'NY',
+      zipCode: '11111',
+      phoneNumber: '1234567890',
+      type: 'A',
+      country: 'USA'
+    })
+    .then(res => {
+      if(res.status==400){
+        this.setState({
+          status: res.status
+        })
+      }
+      else {
+        this.setState({
+          user: res.data,
+          status: res.status
+        })
+      }
+    })
+  }
   render(){
     return(
       <React.Fragment>
