@@ -33,6 +33,7 @@ import AdminViewAdviseeDetails from './admin/Advisees.js';
 import AdminViewStudentInfo from './admin/View_Student_Info.js';
 import AdminViewStudentTerm from './admin/View_Student_Term.js';
 import AdminViewAdviseeList from './admin/View_Advisees_List.js';
+import AdminViewGradeList from './admin/View_Grade_List.js';
 // npm run dev to create main.js
 
 const Authorization = (WrappedComponent, allowedRoles) => {
@@ -83,6 +84,7 @@ class MyRoute extends Component {
     const AAdminViewStudentTerm = Authorization(AdminViewStudentTerm,['A']);
     const AAdminViewAdviseeDetails = Authorization(AdminViewAdviseeDetails,['A']);
     const AAdminViewAdviseeList= Authorization(AdminViewAdviseeList, ['A']);
+    const AAdminViewGradeList=Authorization(AdminViewGradeList, ['A']);
 
     return (
       <BrowserRouter>
@@ -110,15 +112,12 @@ class MyRoute extends Component {
           <Route path="/admin/view-edit-profile" component={AAdminViewEditProfile} />
           <Route path="/admin/view-section-list" component={AAdminViewSectionList} />
           <Route path="/admin/view-student-degree-audit" component={AAdminViewStudentDegreeAudit} />
-<<<<<<< HEAD
           <Route path="/admin/view-student-grades" component={AAdminViewStudentGrades}/>
-=======
-          <Route path="/admin/view-student-grade" compononent={AAdminViewStudentGrades}/>
->>>>>>> refs/remotes/origin/master
           <Route path="/admin/view-student-info" component={AAdminViewStudentInfo} />
           <Route path="/admin/view-student-term" component={AAdminViewStudentTerm} />
           <Route path="/admin/view-advisee-details" component={AAdminViewAdviseeDetails} />
           <Route path="/admin/view-advisee-list" component={AAdminViewAdviseeList} />
+          <Route path="/admin/view-grade-list" component={AAdminViewGradeList} />
         </div>
       </BrowserRouter>
     );

@@ -18,7 +18,7 @@ urlpatterns = [
 
     path('advisee-details.json/<str:faculty>', api.AdviseeDetailsFaculty.as_view()),
     path('advisor-details.json/<str:student>', api.AdvisorDetails.as_view()),
-    path('advisor-list.json', api.AdvisorList.as_view()),
+    path('advisor-list.json/<str:faculty>', api.AdvisorList.as_view()),
     path('building-details.json-<int:code>', api.BuildingDetails.as_view()),
     path('building-list.json', api.BuildingList.as_view()),
     path('course-details.json/<str:id>', api.CourseDetails.as_view()),
@@ -34,7 +34,8 @@ urlpatterns = [
     path('faculty-list.json', api.FacultyList.as_view()),
     #path('transcript-details.json</str:id>/<int:course_section_id>', api.TranscriptDetails.as_view()),
     path('attendance-list.json/<int:course_section_id>', api.AttendanceList.as_view()),
-    path('grade-details.json/<str:id>/<int:course_section_id>', api.GradeDetails.as_view()),
+    path('grade-details.json/<str:id>/<str:course_section_id>', api.GradeDetails.as_view()),
+    path('grade-list.json/<int:student>', api.GradeList.as_view()),
     path('hold-list.json', api.HoldList.as_view()),
     path('room-list.json', api.RoomList.as_view()),
     path('prerequisite-details.json/<str:id>', api.PrerequisiteDetails.as_view()),

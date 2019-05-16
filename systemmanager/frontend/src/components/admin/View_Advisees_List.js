@@ -7,7 +7,6 @@ import Footer from './layout/Footer.js';
 
 class ViewAdviseeList extends Component {
   state = {
-    student: undefined,
     faculty: undefined,
     adviseeString: undefined,
     advisor: undefined
@@ -24,22 +23,17 @@ class ViewAdviseeList extends Component {
   }
 
   componentDidMount(){
-    this.getAdviseeList()
   }
 
-  handleStudent = (event) => {
-    this.setState({ student: event.target.value || undefined});
-    //console.log(this.state.studentUsername);
-  }
 
   handleFaculty = (event) => {
     this.setState({ faculty: event.target.value || undefined});
   }
-/*
+
   handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .get(`/advisee-details.json/${this.state.faculty}`)
+      .get(`/advisor-list.json/${this.state.faculty}`)
       .then(res => {
         this.setState({
           adviseeString: res.data
@@ -47,42 +41,37 @@ class ViewAdviseeList extends Component {
       })
     this.setState({isLoaded: true})
   }
-*/
+
   render(){
     const Tables = () => (
-      this.state.adviseeString != undefined && this.state.adviseeString.length != 0? (
-        <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
-            <h2 className="col-md-12 text-center">View Advisee List</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <td className='col-md-1'>Advisee's Name</td>
-                    <td className='col-md-3'>Advisee's Email</td>
-                    <td className='col-md-1'>Date Assigned</td>
-                    <td className='col-md-1'></td>
-                    <td className='col-md-1'></td>
-                    <td className='col-md-1'></td>
+      this.state.adviseeString == undefined?(
+        <p></p>
+      ):(
+        this.state.adviseeString.length == 0? (
+          <p><br></br>Advisees: None</p>
+        ):(
+          <div className="col-md-12">
+            <table className="col-md-12">
+              <thead className="col-md-12">
+                <tr className="col-md-12">
+                  <td className='col-md-3'>Advisee's Name</td>
+                  <td className='col-md-3'>Advisee's Email</td>
+                  <td className='col-md-3'>Date Assigned</td>
+                  <td className='col-md-3'>Student ID</td>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.adviseeString.map(el => (
+                  <tr key={el.id}>
+                    <td className='col-md-1'>{el.student.user.firstName} {el.student.user.lastName}</td>
+                    <td className='col-md-3'>{el.student.user.email}</td>
+                    <td className='col-md-4'>{el.dateAssigned}</td>
+                    <td className='col-md-1'>{el.student.user.id}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {this.state.course.map(el => (
-                    <tr key={el.id}>
-                      <td className='col-md-1'>{el.id}</td>
-                      <td className='col-md-3'>{el.name}</td>
-                      <td className='col-md-4'>{el.description}</td>
-                      <td className='col-md-1'>{el.numberOfCredits}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-      ) : (
-        this.state.isLoaded?(
-          <p>Cannot find any courses. This is an error. Please let admin know.</p>
-        ) : (
-          <p></p>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )
       )
     )
@@ -90,7 +79,22 @@ class ViewAdviseeList extends Component {
     return(
       <React.Fragment>
         <Header />
-        <Tables />
+        <section className="container-fluid">
+          <div className="row justify-content-center">
+            <div className="col-md-10 border rounded p-4 m-4">
+              <h2 className="col-md-12 text-center">View Advisee List</h2>
+              <form className="col-md-12" onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="studentCourseSection">Enter Faculty ID</label>
+                  <input type="text" className="form-control" id="studentCourseSection" placeholder="Enter Faculty ID" onChange={this.handleFaculty}/>
+                  <br />
+                </div>
+                <button type="submit" className="btn btn-primary">Submit</button>
+              </form>
+              <Tables />
+            </div>
+          </div>
+        </section>
         <Footer />
       </React.Fragment>
     );

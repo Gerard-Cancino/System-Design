@@ -20,7 +20,7 @@ class UserAccountManager(models.Manager):
       user = self.create_user(email,password=password)
     def get_by_natural_key(self, email):
       return self.get(email=email)
-      
+
 class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     id = models.AutoField(primary_key=True)
@@ -334,7 +334,7 @@ class Attendance(models.Model):
         db_table = "attendance"
 
 class Grade(models.Model):
-    REQUIRED_FIELDS = ('Student', 'CourseSection')
+    REQUIRED_FIELDS = ('Student', 'CourseSection', 'type')
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course_section = models.ForeignKey(CourseSection, on_delete=models.CASCADE)
     TEST_NAME = (
@@ -344,10 +344,5 @@ class Grade(models.Model):
     type = models.CharField(max_length=1, choices=TEST_NAME)
     letterGrade = models.CharField(max_length=1)
     class Meta:
-<<<<<<< HEAD
-        unique_together = (("student","course_section"))
-        db_table = "grade"
-=======
         unique_together = (("student","course_section","type"))
         db_table = "grade"
->>>>>>> refs/remotes/origin/master
