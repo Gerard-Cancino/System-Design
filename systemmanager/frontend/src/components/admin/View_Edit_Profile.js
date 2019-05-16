@@ -7,11 +7,13 @@ import Footer from './layout/Footer.js';
 
 import ProfileUser from '../general/User_Profile.js';
 import ProfileUserEdit from '../general/User_Profile_Edit.js';
+import ProfileUserChangePassword from '../general/User_Change_Password.js';
 
 class ViewStudentRecord extends Component {
   state = {
     account : undefined,
     isEdit: false,
+    status: undefined,
   }
 
   componentDidMount() {
@@ -37,14 +39,43 @@ class ViewStudentRecord extends Component {
         isEdit: false
       })
     })
-
   }
-  handleSubmit = event => {
+  handlePassword = (currentPassword, newPassword) => {
+    
+    console.log('running');
+    event.preventDefault();
+    axios
+    .post('/token-auth',{
+      email: this.state.account.email,
+      password:currentPassword,
+    })
+    .then(res=>{
+      axios
+      .put('/user-password-change',{
+        email: this.state.account.email,
+        password: newPassword,
+      })
+      .then(res=>{
+        localStorage.removeItem('token')
+        window.location.replace('/login')
+      })
+      .catch(err =>{
+        this.setState({status:err})
+      })
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }
+  handleIsEdit = event => {
     event.preventDefault();
     this.setState({isEdit: true})
   }
+  handleIsPassword = event => {
+    event.preventDefault();
+    this.setState({isPassword: true})
+  }
   render(){
-    console.log("reloading page");
     return(
       <React.Fragment>
         <Header />
@@ -55,8 +86,13 @@ class ViewStudentRecord extends Component {
             {this.state.isEdit==true?(
               <ProfileUserEdit onSubmit={this.handleEdit.bind(this)} account={this.state.account} />
             ) : (
-              <button type="submit" onClick={this.handleSubmit} className="col-md-12 text-center btn btn-primary">Edit Profile</button>
+              <button type="submit" onClick={this.handleIsEdit} className="col-md-12 text-center btn btn-primary">Edit Profile</button>
             )}
+            {this.state.isPassword==true?(
+              <ProfileUserChangePassword onSubmit={this.handlePassword.bind(this)}/>
+            ):(
+              <button type="submit" onClick={this.handleIsPassword} className="col-md-12 text-center btn btn-danger">Change Password</button>
+            )}            
           </div>
         </section>
         <Footer />

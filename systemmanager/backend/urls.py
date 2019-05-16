@@ -14,6 +14,7 @@ urlpatterns = [
     path('token-auth', obtain_jwt_token),
     path('current-user', api.current_user),
     path('token-user', api.TokenUser.as_view()),
+    path('user-password-change', api.UserPasswordChange.as_view()),
 
     path('user-list.json', api.UserList.as_view()),
 

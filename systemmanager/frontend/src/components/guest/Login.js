@@ -12,23 +12,6 @@ class Login extends Component {
     username: undefined,
   }
   componentDidMount() {
-
-    // axios.defaults.xsrfCookieName='csrftoken';
-    // axios.defaults.xsrfHeaderName='X-CSRFTOKEN';
-    // axios
-    // .post('/login.json')
-    // console.log(axios.defaults)
-  }
-  getUser () {
-    axios
-    .get('/token-user',{ 
-      params: {
-        token: localStorage.getItem('token')
-      }
-    })
-    .then(res=>{
-      this.setState({user:res.data})
-    })
   }
   handleChange = e => {
     const name = e.target.name;
@@ -54,7 +37,7 @@ class Login extends Component {
         loggedIn: true,
         displayed_form: ''
       })
-      this.getUser()
+      this.props.handleGetToken()
     })
     .catch(err => {
       console.log(err);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {BrowserRouter, Route,Redirect} from 'react-router-dom';
+import axios from 'axios';
 
 
 import Unauthenticated from './guest/Unauthenticated.js';
@@ -35,63 +36,116 @@ import AdminViewStudentTerm from './admin/View_Student_Term.js';
 import AdminViewAdviseeList from './admin/View_Advisees_List.js';
 // npm run dev to create main.js
 
-const Authorization = (WrappedComponent, allowedRoles) => {
+const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
   return class WithAuthorization extends React.Component {
     state = {
       props: '',
       user: {
-        email: 'MooreM',
-        role: 'A',
+        email: undefined,
+        role: 'G',
       }
     }
-    render(){
-
-      const { role, id} = this.state.user
-      if (allowedRoles.includes(role)) {
-        if (this.props.location.state!=null){
-          return <WrappedComponent user={this.state.user.email} data={this.props.location}/>
+    componentDidMount(){
+      this.setState({user:user})
+    }
+    getUser () {
+      axios
+      .get('/token-user',{ 
+        params: {
+          token: localStorage.getItem('token')
         }
-        else
-          return <WrappedComponent user={this.state.user.email} />
+      })
+      .then(res=>{
+        handleUser(res.data.email,res.data.type)
+      })
+      .catch(res=>{
+        handleUser(undefined,'G')
+      })
+    }
+    handleGetToken = () => {
+      console.log('getting token')
+      this.getUser()
+    }
+    render(){
+      if (localStorage.getItem('token')!=undefined && user.email==undefined){
+        this.getUser()
       }
-      else
-        return <Unauthenticated />
+      if (localStorage.getItem('token')==undefined && user.email!=undefined){
+        handleUser(undefined,undefined)
+        window.location.replace("/login")
+        return undefined;
+        
+      }
+      if (allowedRoles.includes(user.role)) {
+        return <WrappedComponent handleGetToken={this.handleGetToken.bind(this)} user={user.email} data={this.props.location}/>
+      }
+      else{
+        if (user.role=="A"){
+          console.log('is admin')
+          window.location.replace("/admin/main")
+          return undefined;
+        }
+        else if (user.role=='F'){
+          <Redirect to="/faculty/main" />
+        }
+        else if (user.role=='S'){
+          <Redirect to="/student/main" />
+          return <StudentMain handleGetToken={this.handleGetToken.bind(this)} user={this.state.user.email} data={this.props.location}/>
+        }
+        else if (user.role=='R'){
+          <Redirect to="/researcher/main"/>
+          return undefined;
+        }
+      }
+      return <GuestMain />
     }
   }
 }
 
 class MyRoute extends Component {
+  state = {
+    props: '',
+    user: {
+      email: undefined,
+      role: 'G',
+    }
+  }
+  handleUser = (email,role) =>{
+    this.setState({user:{email:email,role:role}})
+  }
   render() {
+    const GGuestMain = Authorization(this.state.user,this.handleUser,GuestMain,['G'])
+    const GGuestLogin = Authorization(this.state.user,this.handleUser,GuestLogin,['G'])
 
-    const AAdminAddPrereq = Authorization(AdminAddPrereq,['A']);
-    const AAdminCreateAccount = Authorization(AdminCreateAccount,['A']);
-    const AAdminCreateCourse = Authorization(AdminCreateCourse,['A']);
-    const AAdminCreateSection = Authorization(AdminCreateSection, ['A'])
-    const AAdminMain = Authorization(AdminMain,['A']);
-    const AAdminRegisterStudentEnroll = Authorization(AdminRegisterStudentEnroll,['A']);
-    const AAdminUpdateCourse = Authorization(AdminUpdateCourse,['A']);
-    const AAdminUpdateSectionInfo = Authorization(AdminUpdateSectionInfo,['A']);
-    const AAdminUpdateSectionSlot = Authorization(AdminUpdateSectionSlot,['A']);
-    const AAdminUpdateStudentGrade = Authorization(AdminUpdateStudentGrade, ['A']);
-    const AAdminViewAddStudentHold = Authorization(AdminViewAddStudentHold,['A']);
-    const AAdminViewCourseList = Authorization(AdminViewCourseList,['A']);
-    const AAdminViewEditProfile = Authorization(AdminViewEditProfile,['A']);
-    const AAdminViewSectionList = Authorization(AdminViewSectionList,['A']);
-    const AAdminViewStudentDegreeAudit = Authorization(AdminViewStudentDegreeAudit,['A']);
-    const AAdminViewStudentGrades = Authorization(AdminViewStudentGrades,['A']);
-    const AAdminViewStudentInfo = Authorization(AdminViewStudentInfo,['A']);
-    const AAdminViewStudentTerm = Authorization(AdminViewStudentTerm,['A']);
-    const AAdminViewAdviseeDetails = Authorization(AdminViewAdviseeDetails,['A']);
-    const AAdminViewAdviseeList= Authorization(AdminViewAdviseeList, ['A']);
+    const AAdminAddPrereq = Authorization(this.state.user,this.handleUser,AdminAddPrereq,['A']);
+    const AAdminCreateAccount = Authorization(this.state.user,this.handleUser,AdminCreateAccount,['A']);
+    const AAdminCreateCourse = Authorization(this.state.user,this.handleUser,AdminCreateCourse,['A']);
+    const AAdminCreateSection = Authorization(this.state.user,this.handleUser,AdminCreateSection, ['A'])
+    const AAdminMain = Authorization(this.state.user,this.handleUser,AdminMain,['A']);
+    const AAdminRegisterStudentEnroll = Authorization(this.state.user,this.handleUser,AdminRegisterStudentEnroll,['A']);
+    const AAdminUpdateCourse = Authorization(this.state.user,this.handleUser,AdminUpdateCourse,['A']);
+    const AAdminUpdateSectionInfo = Authorization(this.state.user,this.handleUser,AdminUpdateSectionInfo,['A']);
+    const AAdminUpdateSectionSlot = Authorization(this.state.user,this.handleUser,AdminUpdateSectionSlot,['A']);
+    const AAdminUpdateStudentGrade = Authorization(this.state.user,this.handleUser,AdminUpdateStudentGrade, ['A']);
+    const AAdminViewAddStudentHold = Authorization(this.state.user,this.handleUser,AdminViewAddStudentHold,['A']);
+    const AAdminViewCourseList = Authorization(this.state.user,this.handleUser,AdminViewCourseList,['A']);
+    const AAdminViewEditProfile = Authorization(this.state.user,this.handleUser,AdminViewEditProfile,['A']);
+    const AAdminViewSectionList = Authorization(this.state.user,this.handleUser,AdminViewSectionList,['A']);
+    const AAdminViewStudentDegreeAudit = Authorization(this.state.user,this.handleUser,AdminViewStudentDegreeAudit,['A']);
+    const AAdminViewStudentGrades = Authorization(this.state.user,this.handleUser,AdminViewStudentGrades,['A']);
+    const AAdminViewStudentInfo = Authorization(this.state.user,this.handleUser,AdminViewStudentInfo,['A']);
+    const AAdminViewStudentTerm = Authorization(this.state.user,this.handleUser,AdminViewStudentTerm,['A']);
+    const AAdminViewAdviseeDetails = Authorization(this.state.user,this.handleUser,AdminViewAdviseeDetails,['A']);
+    const AAdminViewAdviseeList= Authorization(this.state.user,this.handleUser,AdminViewAdviseeList, ['A']);
 
     return (
       <BrowserRouter>
         <div>
-          <Route path="/" exact component={GuestMain} />
+          <Route path="/" exact component={GGuestMain} />
           <Route path="/master-schedule" component={GuestSearchMasterSchedule} />
           <Route path="/course-catalog" component={GuestViewCourseCatalog} />
 
-          <Route path="/login" component={GuestLogin} />
+          <Route path="/login" component={GGuestLogin} />
 
           <Route path="/student/main" component={StudentMain} />
 

@@ -1,8 +1,12 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {Link } from "react-router-dom";
 
-class HeaderHome extends Component {
+class HeaderHome extends PureComponent {
+
   render(){
+    const logout = () => {
+      localStorage.removeItem('token');
+    }
     return (
       <header id="navtop" className="container-fluid sticky-top border-bottom">
         <nav className="navbar navbar-expand-md bg-white navbar-light">
@@ -16,7 +20,7 @@ class HeaderHome extends Component {
                 <Link className="nav-link" to="/admin/main">Main Page</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/logout/">Logout</Link>
+                <Link onClick={logout} className="nav-link" to="/login">Logout</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/admin/view-edit-profile">My Profile</Link>

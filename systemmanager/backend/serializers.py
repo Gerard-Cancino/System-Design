@@ -11,12 +11,32 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('__all__')
 
+class UserSerializerWithPasswordChange(serializers.ModelSerializer):
+    token = serializers.SerializerMethodField()
+    password = serializers.CharField(write_only=True)
+    def get_token(self,obj):
+        print('test')
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        payload = jwt_payload_handler(obj)
+        token = jwt_encode_handler(payload)
+        return token
+    def update(self,validated_data):
+        password = validated_data.pop('password',None)
+        print('test')
+        instance = self.Meta.model(email=validated_data.get('email'))
+        instance.set_password(password)
+        return instance
+    class Meta:
+        model = User
+        fields = ('token','email','password')
+
 class UserSerializerWithToken(serializers.ModelSerializer):
     token = serializers.SerializerMethodField()
     password = serializers.CharField(write_only=True)
     
     def get_token(self,obj):
-        print('getting token')
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 

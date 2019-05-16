@@ -18,6 +18,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db.models import Prefetch
+from systemmanager import settings
 
 from rest_framework import generics
 
@@ -38,11 +39,22 @@ class TokenUser(generics.RetrieveUpdateDestroyAPIView):
   def get(self, request):
     params = request.query_params
     if params.get('token') is not None:
-      token = jwt.decode(str(params.get('token')),SECRET_KEY)
-      user = models.User.objects.get(id=token['id'])
-      print(user)
+      token = jwt.decode(str(params.get('token')),None,None)
+      print(token)
+      user = models.User.objects.get(id=token['user_id'])
       serializer = serializers.UserSerializer(user)
       return Response(serializer.data)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UserPasswordChange(generics.RetrieveUpdateDestroyAPIView):
+  def put(self,request):
+    print('loaded')
+    user = models.User.objects.get(email=request.data.get('email'))
+    print('updating')
+    user.set_password(request.data.get('password'))
+    user.save()
+    serializer = serializers.UserSerializer(user)
+    return Response(serializer.data)
 
 class BuildingDetails(APIView):
   serializer_class = serializers.BuildingSerializer
