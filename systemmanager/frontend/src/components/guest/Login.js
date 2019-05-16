@@ -8,14 +8,27 @@ class Login extends Component {
   state = {
     email:undefined,
     password:undefined,
-    loggedIn:false
+    loggedIn:false,
+    username: undefined,
   }
   componentDidMount() {
+
     // axios.defaults.xsrfCookieName='csrftoken';
     // axios.defaults.xsrfHeaderName='X-CSRFTOKEN';
     // axios
     // .post('/login.json')
     // console.log(axios.defaults)
+  }
+  getUser () {
+    axios
+    .get('/token-user',{ 
+      params: {
+        token: localStorage.getItem('token')
+      }
+    })
+    .then(res=>{
+      this.setState({user:res.data})
+    })
   }
   handleChange = e => {
     const name = e.target.name;
@@ -36,10 +49,12 @@ class Login extends Component {
     .then(res=>{
       console.log(res)
       localStorage.setItem('token',res.data.token);
+      console.log(localStorage.getItem('token'))
       this.setState({
         loggedIn: true,
         displayed_form: ''
       })
+      this.getUser()
     })
     .catch(err => {
       console.log(err);
@@ -48,6 +63,7 @@ class Login extends Component {
         displayStatus: false,
       })
     })
+
   }
   render(){
     return(

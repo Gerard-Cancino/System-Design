@@ -344,5 +344,9 @@ class Grade(models.Model):
     type = models.CharField(max_length=1, choices=TEST_NAME)
     letterGrade = models.CharField(max_length=1)
     class Meta:
+<<<<<<< HEAD
         unique_together = (("student","course_section","type"))
+=======
+        unique_together = (("student","course_section"))
+>>>>>>> bf50811c57a233090b95c0525e1e1af25848e7dd
         db_table = "grade"

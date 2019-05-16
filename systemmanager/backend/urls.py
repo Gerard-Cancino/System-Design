@@ -5,7 +5,6 @@ from django.contrib.auth.views import LoginView
 from rest_framework_jwt.views import obtain_jwt_token
 from django.contrib import admin
 
-from .api import TODOViewSet
 
 from backend import api
 
@@ -14,6 +13,8 @@ urlpatterns = [
     path('login.json', LoginView.as_view()),
     path('token-auth', obtain_jwt_token),
     path('current-user', api.current_user),
+    path('token-user', api.TokenUser.as_view()),
+
     path('user-list.json', api.UserList.as_view()),
 
     path('advisee-details.json/<str:faculty>', api.AdviseeDetailsFaculty.as_view()),

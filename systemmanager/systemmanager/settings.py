@@ -168,5 +168,13 @@ CORS_ORIGIN_WHITELIST = (
 CORS_ORIGIN_ALLOW_ALL = True
 
 JWT_AUTH = {
+<<<<<<< HEAD
   'JWT_RESPONSE_PAYLOAD_HANLDER': 'backend.utils.my_jwt_response_handler'
 }
+=======
+  'JWT_DECODE_HANDLER':
+    'rest_framework_jwt.utils.jwt_decode_handler',
+  'JWT_RESPONSE_PAYLOAD_HANLDER': 
+    'backend.utils.my_jwt_response_handler'
+}
+>>>>>>> bf50811c57a233090b95c0525e1e1af25848e7dd

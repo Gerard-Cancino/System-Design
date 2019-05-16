@@ -2,6 +2,7 @@ from backend import models
 
 from datetime import datetime
 import io
+import jwt
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 
@@ -21,10 +22,12 @@ from django.db.models import Prefetch
 from rest_framework import generics
 
 from rest_framework import viewsets, permissions
+from rest_framework.authtoken.models import Token
 
 from django.views import View;
 from backend import serializers
 
+<<<<<<< HEAD
 # Base ViewSet
 class TODOViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
@@ -33,6 +36,8 @@ class TODOViewSet(viewsets.ModelViewSet):
     ]
     serializer_class = serializers.UserSerializer
 
+=======
+>>>>>>> bf50811c57a233090b95c0525e1e1af25848e7dd
 # Authentication
 @method_decorator(csrf_exempt, name='dispatch')
 @api_view(['GET'])
@@ -40,6 +45,7 @@ def current_user(request):
   serializer = UserSerializer(request.user)
   return Response(serializer.data)
 
+<<<<<<< HEAD
 class AdvisorDetails(APIView):
   serializer_class = serializers.AdvisorSerializer
   def get_object(self,student):
@@ -74,6 +80,18 @@ class AdvisorList(APIView):
     if serializer.is_valid:
       return Response(serializer.data,status=HTTP_201_CREATED)
     return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
+=======
+class TokenUser(generics.RetrieveUpdateDestroyAPIView):
+  def get(self, request):
+    params = request.query_params
+    if params.get('token') is not None:
+      token = jwt.decode(str(params.get('token')),SECRET_KEY)
+      user = models.User.objects.get(id=token['id'])
+      print(user)
+      serializer = serializers.UserSerializer(user)
+      return Response(serializer.data)
+
+>>>>>>> bf50811c57a233090b95c0525e1e1af25848e7dd
 class BuildingDetails(APIView):
   serializer_class = serializers.BuildingSerializer
   def get(self, request, code):
@@ -282,7 +300,6 @@ class DayList(generics.ListCreateAPIView):
   queryset = models.Day.objects.all()
 @method_decorator(csrf_exempt, name='dispatch')
 class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
-  permission_classes = (IsAuthenticated,)
   def get(self, request, code):
     try:
       department = models.Department.get(code=code)
