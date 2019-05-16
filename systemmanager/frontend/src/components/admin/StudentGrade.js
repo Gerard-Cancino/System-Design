@@ -13,14 +13,15 @@ class ViewStudentGrades extends Component {
     finalgrade:undefined,
     gradeString:undefined,
     cs_ID: undefined,
-    id: undefined
+    id: undefined,
+    status: undefined
   }
 
   componentDidMount(){
     // console.log('loaded');
     // axios
-    //   .get(`/grade-details.json/${this.state.student}/${this.state.cs_ID}`)
     //   .then(res => {
+    //   .get(`/grade-details.json/${this.state.student}/${this.state.cs_ID}`)
     //     this.setState({
     //       gradeString: res.data,
     //     })
@@ -43,6 +44,11 @@ class ViewStudentGrades extends Component {
         this.setState({
           gradeString: res.data
         })
+      })
+      .catch(res => {
+        this.setState({
+           status: res.response.status
+          })
       })
     this.setState({isLoaded: true})
   }
@@ -79,18 +85,38 @@ class ViewStudentGrades extends Component {
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>
           </form>
-          {this.state.gradeString==undefined?(
-            <p></p>
-          ):(
-            <div>
               <br></br>
-              <h4>Student: {this.state.gradeString.student.user.lastName}, {this.state.gradeString.student.user.firstName}</h4>
-              <p>Department Name: {this.state.gradeString.course_section.course.department.name}</p>
-              <p>Class Name: {this.state.gradeString.course_section.course.name}</p>
-              <p>Number of Credits: {this.state.gradeString.course_section.course.numberOfCredits}</p>
-              <p>Final Grade: {this.state.gradeString.letterGrade}</p>
-            </div>
+              {this.state.gradeString==undefined?(
+                this.state.status==404 || this.state.status==500?(
+                  <h2>Invalid Information inputted.</h2>
+                ):(
+                  <p></p>
+                )
 
+               //if inside of if else outside of that first if
+              ):(
+                this.state.gradeString.type=='F'?( //then
+                  <div>
+                  <h4>Student: {this.state.gradeString.student.user.lastName}, {this.state.gradeString.student.user.firstName}</h4>
+                  <p>Department Name: {this.state.gradeString.course_section.course.department.name}</p>
+                  <p>Class Name: {this.state.gradeString.course_section.course.name}</p>
+                  <p>Number of Credits: {this.state.gradeString.course_section.course.numberOfCredits}</p>
+                  <p>Final Grade: {this.state.gradeString.letterGrade}</p>
+                  </div>
+                ):(
+                  //{this.state.gradeString.type=='M'?(
+                  <div>
+                  <h4>Student: {this.state.gradeString.student.user.lastName}, {this.state.gradeString.student.user.firstName}</h4>
+                  <p>Department Name: {this.state.gradeString.course_section.course.department.name}</p>
+                  <p>Class Name: {this.state.gradeString.course_section.course.name}</p>
+                  <p>Number of Credits: {this.state.gradeString.course_section.course.numberOfCredits}</p>
+                  <p>Midterm Grade: {this.state.gradeString.letterGrade}</p>
+                  </div>
+                //):(
+
+                //)}
+
+                )
           )}
 
           </div>
