@@ -58,7 +58,7 @@ class Main extends Component {
                 <div className="card-body">
                   <p className="text-center h3"><Link to="/admin/view-edit-student-grade">View/Edit Student's Grades</Link></p>
                 </div>
-              </div>
+              </div> 
             </div>            
             <div className="col-md-4 p-4">
               <div className="card">
@@ -78,6 +78,20 @@ class Main extends Component {
               <div className="card">
                 <div className="card-body">
                   <p className="text-center h3"><Link to="/admin/view-section-list">Master Schedule</Link></p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 p-4">
+              <div className="card">
+                <div className="card-body">
+                  <p className="text-center h3"><Link to="/admin/view-student-transcript">View Student's Transcript</Link></p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 p-4">
+              <div className="card">
+                <div className="card-body">
+                  <p className="text-center h3"><Link to="/admin/create-account">Create Account</Link></p>
                 </div>
               </div>
             </div>

@@ -14,7 +14,7 @@ class SearchDepartment extends PureComponent {
           <div className="form-group col-md-12">
             <label>Department:</label>
             <select className="form-control" onChange={onChange}>
-              <option value={undefined}>All Departments</option>
+              <option value=''>All Departments</option>
               {departmentList.map(el => (
                 <option key={el.code} value={el.code}>{el.code}: {el.name}</option>
               ))}

@@ -30,14 +30,20 @@ function checkAddDrop(term) {
 
 
 class SearchTerm extends PureComponent {
+  state = {
+    enrollmentList: undefined
+  }
+  componentDidMount(){
+    this.setState({enrollmentList: this.props.enrollmentList})
+  }
   render () {
     const {enrollmentList,handleDrop} = this.props
   
     return (
-      !enrollmentList?(
+      !this.state.enrollmentList?(
         <p></p>
       ) : (
-        enrollmentList.length == 0?(
+        this.state.enrollmentList.length == 0?(
           <p>Could not find enrollment</p>
         ) : (
           <table className="col-md-12">
@@ -53,7 +59,7 @@ class SearchTerm extends PureComponent {
               </tr>
             </thead>
             <tbody className="col-md-12">
-              {enrollmentList.map(el => (
+              {this.state.enrollmentList.map(el => (
                 <tr className="col-md-12" key={el.course_section.id}>
                   <td className="col-md-1">{el.course_section.course.id}</td>
                   <td className="col-md-2">{el.course_section.course.name}</td>

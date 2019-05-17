@@ -38,7 +38,7 @@ class AddPrereq extends Component {
           let prerequisiteList = res.data;
           for(let i = 0;i<courseList.length;i++){              
             if(this.state.courseID==courseList[i].id){
-              courseList.splice(courseList[i],1)
+              courseList.splice(i,1)
             }
           }
           for(let i = 0;i<prerequisiteList.length;i++){  

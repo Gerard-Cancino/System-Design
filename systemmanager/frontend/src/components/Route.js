@@ -28,13 +28,14 @@ import AdminViewAddStudentHold from './admin/View_Add_Student-Hold';
 import AdminViewCourseList from './admin/View_Course-List.js';
 import AdminViewEditProfile from './admin/View_Edit_Profile.js';
 import AdminViewSectionList from './admin/View_Section-List.js';
-import AdminViewStudentDegreeAudit from './admin/View_Student_Degree-Audit.js';
+import AdminViewStudentDegreeAudit from './admin/View_Student_Degree_Audit.js';
 import AdminViewStudentGrades from './admin/StudentGrade.js';
 import AdminViewAdviseeDetails from './admin/Advisees.js';
 import AdminViewStudentInfo from './admin/View_Student_Info.js';
 import AdminViewStudentTerm from './admin/View_Student_Term.js';
 import AdminViewAdviseeList from './admin/View_Advisees_List.js';
 import AdminViewGradeList from './admin/View_Grade_List.js';
+import AdminViewTranscript from './admin/View_Student_Transcript.js';
 // npm run dev to create main.js
 
 const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
@@ -139,6 +140,7 @@ class MyRoute extends Component {
     const AAdminViewAdviseeDetails = Authorization(this.state.user,this.handleUser,AdminViewAdviseeDetails,['A']);
     const AAdminViewAdviseeList = Authorization(this.state.user,this.handleUser,AdminViewAdviseeList, ['A']);
     const AAdminViewGradeList = Authorization(this.state.user,this.handleUser,AdminViewGradeList, ['A']);
+    const AAdminViewTranscript = Authorization(this.state.user,this.handleUser,AdminViewTranscript,['A']);
 
     return (
       <BrowserRouter>
@@ -172,6 +174,7 @@ class MyRoute extends Component {
           <Route path="/admin/view-advisee-details" component={AAdminViewAdviseeDetails} />
           <Route path="/admin/view-advisee-list" component={AAdminViewAdviseeList} />
           <Route path="/admin/view-grade-list" component={AAdminViewGradeList} />
+          <Route path="/admin/view-student-transcript" component={AAdminViewTranscript} />
         </div>
       </BrowserRouter>
     );

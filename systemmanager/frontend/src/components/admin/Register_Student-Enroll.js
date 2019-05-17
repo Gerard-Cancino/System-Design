@@ -14,27 +14,26 @@ function checkTerm() {
   // Spring november 4 2019 to january 27 2020
   // Fall April 1 to Sept 1
   // Fall + Spring
-  if (term.year==year||term.year==year-1){
-    let month = parseInt(today.getMonth());
-    // Spring
-    if((month>10||month<2)){
-      let beginTerm = new Date((year)+"-11-04");
-      let endTerm = new Date(year+1+"-01-27");
-      if(beginTerm<today<endTerm){
-        return ({season: 'SP',year:year+1});
-      }
+  let month = parseInt(today.getMonth());
+  // Spring
+  if((month>10||month<2)){
+    let beginTerm = new Date((year)+"-11-04");
+    let endTerm = new Date(year+1+"-01-27");
+    if(beginTerm<today<endTerm){
+      return ({season: 'SP',year:year+1});
     }
-    // Fall
-    else if((month>5||month<10)){
-      let beginTerm = new Date(year+"-04-01");
-      let endTerm = new Date(year+"-09-01");
-      if(beginTerm<today<endTerm){
-        return ({season: 'F',year:year});
-      }
+  }
+  // Fall
+  else if((month>5||month<10)){
+    let beginTerm = new Date(year+"-04-01");
+    let endTerm = new Date(year+"-09-01");
+    if(beginTerm<today<endTerm){
+      return ({season: 'F',year:year});
     }
   }
   return undefined;
 }
+
 
 class StudentTerm extends Component{
   state = {
@@ -43,6 +42,16 @@ class StudentTerm extends Component{
     enrollment: undefined,
   }
   componentWillMount() {
+    this.getTerm()
+  }
+  getTerm = () => {
+    let term = checkTerm()
+    axios
+    .get(`/term-details.json/${term.season}/${term.year}`)
+    .then(res=>{
+      this.setState({term:res.data})
+      console.log(res.data)
+    })
   }
   handleStudent = event => {
     this.setState({studentUsername: event.target.value});
@@ -88,7 +97,7 @@ class StudentTerm extends Component{
               ):(
                 <div className="col-md-12">
                   <h2 className="text-center">Enroll Student</h2>
-                  <SearchSection student={this.state.student} SectionTable={EnrollmentTable} />
+                  <SearchSection term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
                 </div>
               )}
             </div>

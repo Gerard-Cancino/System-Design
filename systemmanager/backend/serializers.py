@@ -235,18 +235,20 @@ class MinorSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class StudentMajorSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(many=True)
+    student = StudentSerializer(many=False)
     major = MajorSerializer(many=False)
     class Meta:
         model = StudentMajor
         fields = ('__all__')
+        depth = 1
 
 class StudentMinorSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(many=True)
+    student = StudentSerializer(many=False)
     minor = MinorSerializer(many=False)
     class Meta:
         model = StudentMinor
         fields = ('__all__')
+        depth = 1
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False, required=True)
@@ -266,7 +268,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class TranscriptSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False)
     course = CourseSerializer(many=False)
-    course_section = CourseSectionSerializer(many=False)
+    season = serializers.SerializerMethodField()
+    def get_season(self,obj):
+      return obj.get_season_display()
     class Meta:
         model = Transcript
         fields = ('__all__')

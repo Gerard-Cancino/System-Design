@@ -163,7 +163,10 @@ class CourseList(generics.ListCreateAPIView):
       params.get('numberOfCredits') is not None or \
       params.get('isGraduate') is not None:
       department = models.Department.objects.get(code=params.get('department'))
+      if isinstance(params.get('number'),int):
+        return Response(status=status.HTTP_400_BAD_REQUEST)
       id = str(params.get('department')) + str(params.get('number'))
+      
       course = models.Course.objects.create(
         id = id,
         department=department,
@@ -268,11 +271,9 @@ class CourseSectionList(generics.ListCreateAPIView):
         queryset = None
         if len(days) == 0:
           queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).distinct()
-        elif len(days) != 0:
-          print(days)
+          print(queryset)
         else:
           queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days).distinct()
-          print(queryset)
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
         return Response(serializer.data)
     except models.CourseSection.DoesNotExist:
@@ -419,6 +420,17 @@ class RoomList(APIView):
       room = models.Room.objects.all()
       serializer = serializers.RoomSerializer(room)
       return Response(serializer.data)
+class MajorDetails(generics.RetrieveUpdateDestroyAPIView):
+  def get_object(self,id):
+    try:
+      major = models.Major.objects.get(id=id)
+      return major
+    except models.Major.DoesNotExist:
+      raise Http404
+  def get(self,request,id):
+    major = self.get_object(id)
+    serializer = serializers.MajorSerializer(major)
+    return Response(serializer.data)
 class MajorList(generics.ListCreateAPIView):
   queryset = models.Major.objects.all()
   serializer_class = serializers.MajorSerializer
@@ -530,6 +542,12 @@ class SlotList(generics.ListCreateAPIView):
   #   print('done')
   #   return Response(status=HTTP_201_CREATED)
 
+class TermDetails(generics.RetrieveAPIView):
+  serializer_class = serializers.TermSerializer
+  def get(self,request,season,year):
+    term = models.Term.objects.get(season=season,year=year)
+    serializer = serializers.TermSerializer(term)
+    return Response(serializer.data)
 class TermList(generics.ListCreateAPIView):
   serializer_class =serializers.TermSerializer
   queryset = models.Term.objects.all()
@@ -746,15 +764,15 @@ class AttendanceList(generics.ListCreateAPIView):
         except models.Attendance.DoesNotExist:
             raise Http404
 
-#class TranscriptDetails(generics.RetrieveUpdateDestroyAPIView):
+# class TranscriptDetails(generics.RetrieveUpdateDestroyAPIView):
 #    serializer_class = serializers.TranscriptSerializer
-##        try:
+# #        try:
 #            transcriptObject=models.Transcript.objects.get(student__user__email=id, course_section_id=course_section_id)
 #            print(transcriptObject)
 #            return transcriptObject
 #        except models.Transcript.DoesNotExist:
 #            raise Http404
-#
+
 #    def get(self, request, id, course_section_id):
 #        try:
 #            transcript = self.get_object(id, course_section_id)
@@ -774,11 +792,27 @@ class AttendanceList(generics.ListCreateAPIView):
 #            return Response(serializer.data)
 #        queryset = self.get_object(id)
 
-    #def delete(self, request,id, course_section_id):
-    #    queryset = self.get_object(id, course_section_id)
-    #    queryset.delete()
-    #    return Response({'isSuccessful': True}, status=status.HTTP_204_NO_CONTENT)
-#not completed
+#     def delete(self, request,id, course_section_id):
+#        queryset = self.get_object(id, course_section_id)
+#        queryset.delete()
+#        return Response({'isSuccessful': True}, status=status.HTTP_204_NO_CONTENT)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TranscriptList(generics.ListCreateAPIView):
+    serializer_class = serializers.TranscriptSerializer
+    def get_object(self,email):
+        try:
+            student = models.Student.objects.get(user__email = email)
+            transcript = models.Transcript.objects.filter(student_id=student.user_id)
+            return transcript
+        except models.Transcript.DoesNotExist:
+            raise Http404
+    def list(self,request,email):
+        transcript = self.get_object(email)
+        serializer = serializers.TranscriptSerializer(transcript, many=True)
+        return Response(serializer.data)
+        
+        
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
@@ -922,12 +956,9 @@ class PrerequisiteList(generics.ListCreateAPIView):
       return Response(serializer.data)
   def create(self, request):
     params = request.data
-    print(params.get('course'))
     if params.get('course') is not None and params.get('prerequisite') is not None:
       course = models.Course.objects.get(id=params.get('course'))
       prerequisite = models.Course.objects.get(id=params.get('prerequisite'))
-      print(course)
-      print(prerequisite)
       prerequisite = models.Prerequisite.objects.create( \
         requiredGrade = 'C',
         course = course,
@@ -935,4 +966,20 @@ class PrerequisiteList(generics.ListCreateAPIView):
       )
       prerequisite.save()
       serializer = serializers.PrerequisiteSerializer(prerequisite)
+      return Response(serializer.data)
+
+class StudentMajorList(generics.ListCreateAPIView):
+  def list(self,request):
+    params = request.query_params
+    if params.get('email') is not None:
+      student_major = models.StudentMajor.objects.filter(student__user__email=params.get('email'))
+      serializer = serializers.StudentMajorSerializer(student_major,many=True)
+      return Response(serializer.data)
+
+class StudentMinorList(generics.ListCreateAPIView):
+  def list(self,request):
+    params = request.query_params
+    if params.get('email') is not None:
+      student_minor = models.StudentMinor.objects.filter(student__user__email=params.get('email'))
+      serializer = serializers.StudentMinorSerializer(student_minor,many=True)
       return Response(serializer.data)

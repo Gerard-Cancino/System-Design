@@ -59,17 +59,17 @@ class View_Grade_List extends Component {
                   <td className='col-md-2'>Department</td>
                   <td className='col-md-2'>Grade Type</td>
                   <td className='col-md-3'>Grade Recieved</td>
-                  <td className='col-md-2'># Of Credits</td>
+                  <td className='col-md-2'># of Credits</td>
                 </tr>
               </thead>
               <tbody>
                 {this.state.gradeString.map(el => (
                   <tr key={el.id}>
-                    {/*<td className='col-md-3'>{el.student.user.firstName} {el.student.user.lastName}</td>
-                    <td className='col-md-2'>{el.student.user.email}</td>
-                    <td className='col-md-2'>{el.dateAssigned}</td>
-                    <td className='col-md-2'>{el.student.user.id}</td>
-                    <td className='col-md-2'>{el.student.}</td>*/}
+                    <td className='col-md-3'>{el.course_section.course.name}</td>
+                    <td className='col-md-2'>{el.course_section.course.department.name}</td>
+                    <td className='col-md-2'>{el.type}</td>
+                    <td className='col-md-2'>{el.letterGrade}</td>
+                    <td className='col-md-2'>{el.course_section.course.numberOfCredits}</td>
                   </tr>
                 ))}
               </tbody>
@@ -96,7 +96,7 @@ class View_Grade_List extends Component {
               </form>
 
               {this.state.gradeString == undefined?(
-                <p><br></br> Invalid Input</p>
+                <p></p>
               ):(
                 this.state.gradeString.length == 0? (
                   <p><br></br> No Grades available in the system.</p>
@@ -105,7 +105,7 @@ class View_Grade_List extends Component {
                 )
               )}
 
-              //<Tables />
+              <Tables />
             </div>
           </div>
         </section>

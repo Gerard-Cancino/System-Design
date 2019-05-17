@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Link } from "react-router-dom";
-import axios from 'axios';
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
@@ -16,33 +15,7 @@ const MainBackground = {
 }
 class Home extends Component {
   componentDidMount(){
-    axios
-    .post('/user-list.json',{
-      email: 'toothQ',
-      password: 'password',
-      firstName: 'Tooth',
-      lastName: 'Q',
-      address: 'Random',
-      city: 'Floral Park',
-      state: 'NY',
-      zipCode: '11111',
-      phoneNumber: '1234567890',
-      type: 'A',
-      country: 'USA'
-    })
-    .then(res => {
-      if(res.status==400){
-        this.setState({
-          status: res.status
-        })
-      }
-      else {
-        this.setState({
-          user: res.data,
-          status: res.status
-        })
-      }
-    })
+
   }
   render(){
     return(
@@ -55,7 +28,9 @@ class Home extends Component {
           <div className="text-center h-100 align-items-center row p-4" >
             <div className="col-md-12">
               <h2><strong>Disclaimer:</strong></h2>
-              <p>TODO: Add that this is not a real school. etc...</p>
+              <p>This is not a real university</p>
+              <p>We do not use this application for any purpose other than to learn and practice web application development</p>
+              <p>The information populated into the database is based on Cooper Union University, Manhattan University, and SUNY Old Westbury</p>
             </div>
           </div>
         </section>
@@ -353,7 +328,9 @@ class Home extends Component {
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>Django</h3>
-                  <p>TODO: ADD HOW THIS CONNECTS TO PROJECT</p>
+                  <p>Used to Create an API</p>
+                  <p>MVT</p>
+                  <p>Enforces Clean Code</p>
                 </div>
               </div>
             </div>
@@ -363,7 +340,8 @@ class Home extends Component {
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>React</h3>
-                  <p>TODO: ADD HOW THIS CONNECTS TO PROJECT</p>
+                  <p>Front-End</p>
+                  <p>Component Based</p>
                 </div>
               </div>
             </div>
@@ -373,7 +351,7 @@ class Home extends Component {
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>MySQL</h3>
-                  <p>TODO: ADD HOW THIS CONNECTS TO PROJECT</p>
+                  <p>Database</p>
                 </div>
               </div>
             </div>
@@ -384,31 +362,32 @@ class Home extends Component {
           <div className="row pt-4 pb-4">
             <div className="col-md-4">
               <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
-                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" alt="my lovely face"/>
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>Gerard Cancino</h3>
-                  <p>TODO: What did we do?</p>
+                  <p>Backend</p>
+                  <p>Frontend</p>
+                  <p>Database</p>
+                  <p>Server Administrator</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
               <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
-                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" alt="my lovely face"/>
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>Dan Dabrowski</h3>
-                  <p>TODO: What did we do?</p>
+                  <p>Backend</p>
+                  <p>Frontend</p>
+                  <p>Database</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
               <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
-                <img className="col-md-12 card-img-top img-fluid mx-auto d-block" alt="my lovely face"/>
                 <div className="col-md-12 card-body">
-                  <hr />
                   <h3>Haojun Cai</h3>
-                  <p>TODO: What did we do?</p>
+                  <p>Database</p>
                 </div>
               </div>
             </div>
@@ -416,16 +395,12 @@ class Home extends Component {
         </section>
         <section id="contact" className="container-fluid">
           <div className="row">
-            <div className="col-md-8">
-              <p className="text-center"><strong>About Us</strong></p>
-              <p className="text-center">TODO: Description // Not about school about developers</p>
-            </div>
-            <div className="col-md-4">
+            <div className="col-md-12">
               <p className="text-center"><strong>Contact Us</strong></p>
               <p className="text-center">Phone Number: (123) 456 7890</p>
-              <p className="text-center">Address: </p>
-              <p className="text-center">Address Line 1</p>
-              <p className="text-center">City, State Zip</p>
+              <p className="text-center">Address:</p>
+              <p className="text-center">123 Long St</p>
+              <p className="text-center">Sponge Town, NY, 11041</p>
             </div>
           </div>
         </section>

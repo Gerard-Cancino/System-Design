@@ -313,7 +313,7 @@ class Transcript(models.Model):
     REQUIRED_FIELDS = ('Student', 'Course')
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    gradeReceived = models.CharField(max_length=2)
+    gradeReceived = models.CharField(max_length=2,null=True)
     year = models.IntegerField()
     SEASON = (
         ('SP','SPRING'),

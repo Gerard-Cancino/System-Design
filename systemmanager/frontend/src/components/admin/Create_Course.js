@@ -100,14 +100,15 @@ class CreateCourse extends Component {
               )}
             </div>
           ):(
-            <div>
-              <p>Added Successfully into the database</p>
-              <a className="col-md-12 btn btn-info">
+            <div className="col-md-12">
+              <h4 className="col-md-12 text-center">Added Successfully into the database</h4>
+                <Link to={{
+                  pathname: '/admin/view-course-list'
+                }} className="col-md-6 btn btn-info">Back to Course List</Link>
                 <Link to={{
                   pathname: '/admin/add-prerequisite',
                   state: {courseID: this.state.course.id}
-                }}>Add Prerequisites</Link>
-              </a>
+                }} className="col-md-6 btn btn-info">Add Prerequisites</Link>
             </div>
           )}
           </div>

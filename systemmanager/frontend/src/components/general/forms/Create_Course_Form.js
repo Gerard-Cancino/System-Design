@@ -40,13 +40,13 @@ class CreateCourseForm extends Component {
             <label>Description</label>
             <textarea className="form-control" onChange={handleDescription} placeholder="Description" row="3"></textarea>
           </div>
-          <div className="form-check"> 
+          {/* <div className="form-check"> 
             <label className="form-check-label">Is this a Graduate Course</label>
           </div>
           <div className="form-check">
             <input value={isGraduate} onChange={handleisGraduate} className="form-check-input" type="checkbox" />
             <p className="text-secondary">Leave blank if false</p>
-          </div>
+          </div> */}
           <br />
           <button type="submit" className="btn btn-primary">Submit</button> 
         </form>

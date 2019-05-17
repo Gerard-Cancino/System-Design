@@ -35,6 +35,9 @@ class SectionForm extends Component {
   }
 
   componentDidMount() {
+    if(this.props.term!=undefined){
+      this.setState({term:this.props.term.id})
+    }
     
     axios
       .get('/department-list.json')
@@ -167,15 +170,22 @@ class SectionForm extends Component {
       })
     }    
   }
-
   render(){
-    const {student, SectionTable} = this.props
+    const {SectionTable,student} = this.props;
     return(
       <React.Fragment>
         <div className="col-md-12">
           <form className="col-md-12" onSubmit={this.handleSubmit}>
             <div className="form-group">
-              <TermSearch onChange={this.handleTerm.bind()} termList={this.state.termList}/>
+              {this.props.term==undefined?(
+                <TermSearch onChange={this.handleTerm.bind()} termList={this.state.termList}/>
+              ):(
+                <div className="form-group col-md-12">
+                  <label>Term</label>
+                  <input className="form-control" placeholder={this.props.term.season + this.props.term.year} disabled />
+                </div>
+              )}
+
               <DepartmentSearch onChange={this.handleDepartment.bind(this)} departmentList={this.state.departmentList}/>
               <CourseNameSearch onChange={this.handleCourseName.bind(this)} />
               <CourseIDSearch onChange={this.handleCourseID.bind(this)} />

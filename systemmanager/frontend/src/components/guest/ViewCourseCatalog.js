@@ -9,31 +9,37 @@ const Catalog = ({data}) => {
   return(
     data.map(course => (
       <div className="text-center col-md-12">
-        {currDepart == course.department.code?(
-          <p></p>
-        ):(
-          <div>
-            <h3>{course.department.name}</h3>
-            <p style={{display:'none'}}>{currDepart=course.department.code}</p>
-          </div>
-        )}
-        <table>
+        <div>
+          <h3>{course.department.name}</h3>
+          <p style={{display:'none'}}>{currDepart=course.department.code}</p>
+        </div>
+        <table className="table">
           <thead>
             <tr>
-              <td>Name</td>
-              <td>Description</td>
-              <td>Credit</td>
+              <td scope="col">Name</td>
+              <td scope="col">Description</td>
+              <td scope="col">Credit</td>
             </tr>
           </thead>
+
           <tbody>
-            <tr>
-              <td>{course.name}</td>
-              <td>{course.description}</td>
-              <td>{course.numberOfCredits}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        {currDepart == course.department.code?(
+          <tr>
+            <td>{course.name}</td>
+            <td>{course.description}</td>
+            <td>{course.numberOfCredits}</td>
+          </tr>
+        ):(
+          <tr>
+            <td>{course.name}</td>
+            <td>{course.description}</td>
+            <td>{course.numberOfCredits}</td>
+          </tr>
+        )}
+
+        </tbody>
+      </table>
+    </div>
     ))
   )
 }
