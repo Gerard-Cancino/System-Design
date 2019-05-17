@@ -77,16 +77,16 @@ class DegreeAudit extends Component {
           )
         }
       }
-      return (
-        <tr >
-          <td ></td>
-          <td >{el.id}</td>
-          <td >{el.name}</td>
-          <td ></td>
-          <td ></td>
-        </tr>
-      )
+      console.log('teset')
     }
+    return (
+      <tr>
+        <td ></td>
+        <td >{el.id}</td>
+        <td >{el.name}</td>
+        <td ></td>
+        <td ></td>
+      </tr>)
   }
   componentDidMount(){
   }
