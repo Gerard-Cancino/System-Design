@@ -10,8 +10,23 @@ import GuestLogin from './guest/Login.js';
 import GuestSearchMasterSchedule from './guest/SearchMasterSchedule.js';
 import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
 
-
 import StudentMain from './student/Main.js';
+import StudentViewSectionList from './student/View_Section-List.js';
+import StudentViewTerm from './student/View_Student_Term.js';
+import StudentRegisterStudentEnroll from './student/Register_Student-Enroll.js';
+import StudentViewHold from './Base.js';
+import StudentViewEditProfile from './student/View_Edit_Profile.js';
+import StudentViewTranscript from './student/View_Student_Transcript';
+import StudentViewDegreeAudit from './student/View_Student_Degree_Audit';
+import StudentViewGrade from './Base.js';
+
+import FacultyMain from './faculty/Main.js'
+import FacultyViewSectionList from './Base.js';
+import FacultyViewTerm from './Base.js';
+import FacultyViewClassRoster from './Base.js';
+import FacultyViewAttendance from './Base.js';
+import FacultyViewEditProfile from './admin/View_Edit_Profile.js';
+import FacultyViewGrade from './Base.js';
 
 import AdminAddPrereq from './admin/Add_Prereq.js';
 import AdminCreateAccount from './admin/Create_Account.js';
@@ -23,7 +38,6 @@ import AdminRegisterStudentEnroll from './admin/Register_Student-Enroll';
 import AdminUpdateCourse from './admin/Update_Course';
 import AdminUpdateSectionInfo from './admin/Update_Section-Info';
 import AdminUpdateSectionSlot from './admin/Update_Section-Slots.js';
-import AdminUpdateStudentGrade from './admin/Update_Student_Grade.js';
 import AdminViewAddStudentHold from './admin/View_Add_Student-Hold';
 import AdminViewCourseList from './admin/View_Course-List.js';
 import AdminViewEditProfile from './admin/View_Edit_Profile.js';
@@ -61,7 +75,7 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
         handleUser(res.data.email,res.data.type)
       })
       .catch(res=>{
-        handleUser(undefined,'G')
+        handleUser(undefined,'G');
       })
     }
     handleGetToken = () => {
@@ -83,16 +97,16 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
       }
       else{
         if (user.role=="A"){
-          console.log('is admin')
           window.location.replace("/admin/main")
           return undefined;
         }
         else if (user.role=='F'){
-          <Redirect to="/faculty/main" />
+          window.location.replace("/faculty/main")
+          return undefined;
         }
         else if (user.role=='S'){
-          <Redirect to="/student/main" />
-          return <StudentMain handleGetToken={this.handleGetToken.bind(this)} user={this.state.user.email} data={this.props.location}/>
+          window.location.replace("/student/main")
+          return undefined;
         }
         else if (user.role=='R'){
           <Redirect to="/researcher/main"/>
@@ -118,6 +132,22 @@ class MyRoute extends Component {
   render() {
     const GGuestMain = Authorization(this.state.user,this.handleUser,GuestMain,['G'])
     const GGuestLogin = Authorization(this.state.user,this.handleUser,GuestLogin,['G'])
+    
+    const SStudentMain = Authorization(this.state.user,this.handleUser,StudentMain,['S']);
+    const SStudentViewSectionList = Authorization(this.state.user,this.handleUser,StudentViewSectionList,['S']);
+    const SStudentViewTerm = Authorization(this.state.user,this.handleUser,StudentViewTerm,['S']);
+    const SStudentRegisterStudentEnroll = Authorization(this.state.user,this.handleUser,StudentRegisterStudentEnroll,['S']);
+    const SStudentViewHold = Authorization(this.state.user,this.handleUser,StudentViewHold,['S']);
+    const SStudentViewEditProfile = Authorization(this.state.user,this.handleUser,StudentViewEditProfile,['S']);
+    const SStudentViewTranscript = Authorization(this.state.user,this.handleUser,StudentViewTranscript,['S']);
+    const SStudentViewDegreeAudit = Authorization(this.state.user, this.handleUser, StudentViewDegreeAudit, ['S']);
+    const SStudentViewGrade = Authorization(this.state.user,this.handleUser,StudentViewGrade,['S']);
+
+    const FFacultyMain = Authorization(this.state.user,this.handleUser,FacultyMain,['F']);
+    const FFacultyViewSectionList = Authorization(this.state.user,this.handleUser,FacultyViewSectionList,['F']);
+    const FFacultyViewTerm = Authorization(this.state.user,this.handleUser,FacultyViewTerm,['F']);
+    const FFacultyViewEditProfile = Authorization(this.state.user,this.handleUser,FacultyViewEditProfile,['F']);
+    const FFacultyViewGrade = Authorization(this.state.user,this.handleUser,FacultyViewGrade,['F']);
 
     const AAdminAddPrereq = Authorization(this.state.user,this.handleUser,AdminAddPrereq,['A']);
     const AAdminCreateAccount = Authorization(this.state.user,this.handleUser,AdminCreateAccount,['A']);
@@ -128,7 +158,6 @@ class MyRoute extends Component {
     const AAdminUpdateCourse = Authorization(this.state.user,this.handleUser,AdminUpdateCourse,['A']);
     const AAdminUpdateSectionInfo = Authorization(this.state.user,this.handleUser,AdminUpdateSectionInfo,['A']);
     const AAdminUpdateSectionSlot = Authorization(this.state.user,this.handleUser,AdminUpdateSectionSlot,['A']);
-    const AAdminUpdateStudentGrade = Authorization(this.state.user,this.handleUser,AdminUpdateStudentGrade, ['A']);
     const AAdminViewAddStudentHold = Authorization(this.state.user,this.handleUser,AdminViewAddStudentHold,['A']);
     const AAdminViewCourseList = Authorization(this.state.user,this.handleUser,AdminViewCourseList,['A']);
     const AAdminViewEditProfile = Authorization(this.state.user,this.handleUser,AdminViewEditProfile,['A']);
@@ -151,7 +180,20 @@ class MyRoute extends Component {
 
           <Route path="/login" component={GGuestLogin} />
 
-          <Route path="/student/main" component={StudentMain} />
+          <Route path="/student/main" component={SStudentMain} />
+          <Route path="/student/view-section-list" component={SStudentViewSectionList} />
+          <Route path="/student/view-term" component={SStudentViewTerm} />
+          <Route path="/student/register-student-enroll" component={SStudentRegisterStudentEnroll} />
+          <Route path="/student/view-hold-list" component={SStudentViewHold} />
+          <Route path="/student/view-edit-profile" component={SStudentViewEditProfile} />
+          <Route path="/student/view-transcript" component={SStudentViewTranscript} />
+          <Route path="/student/view-degree-audit" component={SStudentViewDegreeAudit} />
+          <Route path="/student/view-grade-list" component={SStudentViewGrade} />
+
+          <Route path="/faculty/main" component={FFacultyMain} />
+          <Route path="/faculty/view-term" component={FFacultyViewTerm} />
+          <Route path="/faculty/view-edit-profile" component={FFacultyViewEditProfile} />
+          <Route path="/faculty/view-grade-list" component={FFacultyViewGrade} />
 
           <Route path="/admin/add-prerequisite" component={AAdminAddPrereq} />
           <Route path="/admin/create-account" component={AAdminCreateAccount} />
@@ -162,7 +204,6 @@ class MyRoute extends Component {
           <Route path="/admin/update-course" component={AAdminUpdateCourse} />
           <Route path="/admin/update-section-info" component={AAdminUpdateSectionInfo} />
           <Route path="/admin/update-section-slot" component={AAdminUpdateSectionSlot} />
-          <Route path="/admin/update-student-grade" component={AAdminUpdateStudentGrade} />
           <Route path="/admin/view-add-student-hold" component={AAdminViewAddStudentHold} />
           <Route path="/admin/view-course-list" component={AAdminViewCourseList} />
           <Route path="/admin/view-edit-profile" component={AAdminViewEditProfile} />

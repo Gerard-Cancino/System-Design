@@ -9,37 +9,25 @@ const Catalog = ({data}) => {
   return(
     data.map(course => (
       <div className="text-center col-md-12">
-        <div>
-          <h3>{course.department.name}</h3>
-          <p style={{display:'none'}}>{currDepart=course.department.code}</p>
-        </div>
-        <table className="table">
-          <thead>
-            <tr>
-              <td scope="col">Name</td>
-              <td scope="col">Description</td>
-              <td scope="col">Credit</td>
-            </tr>
-          </thead>
-
-          <tbody>
         {currDepart == course.department.code?(
-          <tr>
-            <td>{course.name}</td>
-            <td>{course.description}</td>
-            <td>{course.numberOfCredits}</td>
-          </tr>
+          <p></p>
         ):(
-          <tr>
-            <td>{course.name}</td>
-            <td>{course.description}</td>
-            <td>{course.numberOfCredits}</td>
-          </tr>
+          <div>
+            <h3> Department: {course.department.name}</h3>
+            <p style={{display:'none'}}>{currDepart=course.department.code}</p>
+          </div>
         )}
-
-        </tbody>
-      </table>
-    </div>
+        <table className="col-md-12">
+          <tbody>
+            <tr className="col-md-12">
+              <td allign="left">{course.name}</td>
+              <td className='col-md-3'>{course.description}</td>
+              <td className="col-md-8">{course.numberOfCredits}</td>
+              <td className= "col-md-1">{}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     ))
   )
 }
@@ -64,11 +52,26 @@ class ViewCourseCatalog extends Component {
         <Header />
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
-            <h2 className="col-md-12 text-center">Course Catalog</h2>
+          <h2 className="col-md-12 text-center">Course Catalog</h2>
+            <div className = "col-md-12">
+              <table className="col-md-12">
+                <thead className="col-md-12">
+                  <tr className="col-md-12">
+                    <td className='col-md-1'>       Name</td>
+                    <td className='col-md-4'>Description</td>
+                    <td className='col-md-7'># of Credits</td>
+                  </tr>
+                </thead>
+              </table>
+            </div>
             {this.state.course==undefined?(
               <p></p>
             ):(
-              <Catalog data={this.state.course} />
+              this.state.course.length == 0? (
+                <p><br></br> Fatal Error, refresh page.</p>
+              ):(
+                <Catalog data={this.state.course} />
+              )
             )}
           </div>
 

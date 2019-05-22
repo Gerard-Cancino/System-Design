@@ -88,24 +88,24 @@ class View_Grade_List extends Component {
               <h2 className="col-md-12 text-center">View Grade List</h2>
               <form className="col-md-12" onSubmit={this.handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="studentid">Enter Student ID</label>
-                  <input type="text" className="form-control" id="studentid" placeholder="Enter Student ID" onChange={this.handleStudent}/>
+                  <label htmlFor="username">Enter Student Username</label>
+                  <input type="text" className="form-control" id="username" placeholder="Enter Student Username" onChange={this.handleStudent}/>
                   <br />
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
               </form>
-
               {this.state.gradeString == undefined?(
                 <p></p>
               ):(
                 this.state.gradeString.length == 0? (
                   <p><br></br> No Grades available in the system.</p>
                 ):(
-                  <h3>Student Name: {this.state.gradeString[0].student.user.firstName}, {this.state.gradeString[0].student.user.lastName} </h3>
+                  <div>
+                    <h3>Student Name: {this.state.gradeString[0].student.user.firstName}, {this.state.gradeString[0].student.user.lastName} </h3>
+                    <Tables />
+                  </div>
                 )
               )}
-
-              <Tables />
             </div>
           </div>
         </section>

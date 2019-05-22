@@ -33,26 +33,29 @@ from backend import serializers
 @api_view(['GET'])
 def current_user(request):
   serializer = UserSerializer(request.user)
-  return Response(serializer.data)
+  return Response({'data':serializer.data})
 
 class AdvisorDetails(APIView):
   serializer_class = serializers.AdvisorSerializer
   def get_object(self,student):
     try:
-      user = models.User.objects.get(email=student)
+      user = models.User.objects.get(email='dawqr')
       advisor = models.Advisor.objects.get(student_id=user.id)
       return advisor
     except models.Advisor.DoesNotExist:
       raise Http404
   def get(self, request, student):
-    advisor = self.get_object(student)
-    serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
+    try:
+      advisor = self.get_object(student)
+      serializer = serializers.AdvisorSerializer(advisor)
+      return Response({'data':serializer.data})
+    except:
+      return Response({'message':'The Student does not have an advisor.  This is a mistake.  Please contact an admininistrator'})
   # No put - Student's Advisor should be deleted then readded to a new faculty
   def delete(self, request, student):
     advisor = self.get_object(student)
     advisor.delete()
-    return Reponse(status=status.HTTP_204_NO_CONTENT)
+    return Reponse({'message':'Advisor was deleted'}, status=status.HTTP_204_NO_CONTENT)
 class AdvisorList(APIView):
   def get_object(self,faculty):
     try:
@@ -61,14 +64,17 @@ class AdvisorList(APIView):
     except models.Advisor.DoesNotExist:
       raise Http404
   def get(self, request, faculty):
-    advisor = self.get_object(faculty)
-    serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
+    try:
+      advisor = self.get_object(faculty)
+      serializer = serializers.AdvisorSerializer(advisor)
+      return Response({'data':serializer.data})
+    except:
+      return Response({'message':"Could not find faculty's advisee list"})
   def post(self, request):
     serializer = serializer.AdvisorSerializer(data=request.data)
     if serializer.is_valid:
-      return Response(serializer.data,status=HTTP_201_CREATED)
-    return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
+      return Response({'data':serializer.data,'message':"Successfully assigned advisor"},status=HTTP_201_CREATED)
+    return Response({'message':"Could not assign advisor"},status=HTTP_400_BAD_REQUEST)
 
 class TokenUser(generics.RetrieveUpdateDestroyAPIView):
   def get(self, request):
@@ -78,18 +84,19 @@ class TokenUser(generics.RetrieveUpdateDestroyAPIView):
       print(token)
       user = models.User.objects.get(id=token['user_id'])
       serializer = serializers.UserSerializer(user)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserPasswordChange(generics.RetrieveUpdateDestroyAPIView):
   def put(self,request):
-    print('loaded')
-    user = models.User.objects.get(email=request.data.get('email'))
-    print('updating')
-    user.set_password(request.data.get('password'))
-    user.save()
-    serializer = serializers.UserSerializer(user)
-    return Response(serializer.data)
+    try:
+      user = models.User.objects.get(email=request.data.get('email'))
+      user.set_password(request.data.get('password'))
+      user.save()
+      serializer = serializers.UserSerializer(user)
+      return Response({'data':serializer.data,'message':"Successful! Please login again"})
+    except:
+      return Response({'message':"Could not change user's password"})
 
 class BuildingDetails(APIView):
   serializer_class = serializers.BuildingSerializer
@@ -97,7 +104,7 @@ class BuildingDetails(APIView):
     try:
       building = models.Building.objects.get(code=code)
       serializer = serializers.BuildingSerializer(building)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     except Building.DoesNotExist:
       raise Http404
   # We wont need a put or a delete
@@ -108,7 +115,7 @@ class BuildingList(generics.ListCreateAPIView):
   def list(self, request):
     queryset = self.get_queryset()
     serializer = serializers.BuildingSerializer(queryset, many=True)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   # def post is not needed.  No user will create a building
 @method_decorator(csrf_exempt, name='dispatch')
 class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
@@ -120,27 +127,37 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
     except Course.DoesNotExist:
       raise Http404
   def get(self,request,id):
-    course = self.get_object(id)
-    serializer = serializers.CourseSerializer(course)
-    return Response(serializer.data)
+    try:
+      course = self.get_object(id)
+      serializer = serializers.CourseSerializer(course)
+      return Response({'data':serializer.data})
+    except:
+      return Response({'message':'Could not find course'})
   def put(self,request,id):
-    params = request.data
-    course = self.get_object(id)
-    name = params.get('name')
-    description = params.get('description')
-    numberOfCredits = params.get('numberOfCredits')
-    if name is not None:
-      course.name = name
-    if description is not None:
-      course.description = description
-    if numberOfCredits is not None:
-      course.numberOfCredits = numberOfCredits
-    course.save()
-    serializer = serializers.CourseSerializer(course)
-    return Response(serializer.data)
+    try:
+      params = request.data
+      course = self.get_object(id)
+      name = params.get('name')
+      description = params.get('description')
+      numberOfCredits = params.get('numberOfCredits')
+      if name is not None:
+        course.name = name
+      if description is not None:
+        course.description = description
+      if numberOfCredits is not None:
+        try:
+          if(0<numberOfCredits<5):
+            course.numberOfCredits = numberOfCredits
+        except:
+          return Response({'message':"Please input a number inclusively between 1 and 4 for number of credits"})
+      course.save()
+      serializer = serializers.CourseSerializer(course)
+      return Response({'data':serializer.data})
+    except:
+      return Response({'message':"Failed to edit course"})
   def delete(self,request,id):
     course = self.get_object(id).delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({'message':"Successfully removed the course"},status=status.HTTP_204_NO_CONTENT)
 class CourseList(generics.ListCreateAPIView):
   serializer_class =serializers.CourseSerializer
   queryset = models.Course.objects.all().order_by('department')
@@ -149,11 +166,11 @@ class CourseList(generics.ListCreateAPIView):
     if params.get('department') is not None:
       queryset = models.Course.objects.filter(department=params.get('department'))
       serializer = serializers.CourseSerializer(queryset,many=True)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     else:
       queryset = models.Course.objects.all().order_by('department')
       serializer = serializers.CourseSerializer(queryset,many=True)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
   def post(self,request):
     params = request.data
     if params.get('department') is not None or \
@@ -161,27 +178,31 @@ class CourseList(generics.ListCreateAPIView):
       params.get('name') is not None or \
       params.get('description') is not None or \
       params.get('numberOfCredits') is not None or \
-      params.get('isGraduate') is not None:
+      params.get('isInCatalog') is not None:
       department = models.Department.objects.get(code=params.get('department'))
       if isinstance(params.get('number'),int):
         return Response(status=status.HTTP_400_BAD_REQUEST)
       id = str(params.get('department')) + str(params.get('number'))
-      
-      course = models.Course.objects.create(
-        id = id,
-        department=department,
-        number=params.get('number'),
-        name=params.get('name'),
-        description=params.get('description'),
-        numberOfCredits=params.get('numberOfCredits'),
-        isGraduateCourse=params.get('isGraduate'),
-        isActive=True
-      )
-      course.save()
-      course = models.Course.objects.get(id=course.id)
-      print(course)
-      serializer = serializers.CourseSerializer(course)
-      return Response(serializer.data)
+      if 4 < params.get('numberOfCredits') < 1:
+        return Response({'message':"The number of credits needs to be inclusively between 1 and 4"})
+      try:
+        course = models.Course.objects.create(
+          id = id,
+          department=department,
+          number=params.get('number'),
+          name=params.get('name'),
+          description=params.get('description'),
+          numberOfCredits=params.get('numberOfCredits'),
+          isGraduateCourse=False,
+          isActive=True,
+          isInCatalog = params.get('isInCatalog')
+        )
+        course.save()
+        course = models.Course.objects.get(id=course.id)
+        serializer = serializers.CourseSerializer(course)
+        return Response({'data':serializer.data})
+      except:
+        return Response({'message':"The course id exist already"})
 @method_decorator(csrf_exempt, name='dispatch')
 class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self,id):
@@ -191,44 +212,56 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     except models.CourseSection.DoesNotExist:
       raise Http404
   def get(self, request,id):
-    section = self.get_object(id)
-    serializer = serializers.CourseSectionSerializer(section)
-    return Response(serializer.data)
+    try:
+      section = self.get_object(id)
+      serializer = serializers.CourseSectionSerializer(section)
+      return Response({'data':serializer.data})
+    except:
+      return Response({'message':'Could not find course'})
   def put(self, request,id):
     params = request.data
     if params.get('slot') is not None:
       queryset = models.CourseSection.objects.get(id = id)
       slot = models.Slot.objects.get(id = params.get('slot'))
       if not slot in queryset.slot.all():
-        slot.isTaken = True
-        slot.save()
-        queryset.slot.add(slot)
+        try:
+          section = models.CourseSection.objects.filter(term_id=queryset.term.id,slot_id=slot.id,room_id=queryset.room.id)
+          return Response({'message':"Room is not avaiable at this time and day"})
+        except:
+          slot.save()
+          queryset.slot.add(slot)
       else:
-        slot.isTaken = False
         slot.save()
         queryset.slot.remove(slot)
       queryset.save()
       serializer = serializers.CourseSectionSerializer(queryset)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     # if params.get('numOfSeats') is not None:
     #   data.append(Q(numOfSeats=params.get('numOfSeats')))
     queryset = self.get_object(id)
     if params.get('faculty') is not None:
       faculty = models.Faculty.objects.get(user_id=params.get('faculty'))
-      # Get COurse Sections where faculty = this faculty
-      # Get Course slot
-      # Compare the time of slot
-      queryset.faculty=faculty
-      queryset.save()
+      try:
+        section = models.CourseSection.objects.get(faculty=faculty, slot__day__id__in=section.slot.day.id, slot__time__id__in=section.slot.time.id, term_id=section.term.id)
+        if section is not None:
+          return Response({'message':"Faculty already "})
+      except:
+        # Get COurse Sections where faculty = this faculty
+        # Get Course slot
+        # Compare the time of slot
+        queryset.faculty=faculty
+        queryset.save()
     if params.get('numOfSeats') is not None:
+      if queryset.numOfTaken >= params.get('numOfSeats'):
+        return Response({'message':'The inputted number of seats is smaller than the number of seats taken'})
       queryset.numOfSeats = params.get('numOfSeats')
       queryset.save()
     serializer = serializers.CourseSectionSerializer(queryset)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   def delete(self, request,id):
     queryset = self.get_object(id)
     queryset.delete()
-    return Response({'isSuccessful': True}, status=status.HTTP_204_NO_CONTENT)
+    return Response({'message': 'Successfully deleted section'}, status=status.HTTP_204_NO_CONTENT)
 @method_decorator(csrf_exempt, name='dispatch')
 class CourseSectionList(generics.ListCreateAPIView):
   serializer_class = serializers.CourseSectionSerializer
@@ -275,9 +308,9 @@ class CourseSectionList(generics.ListCreateAPIView):
         else:
           queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days).distinct()
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
     except models.CourseSection.DoesNotExist:
-      raise Http404
+      raise Response({'message':"Could not find sections with inputted fields"})
   def post(self,request):
     params = request.data
     term = params.get('term')
@@ -291,20 +324,29 @@ class CourseSectionList(generics.ListCreateAPIView):
     faculty = params.get('faculty')
     if faculty is not None:
       faculty = models.Faculty.objects.get(user_id=faculty)
-      section.faculty = faculty_id=faculty
+      try:
+        section = models.CourseSection.objects.get(faculty=faculty, slot__day__id__in=section.slot.day.id, slot__time__id__in=section.slot.time.id, term_id=section.term.id)
+        if section is not None:
+          return Response({'message':"Faculty already "})
+      except:
+        section.faculty = faculty_id=faculty
     section.save()
     serializer = serializers.CourseSectionSerializer(section)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
 class DayList(generics.ListCreateAPIView):
   serializer_class = serializers.DaySerializer()
   queryset = models.Day.objects.all()
+  def get(self,request):
+    queryset =  models.Day.objects.all()
+    serializer = serializers.DaySerializer(queryset, many=True)
+    return ({'data':serializer.data})
 @method_decorator(csrf_exempt, name='dispatch')
 class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
   def get(self, request, code):
     try:
       department = models.Department.get(code=code)
       serializer = serializers.DepartmentSerializer(department)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     except Department.DoesNotExist:
       raise Http404
   #def put
@@ -313,14 +355,17 @@ class DepartmentDetails(generics.RetrieveUpdateDestroyAPIView):
 class DepartmentList(generics.ListCreateAPIView):
   queryset = models.Department.objects.all()
   serializer_class = serializers.DepartmentSerializer
+  def get(self,request):
+    queryset = models.Department.objects.all()
+    serializer = serializers.DepartmentSerializer(queryset,many=True)
+    return Response({'data':serializer.data})
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
   def delete(self,request,section_id,student_id):
     enrollment = models.Enrollment.objects.get(student_id=student_id,course_section_id=section_id)
-    print(enrollment)
     enrollment.delete()
-    return Response(True,status=status.HTTP_204_NO_CONTENT)
+    return Response({'message':'Successfully dropped class'},status=status.HTTP_204_NO_CONTENT)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EnrollmentList(generics.ListCreateAPIView):
@@ -334,7 +379,7 @@ class EnrollmentList(generics.ListCreateAPIView):
         student=models.Student.objects.get(user_id=user.id)
         enrollment = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term_id=params.get('term')).distinct()
         serializer = serializers.EnrollmentSerializer(enrollment, many=True)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
       # else:
       #   currentYear = datetime.today().year
       #   springStart = datetime(currentYear, 3, 20)
@@ -354,31 +399,41 @@ class EnrollmentList(generics.ListCreateAPIView):
     if params.get('section') is not None:
       enrollment = models.Enrollment.objects.filter(course_section=params.get('section'))
       serializer = serializers.EnrollmentSerializer(enrollment)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     if params.get('student') is not None:
       student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('student')))
       enrollment = models.Enrollment.objects.filter(student_id=student.user.id)
       serializer = serializers.EnrollmentSerializer(enrollment, many=True)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
   def post(self,request):
     params = request.data
     if params.get('section') is not None:
       if params.get('student') is not None:
         user = models.User.objects.get(email=params.get('student'))
         student = models.Student.objects.get(user_id=user.id)
+        if student.hold is not None:
+          return Response({"message":"Student has a hold"})
         section = models.CourseSection.objects.get(id = params.get('section'))
-        if section.numOfTaken < section.numOfSeats:
+        if params.get('section') == section.id:
+          return Response({'message':"Student is already enrolled in this class"})
+        if section.numOfTaken >= section.numOfSeats:
+          return Response({'message':"The section has no available seats"})
+        try:
+          enrollmentList = models.Enrollment.objects.filter(student_id=student.id,course_section__term__id=section.term.id)
+          for enroll in enrollmentList:
+            enrollment = models.Enrollment.objects.filter(course_section__slot__time__id__in=section.slot.time.id,course_section__slot__day__id__in=section.slot.day.id)
+            if len(enrollment) != 0:
+              return Response({'message': "The student is enrolled in a class with the same time slot"})
+        except:
           enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
           enrollment = models.Enrollment.objects.get(id=enrollment.id)
           serializer = serializers.EnrollmentSerializer(enrollment)
           section.numOfTaken = section.numOfTaken+1
           section.save()
-          return Response(serializer.data)
+          return Response({'data':serializer.data})
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-# Skipped FullTime and PartTime Faculty
-# Skipped HoldDetails.  Student Holds will be obtained from student
 class FacultyDetails(APIView):
   def get_object(self,email):
     try:
@@ -390,8 +445,8 @@ class FacultyDetails(APIView):
   def get(self,request,email):
     faculty=self.get_object(email)
     serializer = serializers.FacultySerializer(faculty)
-    return Response(serializer.data)
-  # TODO Create put that allows faculty to change their office hours
+    return Response({'data':serializer.data})
+
 @method_decorator(csrf_exempt, name='dispatch')
 class FacultyList(generics.ListCreateAPIView):
   def list(self,request):
@@ -399,14 +454,17 @@ class FacultyList(generics.ListCreateAPIView):
     try:
       if params.get('department') != '':
         faculty = models.Faculty.objects.filter(department=params.get('department'))
-        print(faculty)
         serializer = serializers.FacultySerializer(faculty, many=True)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
     except models.Faculty.DoesNotExist:
       raise Http404
 class HoldList(generics.ListCreateAPIView):
   queryset = models.Hold.objects.all()
   serializer_class = serializers.HoldSerializer
+  def get(self,request):
+    queryset = models.Hold.objects.all()
+    serializer = serializers.HoldSerializer(queryset, many=True)
+    return Response({'data':serializer.data})
 class RoomList(APIView):
   queryset = models.Room.objects.all()
   serializer_class = serializers.RoomSerializer
@@ -415,11 +473,11 @@ class RoomList(APIView):
     if params.get('building') is not None:
       room = models.Room.objects.filter(building=params.get('building'))
       serializer = serializers.RoomSerializer(room, many=True)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     else:
       room = models.Room.objects.all()
       serializer = serializers.RoomSerializer(room)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
 class MajorDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self,id):
     try:
@@ -430,14 +488,14 @@ class MajorDetails(generics.RetrieveUpdateDestroyAPIView):
   def get(self,request,id):
     major = self.get_object(id)
     serializer = serializers.MajorSerializer(major)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
 class MajorList(generics.ListCreateAPIView):
   queryset = models.Major.objects.all()
   serializer_class = serializers.MajorSerializer
   def list(self, request):
     major = models.Major.objects.all().order_by('department')
     serializer = serializers.MajorSerializer(major,many=True)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
 # Will probably not be used RoomDetails
 @method_decorator(csrf_exempt, name='dispatch')
 class StudentDetails(APIView):
@@ -451,23 +509,23 @@ class StudentDetails(APIView):
   def get(self, request, email):
     student = self.get_object(email)
     serializer = serializers.StudentSerializer(student)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   def put(self, request, email):
     params = request.data
     student = self.get_object(email)
-    print(params.get('holdAdd'))
-    print(params.get('holdDelete'))
     if params.get('holdAdd') is not None:
       hold = models.Hold.objects.get(name=params.get('holdAdd'))
       if not student.hold.filter(name=hold.name):
           hold = models.Hold.objects.get(name=params.get('holdAdd'))
           student.hold.add(hold)
           student.save()
+          return Response({'data':student,'message':"Successfully add the hold"})
     if params.get('holdDelete') is not None:
       hold = models.Hold.objects.get(name=params.get('holdDelete'))
       if student.hold.filter(name=hold.name):
         student.hold.remove(hold)
         student.save()
+        return Response({'data':student,'message':"Successfully removed the hold"})
     if params.get('isUndergrad') != '' and params.get('isUndergrad') is not None:
       if student.isUndergrad:
         student.isUndergrad = False
@@ -476,11 +534,11 @@ class StudentDetails(APIView):
         student.isUndergrad = True
         student.save()
     serializer = serializers.StudentSerializer(student)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   def delete(self, request, email):
     student = self.get_object(email)
     student.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({'message':"Successfully deleted the student"}, status=status.HTTP_204_NO_CONTENT)
 
 # Skipped all the Students
 # Admin + Researcher + DepartmentChair is also needed for use cases
@@ -495,7 +553,7 @@ class SlotDetails(APIView):
   def get(self,request, id):
     slot = self.get_object(id)
     serializer = serializers.SlotSerializer(slot)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
 class SlotList(generics.ListCreateAPIView):
   def list(self,request):
     try:
@@ -517,7 +575,7 @@ class SlotList(generics.ListCreateAPIView):
       if not filters and len(days) == 0:
         queryset = models.Slot.objects.all()
         serializer = serializers.SlotSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
       else:
         queryset = None
         if len(days) == 0:
@@ -525,7 +583,7 @@ class SlotList(generics.ListCreateAPIView):
         else:
           queryset = models.Slot.objects.filter(reduce(Q.__and__,filters)).exclude(day_id__in=days)
         serializer = serializers.SlotSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response({'data': serializer.data})
     except models.Slot.DoesNotExist:
       raise Http404
   # def post(self,request):
@@ -547,20 +605,28 @@ class TermDetails(generics.RetrieveAPIView):
   def get(self,request,season,year):
     term = models.Term.objects.get(season=season,year=year)
     serializer = serializers.TermSerializer(term)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
 class TermList(generics.ListCreateAPIView):
   serializer_class =serializers.TermSerializer
   queryset = models.Term.objects.all()
+  def get(self,request):
+    term = models.Term.objects.all()
+    serializer = serializers.TermSerializer(term,many=True)
+    return ({'data':serializer.data})
 class TimeList(generics.ListCreateAPIView):
   serializer_class = serializers.TimeSerializer
   queryset = models.Time.objects.all()
+  def get(self,request):
+    time = models.Time.objects.all()
+    serializer = serializers.TimeSerializer(time,many=True)
+    return ({'data': serializer.data})
 @method_decorator(csrf_exempt, name='dispatch')
 class UserDetails(APIView):
   def get(self, request, email):
     try:
       user = models.User.objects.get(email=email)
       serializer = serializers.UserSerializer(user)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
     except User.DoesNotExist:
       raise Http404
   # Mimicks the attributes in models
@@ -584,19 +650,17 @@ class UserDetails(APIView):
     if params.get('zipCode') is not None:
       user.zipCode = params.get('zipCode')
     if params.get('isLockout') is not None:
-      print('test')
       if user.isLockout:
         user.isLockout = False
-        print('1')
       else:
         user.isLockout = True
     user.save()
     serializer = serializers.UserSerializer(user)
-    return Response(serializer.data)
+    return Response({'data': serializer.data})
   def delete(self, request,email):
     user = models.User.objects.get(email=email)
     user.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({'message':"Successfully removed the user"}, status=status.HTTP_204_NO_CONTENT)
 @method_decorator(csrf_exempt, name='dispatch')
 class UserList(APIView):
   def list(self, request):
@@ -608,8 +672,8 @@ class UserList(APIView):
     print(serializer)
     if serializer.is_valid():
       serializer.save()
-      return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      return Response({'data':serializer.data}, status=status.HTTP_201_CREATED)
+    return Response({'message':"Could not create an account.  The username must be unique"}, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdviseeDetailsFaculty(APIView):
@@ -624,32 +688,14 @@ class AdviseeDetailsFaculty(APIView):
     def get(self, request, faculty):
         advisor = self.get_object(faculty)
         serializer = serializers.AdvisorSerializer(advisor)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
 
     def delete(self,request,faculty):
         advisor=self.get_object(faculty)
         advisor.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'message':"Successfully deleted advisor"}, status=status.HTTP_204_NO_CONTENT)
 
-@method_decorator(csrf_exempt, name='dispatch')
-class AdvisorDetails(APIView):
-  serializer_class = serializers.AdvisorSerializer
-  def get_object(self,student):
-    try:
-      user = models.User.objects.get(email=student)
-      advisor = models.Advisor.objects.get(student_id=user.id)
-      return advisor
-    except models.Advisor.DoesNotExist:
-      raise Http404
-  def get(self, request, student):
-    advisor = self.get_object(student)
-    serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
-  # No put - Student's Advisor should be deleted then readded to a new faculty
-  def delete(self, request, student):
-    advisor = self.get_object(student)
-    advisor.delete()
-    return Reponse(status=status.HTTP_204_NO_CONTENT)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdvisorList(generics.ListCreateAPIView):
@@ -663,11 +709,11 @@ class AdvisorList(generics.ListCreateAPIView):
             serializer = serializers.AdvisorSerializer(advisor, many=True)
             # print(serializer)
             ##model to json object
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         else:
             advisor = models.Advisor.objects.all()
             serializer = serializers.AdvisorSerializer(advisor)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
     def post( self, request):
         data = request.data
         print(data)
@@ -679,7 +725,7 @@ class AdvisorList(generics.ListCreateAPIView):
         print(advisor)
         advisor.save()
         serializer = serializers.AdvisorSerializer(advisor)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({'data':serializer.data}, status=status.HTTP_201_CREATED)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdviseeDetails(APIView):
@@ -694,12 +740,12 @@ class AdviseeDetails(APIView):
   def get(self, request, student):
     advisor = self.get_object(student)
     serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   # No put - Student's Advisor should be deleted then readded to a new faculty
   def delete(self, request, student):
     advisor = self.get_object(student)
     advisor.delete()
-    return Reponse(status=status.HTTP_204_NO_CONTENT)
+    return Reponse({'message':"Successfully removed advisor"}, status=status.HTTP_204_NO_CONTENT)
 
 class AdviseeListFake(APIView):
   def get_object(self,faculty):
@@ -711,11 +757,11 @@ class AdviseeListFake(APIView):
   def get(self, request, faculty):
     advisor = self.get_object(faculty)
     serializer = serializers.AdvisorSerializer(advisor)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   def post(self, request):
     serializer = serializer.AdvisorSerializer(data=request.data)
     if serializer.is_valid:
-      return Response(serializer.data,status=HTTP_201_CREATED)
+      return Response({'data':serializer.data},status=HTTP_201_CREATED)
 
 class AdviseeeDetailsfake(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.AdvisorSerializer
@@ -729,7 +775,7 @@ class AdviseeeDetailsfake(generics.RetrieveUpdateDestroyAPIView):
         try:
             advisees = self.get_object(facultyID)
             serializer = serializers.AdvisorSerializer(advisees)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         except models.Advisor.DoesNotExist:
             raise Http404
 
@@ -741,7 +787,7 @@ class AdviseeeDetailsfake(generics.RetrieveUpdateDestroyAPIView):
             serializer = serializers.AdvisorSerializer(queryset)
             print(queryset)
             print(serializer)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         queryset = self.get_object(id)
 
 @method_decorator(csrf_exempt, name='dispatch') ##not going to work unless student id is a foreign key in attendance
@@ -760,7 +806,7 @@ class AttendanceList(generics.ListCreateAPIView):
             print(attendance)
             serializer = serializers.EnrollmentSerializer(attendance, many=True)
             print(serializer)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         except models.Attendance.DoesNotExist:
             raise Http404
 
@@ -810,7 +856,7 @@ class TranscriptList(generics.ListCreateAPIView):
     def list(self,request,email):
         transcript = self.get_object(email)
         serializer = serializers.TranscriptSerializer(transcript, many=True)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
         
         
 
@@ -829,7 +875,7 @@ class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
         try:
             grade = self.get_object(id, course_section_id)
             serializer = serializers.GradeSerializer(grade)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         except models.Grade.DoesNotExist:
             raise Http404
 
@@ -841,7 +887,7 @@ class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
             serializer = serializers.GradeSerializer(queryset)
             print(queryset)
             print(serializer)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         queryset = self.get_object(id)
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -861,7 +907,7 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
         grade = self.get_object(id, course_section_id)
         print(grade)
         serializer = serializers.GradeSerializer(grade)
-        return Response(serializer.data)
+        return Response({'data':serializer.data})
 
     def put(self, request, id, course_section_id):
         params = request.data
@@ -871,13 +917,13 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
             serializer = serializers.GradeSerializer(queryset)
             print(queryset)
             print(serializer)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         queryset = self.get_object(id)
 
     def delete(self, request,id, course_section_id):
         queryset = self.get_object(id, course_section_id)
         queryset.delete()
-        return Response({'isSuccessful': True}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message':"Grade was successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
 #not completed
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -886,16 +932,16 @@ class GradeList(generics.ListCreateAPIView):
     serializer_class=serializers.GradeSerializer
     def list(self,request, student):
         if student is not None:
-            gradeObject = models.Grade.objects.filter(student_id=student)
+            gradeObject = models.Grade.objects.filter(student__user__email=student)
             print(gradeObject)
             serializer = serializers.GradeSerializer(gradeObject, many=True)
             # print(serializer)
             ##model to json object
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
         else:
             gradeObject = models.Grade.objects.all()
             serializer = serializers.GradeSerializer(gradeObject)
-            return Response(serializer.data)
+            return Response({'data':serializer.data})
 
     #serializer_class = serializers.GradeSerializer
     #def list(self, request, faculty):
@@ -941,10 +987,10 @@ class PrerequisiteDetails(generics.RetrieveUpdateDestroyAPIView):
   def get(self,request,id):
     prerequisite = self.get_object(id)
     serializer = serializers.PrerequisiteSerializer(prerequisite)
-    return Response(serializer.data)
+    return Response({'data':serializer.data})
   def delete(self,request,id):
     prerequisite = self.get_object(id).delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response({'message':"Successfully removed a prerequisite"}, status=status.HTTP_204_NO_CONTENT)
 
 @method_decorator(csrf_exempt,name='dispatch')
 class PrerequisiteList(generics.ListCreateAPIView):
@@ -957,6 +1003,8 @@ class PrerequisiteList(generics.ListCreateAPIView):
   def create(self, request):
     params = request.data
     if params.get('course') is not None and params.get('prerequisite') is not None:
+      if params.get('course') == params.get('prerequisite'):
+        return Response({'message':"The prerequisite cannot have the same ID as the course"})
       course = models.Course.objects.get(id=params.get('course'))
       prerequisite = models.Course.objects.get(id=params.get('prerequisite'))
       prerequisite = models.Prerequisite.objects.create( \
@@ -966,7 +1014,7 @@ class PrerequisiteList(generics.ListCreateAPIView):
       )
       prerequisite.save()
       serializer = serializers.PrerequisiteSerializer(prerequisite)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
 
 class StudentMajorList(generics.ListCreateAPIView):
   def list(self,request):
@@ -974,7 +1022,20 @@ class StudentMajorList(generics.ListCreateAPIView):
     if params.get('email') is not None:
       student_major = models.StudentMajor.objects.filter(student__user__email=params.get('email'))
       serializer = serializers.StudentMajorSerializer(student_major,many=True)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
+  def post(self,request):
+    params = request.data
+    if params.get('email') is not None and params.get('major') is not None:
+      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('email').id))
+      majors = models.StudentMajor.objects.filter(student=student)
+      if len(majors)>2:
+        return Response({'message':"The student is limited to two majors"})
+      major = models.Major.objects.filter(id=params.get('major'))
+      student_major = models.StudentMajor.objects.create(student=student,major=major,dateDeclared=datatime.today())
+      student_major.save()
+      serializer = serializers.StudentMajor(student_major)
+      return Response({'data':serializer.data})
+    return Response({'message':"Could not find student or section"})
 
 class StudentMinorList(generics.ListCreateAPIView):
   def list(self,request):
@@ -982,4 +1043,17 @@ class StudentMinorList(generics.ListCreateAPIView):
     if params.get('email') is not None:
       student_minor = models.StudentMinor.objects.filter(student__user__email=params.get('email'))
       serializer = serializers.StudentMinorSerializer(student_minor,many=True)
-      return Response(serializer.data)
+      return Response({'data':serializer.data})
+  def post(self,request):
+    params = request.data
+    if params.get('email') is not None and params.get('minor') is not None:
+      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('email').id))
+      minors = models.StudentMinor.objects.filter(student=student)
+      if len(minors)>1:
+        return Response({'message':"The student is limited to one minor"})
+      minor = models.Minor.objects.filter(id=params.get('minor'))
+      student_minor = models.StudentMinor.objects.create(student=student,minor=minor,dateDeclared=datatime.today())
+      student_minor.save()
+      serializer = serializers.StudentMinor(student_minor)
+      return Response({'data':serializer.data})
+    return Response({'message':"Could not find student or section"})

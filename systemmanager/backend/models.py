@@ -43,6 +43,7 @@ class User(AbstractBaseUser):
     country = models.CharField(max_length=20)
     zipCode = models.CharField(max_length=10)
     phoneNumber = models.CharField(max_length=13)
+    second_email = models.CharField(max_length=40)
 
     objects = UserAccountManager()
     class Meta:
@@ -228,11 +229,12 @@ class Course(models.Model):
     id = models.CharField(max_length=5, primary_key=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     number = models.CharField(max_length=5, null=False)
-    name = models.CharField(max_length=200, null=False)
-    description = models.TextField()
+    name = models.CharField(max_length=200, null=False, unique=True)
+    description = models.TextField(null=False)
     numberOfCredits = models.IntegerField(max_length=1, null=False)
     isGraduateCourse = models.BooleanField(default=False, null=False)
     isActive = models.BooleanField(default=False, null=False)
+    isInCatalog = models.BooleanField(default=False, null=False)
     class Meta:
         db_table = "course"
 

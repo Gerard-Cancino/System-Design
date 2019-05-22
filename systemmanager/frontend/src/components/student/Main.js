@@ -10,11 +10,48 @@ class Main extends Component {
       <React.Fragment>
         <Header />
         <section className="container-fluid">
-          <div className="row">
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/student/view-academic-advisor">View Academic Advisor</Link></p>
+          <div className="row justify-items-center">
+            <div className="col-md-11 round border m-4 p-4">
+              <div className="col-md-4 p-4">
+                <div className="card">
+                  <div className="card-body">
+                    <p className="text-center h3"><Link to="/student/view-section-list">View Section List</Link></p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 p-4">
+                <div className="card">
+                  <div className="card-body">
+                    <p className="text-center h3"><Link to="/student/view-term">View Section List</Link></p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 p-4">
+                <div className="card">
+                  <div className="card-body">
+                    <p className="text-center h3"><Link to="/student/view-hold-list">View Holds</Link></p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 p-4">
+                <div className="card">
+                  <div className="card-body">
+                    <p className="text-center h3"><Link to="/student/view-transcript">View Transcript</Link></p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 p-4">
+                <div className="card">
+                  <div className="card-body">
+                    <p className="text-center h3"><Link to="/student/view-degree-audit">View Degree Audit</Link></p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 p-4">
+                <div className="card">
+                  <div className="card-body">
+                    <p className="text-center h3"><Link to="/student/view-grade-list">View Current Term's Grades</Link></p>
+                  </div>
                 </div>
               </div>
             </div>

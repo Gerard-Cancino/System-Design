@@ -62,7 +62,7 @@ class CreateSection extends Component {
     .get('/term-list.json')
     .then(res => {
       this.setState({termList:res.data})
-      this.setState({term:res.data[res.data.length-1].id})
+      this.setState({term:res.data[0].id})
     })
     
   }
