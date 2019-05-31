@@ -3,24 +3,39 @@ import axios from 'axios';
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
+import TranscriptTable from '../general/tables/Transcript_Table.js';
 
-class MasterSchedule extends Component {
+class StudentTranscript extends Component {
   state = {
     email: undefined,
     transcriptList: undefined,
-    status: undefined
+    result: undefined
   }
   getTranscript(){
+    let map = new Object();
     axios
     .get(`/transcript-list.json/${this.state.email}`)
     .then(res=>{
-      this.setState({transcriptList: res.data})
+      for (let el of res.data.data){
+        if (map[el.year] == undefined){
+          map[el.year] = new Object();
+        }
+        if (map[el.year][el.season] == undefined){
+          map[el.year][el.season] = new Array();
+        }
+        if (map[el.year][el.season][0] == undefined){
+          map[el.year][el.season][0]=el
+        }
+        else{
+          let length = map[el.year][el.season].length
+          map[el.year][el.season][length]=el
+        }
+      }
+      this.setState({transcriptList:map,result:res})
     })
     .catch(err=>{
-      this.setState({status: err});
-    })
-  }
-  componentDidMount(){
+      this.setState({result: err});
+    }) 
   }
   handleChange = e => {
     const name = e.target.name;
@@ -46,7 +61,7 @@ class MasterSchedule extends Component {
     }
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded m-4 p-4">
@@ -63,34 +78,9 @@ class MasterSchedule extends Component {
                 <p></p>
               ):(
                 this.state.transcriptList.length == 0?(
-                  <p>No Transcript inputted</p>
+                  <p>No Transcript received. Has the student registered for or have taken courses?</p>
                 ):(
-                  <div className="col-md-12">
-                    <h4 className="col-md-12 text-center ">{this.state.transcriptList[0].student.user.firstName} {this.state.transcriptList[0].student.user.lastName}</h4>
-                    <table className="table table-striped">
-                      <thead style={{backgroundColor:"#696969", color:"white"}}>
-                        <tr>
-                          <td >Course ID</td>
-                          <td >Course Name</td>
-                          <td >Grade</td>
-                          <td >Season - Year</td>
-                        </tr>
-                      </thead>
-                      <tbody >
-                        {this.state.transcriptList.map(el => (
-                          <React.Fragment>
-                            {changeSeason(el)}
-                            <tr>
-                              <td>{el.course.id}</td>
-                              <td>{el.course.name}</td>
-                              <td>{el.gradeReceived}</td>
-                              <td>{el.season} {el.year}</td>
-                            </tr>
-                          </React.Fragment>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  <TranscriptTable transcriptSectionList={this.state.transcriptList}/>
                 )
               )}
             </div>
@@ -102,4 +92,4 @@ class MasterSchedule extends Component {
   }
 }
 
-export default MasterSchedule;
+export default StudentTranscript;

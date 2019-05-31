@@ -97,12 +97,23 @@ REST_FRAMEWORK = {
 
 CSRF_COOKIE_NAME = "csrftoken"
 
+# Authentication via Email
+
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 AUTH_USER_MODEL = 'backend.User'
+
+# Email Setup
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'mail.garageuniversity.me'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'auto@garageuniversity.me'
+EMAIL_HOST_PASSWORD = 'Bp8E--Huq)a8'
+
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

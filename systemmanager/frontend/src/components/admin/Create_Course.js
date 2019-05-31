@@ -21,14 +21,16 @@ class CreateCourse extends Component {
     isGraduate: false,
     isShowPrereq: false,
     isRequired: false,
+    isInCatalog: false,
+    result: undefined
   }
 
   componentDidMount() {
     axios
     .get('/department-list.json')
     .then(res => {
-      this.setState({departmentList: res.data})
-      this.setState({department:res.data[0].code})
+      this.setState({departmentList: res.data.data})
+      this.setState({department:res.data.data[0].code})
     });
   }
 
@@ -53,46 +55,53 @@ class CreateCourse extends Component {
     else
       this.setState({isGraduate: true})
   }
+  handleIsInCatalog=(e)=>{
+    if (e.target.value=="true")
+      this.setState({isInCatalog:true})
+    else
+      this.setState({isInCatalog:false})
+  }
   handleSubmit = (event) => {
     event.preventDefault();
-    if(this.state.department==undefined||this.state.courseName==undefined||this.state.courseID==undefined||this.state.description==undefined||this.state.numOfCredits==undefined){
-      this.setState({isRequired:false});
-    }
-    else{
-      axios
-      .post("/course-list.json",{
-        department: this.state.department,
-        number: this.state.courseID,
-        name: this.state.courseName,
-        description: this.state.description,
-        numberOfCredits: this.state.numOfCredits,
-        isGraduate: this.state.isGraduate
-      })
-      .then(res => (
-        this.setState({course:res.data})
-      ))
-      this.setState({isShowPrereq:true})
-    }
+    axios
+    .post("/course-list.json",{
+      department: this.state.department,
+      number: this.state.courseID,
+      name: this.state.courseName,
+      description: this.state.description,
+      numberOfCredits: this.state.numOfCredits,
+      isGraduate: this.state.isGraduate,
+      isInCatalog: this.state.isInCatalog
+    })
+    .then(res => (
+      this.setState({result: res,course:res.data.data})
+    ))
+    .catch(err =>{
+      this.setState({result: err})
+    })
+    this.setState({isShowPrereq:true})
   }
   
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
           {this.state.course==undefined?(
             <div className="col-md-12">
               <CreateCourseForm 
                 departmentList={this.state.departmentList} 
-                handleDepartment={this.handleDepartment.bind()}
-                handleCourseName={this.handleCourseName.bind()}
-                handleCourseID={this.handleCourseID.bind()}
-                handleDescription={this.handleDescription.bind()}
-                handleNumOfCredits={this.handleNumOfCredits.bind()}
-                handleSubmit={this.handleSubmit.bind()}
-                handleisGraduate={this.handleisGraduate.bind()}
-                isGraduate={this.state.isGraduate} />
+                handleDepartment={this.handleDepartment.bind(this)}
+                handleCourseName={this.handleCourseName.bind(this)}
+                handleCourseID={this.handleCourseID.bind(this)}
+                handleDescription={this.handleDescription.bind(this)}
+                handleNumOfCredits={this.handleNumOfCredits.bind(this)}
+                handleSubmit={this.handleSubmit.bind(this)}
+                handleisGraduate={this.handleisGraduate.bind(this)}
+                isGraduate={this.state.isGraduate}
+                handleIsInCatalog={this.handleIsInCatalog.bind(this)} 
+                isInCatalog={this.state.isInCatalog}/>
               {this.state.isRequired?(
                 <p>Please fill out all forms</p>
               ) : (

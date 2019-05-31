@@ -9,7 +9,7 @@ import SearchFacultyList from '../general/inputs/Faculty_List_Search.js';
 import SearchRoomList from '../general/inputs/Room_List_Search.js';
 import SearchBuildingList from '../general/inputs/Building_List_Search.js';
 import SearchTermList from '../general/inputs/Term_List_Search.js';
-import { resetWarningCache } from 'prop-types';
+import InputNumberSeats from '../general/inputs/Number_Seats_Input.js';
 
 // need to add prereq
 class CreateSection extends Component {
@@ -20,49 +20,53 @@ class CreateSection extends Component {
     facultyList: undefined,
     numOfSeats: undefined,
     course: undefined,
-    term: undefined
+    termList:undefined,
+    term: undefined,
+    result:undefined
   }
   componentDidMount(){
     this.setState({'id': this.props.data.state.courseID})
     axios
     .get(`/course-details.json/${this.props.data.state.courseID}`)
     .then(res => {
-      this.setState({course: res.data})
+      this.setState({course: res.data.data})
       axios
       .get('/faculty-list.json', {
         params: {
-          'department': res.data.department.code
+          'department': res.data.data.department.code
         }
       })
       .then( res => {
         this.setState({
-          facultyList: res.data,
-          faculty: res.data[0].user.id
+          facultyList: res.data.data,
+          faculty: res.data.data[0].user.id
         })
       })
-      if(res.data.faculty!=undefined)
-        this.setState({'faculty': res.data.faculty.user.id})
+      .catch(err => {
+        this.setState({result:err})
+      })
     })
     axios
     .get('/building-list.json')
     .then(res => {
-      this.setState({'buildingList': res.data})
+      this.setState({'buildingList': res.data.data})
       axios
       .get('/room-list.json',{
         params:{
-          'building': res.data[0].code
+          'building': res.data.data[0].code
         }
       })
       .then(res => {
-        this.setState({'roomList': res.data})
-        this.setState({'room': res.data[0].id})
+        this.setState({'roomList': res.data.data})
+        this.setState({'room': res.data.data[0].id})
       })
     })
     axios
     .get('/term-list.json')
     .then(res => {
-      this.setState({termList:res.data})
-      this.setState({term:res.data[0].id})
+      console.log(res)
+      this.setState({termList:res.data.data})
+      this.setState({term:res.data.data[res.data.data.length-1].id})
     })
     
   }
@@ -75,8 +79,8 @@ class CreateSection extends Component {
       }
     })
     .then( res => {
-      this.setState({'roomList': res.data})
-      this.setState({'room': res.data[0].id})
+      this.setState({'roomList': res.data.data})
+      this.setState({'room': res.data.data[0].id})
     });
   }
   handleRoom = event => {   
@@ -85,8 +89,8 @@ class CreateSection extends Component {
   handleFaculty = event => {   
     this.setState({ faculty: event.target.value || undefined});
   }
-  handleNumOfSeats =event => {
-    this.setState({numOfSeats: event.target.value})
+  handleNumOfSeats = event => {
+    this.setState({numOfSeats: event.target.value || '0'})
   }
   handleTerm = event => {
     this.setState({term:event.target.value||undefined})
@@ -102,15 +106,18 @@ class CreateSection extends Component {
       term: this.state.term
     })
     .then(res=> {
-      this.setState({section: res.data})
+      this.setState({result:res})
+      this.setState({section:res.data.data})
     })
-    
+    .catch(err=>{
+      this.setState({result:err})
+    })
   }
   
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           {this.state.course==undefined?(
             <p>Loading or Error</p>
@@ -131,13 +138,10 @@ class CreateSection extends Component {
               )}
               <h2 className="col-md-12 text-center">Create Section for {this.state.course.id}</h2>
               <form className="col-md-12" onSubmit={this.handleSubmit}>
-                <div className="form-group col-md-12">
-                  <label>Number of Seats:</label>
-                  <input className="form-control" onChange={this.handleNumOfSeats} placeholder={0} />
-                </div>
-                <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} />
-                <SearchBuildingList onChange={this.handleBuilding.bind()} buildingList={this.state.buildingList} />
-                <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} />
+                <InputNumberSeats onChange={this.handleNumOfSeats.bind(this)} isRequired={true} />
+                <SearchFacultyList onChange={this.handleFaculty.bind(this)} facultyList={this.state.facultyList} isRequired={true}/>
+                <SearchBuildingList onChange={this.handleBuilding.bind(this)} buildingList={this.state.buildingList} isRequired={true}/>
+                <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} isRequired={true}/>
                 {this.state.termList==undefined?(
                   <p></p>
                 ) : (
@@ -147,12 +151,12 @@ class CreateSection extends Component {
                     <div className="form-group col-md-12">
                       <label htmlFor="term">Term:</label>
                       <select id="term" className="form-control" onChange={this.handleTerm}>
-                        {this.state.termList.map(single => (
-                          <option key={single.id} value={single.id}>{single.season}: {single.year}</option>
-                        ))}
+                        <option key={this.state.termList[this.state.termList.length-1].id} 
+                        value={this.state.termList[this.state.termList.length-1].id}>
+                          {this.state.termList[this.state.termList.length-1].season}: {this.state.termList[this.state.termList.length-1].year}
+                        </option>
                       </select>
                     </div>
-
                   )
                 )}
                 <button type="submit" className="btn btn-primary">Submit</button>

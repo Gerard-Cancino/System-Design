@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react'
 import {Link } from "react-router-dom";
+import Exception from  '../../general/Error_Handler.js';
 
 class HeaderHome extends PureComponent {
 
@@ -8,8 +9,9 @@ class HeaderHome extends PureComponent {
       localStorage.removeItem('token');
     }
     return (
-      <header id="navtop" className="container-fluid sticky-top border-bottom">
-        <nav className="navbar navbar-expand-md bg-white navbar-light">
+      <React.Fragment> 
+      <header id="navtop" className="container-fluid sticky-top">
+        <nav className="row navbar navbar-expand-md bg-white navbar-light border-bottom">
           <a id="logo" className="navbar-brand" href="#">Garage University</a>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
            <span className="navbar-toggler-icon"></span>
@@ -28,7 +30,9 @@ class HeaderHome extends PureComponent {
             </ul>
           </div>
         </nav>
+        <Exception res={this.props.res} />
       </header>
+      </React.Fragment>
     );
   }
 }

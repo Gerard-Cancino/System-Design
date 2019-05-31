@@ -49,8 +49,7 @@ class StudentTerm extends Component{
     axios
     .get(`/term-details.json/${term.season}/${term.year}`)
     .then(res=>{
-      this.setState({term:res.data})
-      console.log(res.data)
+      this.setState({term:res.data.data})
     })
   }
   handleStudent = event => {
@@ -61,7 +60,10 @@ class StudentTerm extends Component{
     axios
     .get(`/student-details.json/${this.state.studentUsername}`)
     .then(res => {
-      this.setState({student: res.data})
+      this.setState({student: res.data.data})
+    })
+    .catch(err =>{
+      this.setState({result:err})
     })
   }
   handleEnrollStudent = (event,section) => {
@@ -70,19 +72,25 @@ class StudentTerm extends Component{
     .post(`/enrollment-list.json`,{
       section: section,
       student: this.state.studentUsername,
+      admin: this.props.user,
     })
     .then( res => {
-      console.log(res.data)
-      this.setState({enrollment: res.data})
+      this.setState({enrollment: res.data.data,result:res})
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   handleSectionList = (event,sectionList) =>{
     this.setState({sectionList:sectionList});
   }
+  handleResult = (result) =>{
+    this.setState({result:result})
+  }
   render() {     
     return (
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">
@@ -97,7 +105,7 @@ class StudentTerm extends Component{
               ):(
                 <div className="col-md-12">
                   <h2 className="text-center">Enroll Student</h2>
-                  <SearchSection term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                  <SearchSection handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
                 </div>
               )}
             </div>

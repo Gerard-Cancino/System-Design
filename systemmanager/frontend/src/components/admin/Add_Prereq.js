@@ -13,12 +13,13 @@ class AddPrereq extends Component {
     courseList: undefined,
     department: undefined,
     prerequisiteList: undefined,
+    result: undefined
   } 
   getCoursePrereqList(){
     axios
     .get(`/course-details.json/${this.props.data.state.courseID}`)
     .then(res => {
-      this.setState({course: res.data}),
+      this.setState({course: res.data.data}),
       axios
       .get(`/course-list.json`, {
         params: {
@@ -26,16 +27,16 @@ class AddPrereq extends Component {
         }
       })
       .then(res=>{
-        this.setState({courseList: res.data})
+        this.setState({courseList: res.data.data})
         axios
         .get('/prerequisite-list.json',{
           params: {
             'course': this.state.course.id
           }})
         .then(res=>{
-          this.setState({prerequisiteList: res.data})
+          this.setState({prerequisiteList: res.data.data})
           let courseList = this.state.courseList;
-          let prerequisiteList = res.data;
+          let prerequisiteList = res.data.data;
           for(let i = 0;i<courseList.length;i++){              
             if(this.state.courseID==courseList[i].id){
               courseList.splice(i,1)
@@ -68,7 +69,7 @@ class AddPrereq extends Component {
       course: this.state.course.id
     })
     .then(res=>{
-      prereq = res.data
+      this.setState({result:res})
       this.getCoursePrereqList()
     })
   }
@@ -76,14 +77,15 @@ class AddPrereq extends Component {
     event.preventDefault();
     axios
     .delete(`/prerequisite-details.json/${prereq}`)
-    .then(
+    .then(res =>{
+      this.setState({result:res})
       this.getCoursePrereqList()
-    )
+    })
   }
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <div className="col-md-12">

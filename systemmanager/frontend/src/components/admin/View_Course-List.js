@@ -11,7 +11,8 @@ class ViewCourseCatalog extends Component {
   state = {
     course: undefined,
     status: undefined,
-    departmentList: undefined
+    departmentList: undefined,
+    result: undefined,
   }
 
   getCourseList(department){
@@ -23,7 +24,7 @@ class ViewCourseCatalog extends Component {
     })
     .then(res => {
       this.setState({
-        course: res.data,
+        course: res.data.data,
       })
     })
   }
@@ -31,7 +32,7 @@ class ViewCourseCatalog extends Component {
     axios
     .get('/department-list.json')
     .then(res=>{
-      this.setState({departmentList:res.data})
+      this.setState({departmentList:res.data.data})
     })
     this.getCourseList(undefined)
   }
@@ -39,53 +40,36 @@ class ViewCourseCatalog extends Component {
     console.log(e.target.value)
     this.getCourseList(e.target.value||undefined)
   }
-  handleRemove = (e,course) => {
-    e.preventDefault()
-    axios
-    .delete(`/course-details.json/${course}`)
-    .then(res=>{
-      this.setState({
-        status:res.data
-      })
-      this.getCourseList()
-    })
-  }
   render(){
     const Tables = () => (
       this.state.course != undefined && this.state.course.length != 0? (
         <table className="table table-striped">
           <thead style={{backgroundColor:"#696969", color:"white"}}>
             <tr>
-              <td className='col-md-1'>ID</td>
-              <td className='col-md-3'>Course Name</td>
-              <td className='col-md-4'>Course Description</td>
-              <td className='col-md-1'># of Credits</td>
-              <td className='col-md-1'></td>
-              <td className='col-md-1'></td>
-              <td className='col-md-1'></td>
+              <td>ID</td>
+              <td>Course Name</td>
+              <td># of Credits</td>
+              <td></td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
             {this.state.course.map(el => (
               <tr key={el.id}>
                 <td className='col-md-1'>{el.id}</td>
-                <td className='col-md-3'>{el.name}</td>
-                <td className='col-md-4'>{el.description}</td>
+                <td className='col-md-4'>{el.name}</td>
                 <td className='col-md-1'>{el.numberOfCredits}</td>
-                <td className='col-md-1'>
+                <td className='col-md-3'>
                   <Link to={{
                     pathname: '/admin/create-section',
                     state: {courseID: el.id}
-                  }} className="btn btn-success">Create Section</Link>
+                  }} className="col-md-12 btn btn-success">Create Section</Link>
                 </td>
-                <td className='col-md-1'>
+                <td className='col-md-3'>
                   <Link to={{
-                    pathname: '/admin/update-course',
+                    pathname: '/admin/view-course-details',
                     state: {courseID: el.id}
-                  }} className="btn btn-info">Update</Link>
-                </td>
-                <td className='col-md-1'>
-                  <button className="btn btn-danger" onClick={e=>this.handleRemove(e,el.id)}>Remove</button>
+                  }} className="col-md-12 btn btn-info">View Details</Link>
                 </td>
               </tr>
             ))}
@@ -103,7 +87,7 @@ class ViewCourseCatalog extends Component {
     console.log("reloading page");
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded m-4 p-4">

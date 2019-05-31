@@ -13,11 +13,19 @@ class SearchRoomList extends PureComponent {
         ) : (
           <div className="form-group col-md-12">
             <label>Room:</label>
-            <select className="form-control" onChange={onChange}>
-              {roomList.map(i => (
-                <option key={i.id} value={i.id}>{i.number}</option>
-              ))}
-            </select>
+            {this.props.isRequired?(
+              <select className="form-control" onChange={onChange} required>
+                {roomList.map(i => (
+                  <option key={i.id} value={i.id}>{i.number}</option>
+                ))}
+              </select>
+            ):(
+              <select className="form-control" onChange={onChange}>
+                {roomList.map(i => (
+                  <option key={i.id} value={i.id}>{i.number}</option>
+                ))}
+              </select>
+            )}
           </div>
         )
       )

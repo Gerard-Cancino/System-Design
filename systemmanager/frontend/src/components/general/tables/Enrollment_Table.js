@@ -36,8 +36,12 @@ class SearchTerm extends PureComponent {
   componentDidMount(){
     this.setState({enrollmentList: this.props.enrollmentList})
   }
+  componentWillReceiveProps(data){
+    console.log(data)
+    this.setState({enrollmentList: data.enrollmentList})
+  }
   render () {
-    const {enrollmentList,handleDrop} = this.props
+    const {handleDrop} = this.props
   
     return (
       !this.state.enrollmentList?(
@@ -46,16 +50,16 @@ class SearchTerm extends PureComponent {
         this.state.enrollmentList.length == 0?(
           <p>Could not find enrollment</p>
         ) : (
-          <table className="col-md-12">
-            <thead className="col-md-12">
-              <tr className="col-md-12">
-                <td className="col-md-1">ID</td>
-                <td className="col-md-2">Name</td>
-                <td className="col-md-1">Number</td>
-                <td className="col-md-2">Faculty</td>
-                <td className="col-md-3">Time</td>
-                <td className="col-md-2">Room-Building</td>
-                <td className="col-md-1"></td> {/*Drop*/}
+          <table className="table">
+            <thead>
+              <tr >
+                <td scope="col-md-1">ID</td>
+                <td scope="col-md-2">Name</td>
+                <td scope="col-md-1">Number</td>
+                <td scope="col-md-2">Faculty</td>
+                <td scope="col-md-3">Time</td>
+                <td scope="col-md-2">Room-Building</td>
+                <td scope="col-md-1"></td> {/*Drop*/}
               </tr>
             </thead>
             <tbody className="col-md-12">
@@ -66,9 +70,9 @@ class SearchTerm extends PureComponent {
                   <td className="col-md-1">{el.course_section.number}</td>
                   <td className="col-md-2">{el.course_section.faculty.user.firstName} {el.course_section.faculty.user.lastName}</td>
                   <td className="col-md-3">
-                    {el.course_section.slot.map(el=>{
-                      <p className="col-md-12">{el.day.name} {el.time.start}-{el.time.end}</p>
-                    })}
+                    {el.course_section.slot.map(slot=>(
+                      <p className="col-md-12">{slot.day.name} {slot.time.start}-{slot.time.end}</p>
+                    ))}
                   </td>
                   <td className="col-md-2">{el.course_section.room.building.code}{el.course_section.room.number}</td>
                   {!checkAddDrop(el.course_section.term)?(

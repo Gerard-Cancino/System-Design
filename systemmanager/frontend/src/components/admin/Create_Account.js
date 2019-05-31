@@ -15,11 +15,14 @@ class CreateAccount extends Component {
     state: 'NY',
     zipCode: undefined,
     phoneNumber: undefined,
-    type: 'F',
+    second_email: undefined,
+    type: 'S',
 
     user: undefined,
 
-    status: undefined
+    status: undefined,
+
+    result: undefined,
   }
   componentDidMount(){
   }
@@ -35,6 +38,7 @@ class CreateAccount extends Component {
     axios
     .post('/user-list.json',{
       email: this.state.email,
+      second_email: this.state.second_email,
       password: this.state.password,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -47,23 +51,16 @@ class CreateAccount extends Component {
       country: 'USA'
     })
     .then(res => {
-      if(res.status==400){
-        this.setState({
-          status: res.status
-        })
-      }
-      else {
-        this.setState({
-          user: res.data,
-          status: res.status
-        })
-      }
+      this.setState({result:res})
+    })
+    .catch(err => {
+      this.setState({result:err})
     })
   }
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">
@@ -71,39 +68,44 @@ class CreateAccount extends Component {
               <form className="row" onSubmit={this.createAccount}>
                 <div className="col-md-12">
                   <label>Username</label>
-                  <input className="form-control" name="email" onChange={this.handleChange}/>
+                  <input className="form-control" name="email" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-12">
                   <label>Password</label>
-                  <input className="form-control" name="password" onChange={this.handleChange}/>
+                  <input type="password" className="form-control" name="password" onChange={this.handleChange} required/>
                   <p className="text-secondary">Needs 1 Special character and a number</p>
                   <p className="text-secondary">Minimum length is 8</p>
                   <br />
                 </div>
+                <div className="col-md-12">
+                  <label>Email</label>
+                  <input className="form-control" name="second_email" onChange={this.handleChange} required/>
+                  <br />
+                </div>
                 <div className="col-md-6">
                   <label>First Name</label>
-                  <input className="form-control" name="firstName" onChange={this.handleChange}/>
+                  <input className="form-control" name="firstName" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-6">
                   <label>Last Name</label>
-                  <input className="form-control" name="lastName" onChange={this.handleChange}/>
+                  <input className="form-control" name="lastName" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-8">
                   <label>Street Address</label>
-                  <input className="form-control" name="address" onChange={this.handleChange}/>
+                  <input className="form-control" name="address" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-4">
                   <label>City</label>
-                  <input className="form-control" name="city" onChange={this.handleChange}/>
+                  <input className="form-control" name="city" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-2">
                   <label>State</label>
-                  <select className="form-control" name="state" defaultValue='NY' onChange={this.handleChange}>
+                  <select className="form-control" name="state" defaultValue='NY' onChange={this.handleChange} required>
                     <option>NY</option>
                     <option>OH</option>
                     <option>OK</option>
@@ -114,20 +116,18 @@ class CreateAccount extends Component {
                 </div>
                 <div className="col-md-2">
                   <label>Zip Code</label>
-                  <input className="form-control" name="zipCode" onChange={this.handleChange}/>
+                  <input className="form-control" name="zipCode" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-5">
                   <label>Phone Number</label>
-                  <input className="form-control" name="phoneNumber" onChange={this.handleChange}/>
+                  <input className="form-control" name="phoneNumber" onChange={this.handleChange} required/>
                   <br />
                 </div>
                 <div className="col-md-3">
                   <label>Type</label>
-                  <select className="form-control" name="type" defaultValue='F' onChange={this.handleChange}>
-                    <option value='F'>Faculty</option>
-                    <option value='R'>Researcher</option>
-                    <option value='S'>Student</option>
+                  <select className="form-control" name="type" defaultValue='S' onChange={this.handleChange}>
+                    <option value='S' disabled>Student</option>
                   </select>
                   <br />
                 </div>

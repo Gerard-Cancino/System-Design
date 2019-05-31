@@ -4,7 +4,15 @@ import axios from 'axios';
 
 class TableSection extends PureComponent {
   state = {
-    isSuccessful: undefined
+    isSuccessful: undefined,
+    term: undefined
+  }
+  componentDidMount(){
+    axios
+    .get('/term-list.json')
+    .then(res=>{
+      this.setState({term:res.data.data[res.data.data.length-1].id})
+    })
   }
   handleDelete = (id) => (event) => {
     event.preventDefault()
@@ -85,18 +93,26 @@ class TableSection extends PureComponent {
                       </td> 
                     )}
                     <td className='col-md-1'>{el.numOfSeats - el.numOfTaken}</td>     
-                    <td className="col-md-6">
-                      <Link to={{
-                        pathname: '/admin/update-section-info',
-                        state: {
-                          id: el.id
-                        }
-                      }} 
-                      className="btn btn-info">Update</Link>
-                    </td>
-                    <td className="col-md-6">
-                      <button className="btn btn-danger" type="submit" onClick={this.handleDelete(el.id)}>Remove</button>
-                    </td>
+                    {el.term.id==this.state.term?(
+                      <td className="col-md-6">
+                        <Link to={{
+                          pathname: '/admin/update-section-info',
+                          state: {
+                            id: el.id
+                          }
+                        }} 
+                        className="btn btn-info">Update</Link>
+                      </td>
+                    ):(
+                      <p></p>
+                    )}
+                    {el.term.id==this.state.term?(
+                      <td className="col-md-6">
+                        <button className="btn btn-danger" type="submit" onClick={this.handleDelete(el.id)}>Remove</button>
+                      </td>
+                    ):(
+                      <p></p>
+                    )}
                   </tr>
                 ))}
               </tbody>

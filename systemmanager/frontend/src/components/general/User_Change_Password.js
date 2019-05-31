@@ -15,37 +15,22 @@ class ProfileChangePassword extends PureComponent {
       return newState;
     })
   }
-  conflicts = () =>{
-    if(this.state.currentPassword!=undefined && this.state.currentPassword == this.state.newPassword){
-      this.setState({isSame:true})
-      return false;
-    }
-    return true
-  }
   handleSubmit = (e) =>{
-    e.preventDefault()
-    if(this.conflicts()){
-      this.props.onSubmit(this.state.currentPassword,this.state.newPassword)
-      console.log('did not work')
-    }
+    e.preventDefault();
+    this.props.onSubmit(this.state.currentPassword,this.state.newPassword);
   }
   render () {
     return (
       <form className="col-md-12" onSubmit={e => this.handleSubmit(e)}>
         <div className="form-group">
           <label>Current Password</label>
-          <input type="password" className="form-control" name="currentPassword" onChange={this.handleChange} required/>
+          <input type="password" className="form-control" name="currentPassword" onChange={this.handleChange} placeholder="old password" required/>
         </div>
         <div className="form-group">
           <label>New Password</label>
-          <input type="password" className="form-control" name="newPassword" onChange={this.handleChange} required/>
+          <input type="password" className="form-control" name="newPassword" onChange={this.handleChange} placeholder="new password" required/>
         </div>
         <button type="submit" className="col-md-12 btn btn-info">Submit New Password</button>
-        {!this.state.isSame?(
-          <p></p>
-        ):(
-          <p>new password cannot be the same as the old password</p>
-        )}
       </form>    
     )
   }

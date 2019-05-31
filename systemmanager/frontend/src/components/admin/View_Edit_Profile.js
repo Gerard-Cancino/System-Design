@@ -13,17 +13,17 @@ class ViewStudentRecord extends Component {
   state = {
     account : undefined,
     isEdit: false,
-    status: undefined,
+    result: undefined
   }
 
   componentDidMount() {
     axios
     .get(`/user-details.json/${this.props.user}`)
     .then(res=>{
-      this.setState({account:res.data})
+      this.setState({account:res.data.data})
     })
   }
-  handleEdit = (address, city, state, zipCode, phoneNumber) => (event) => {
+  handleEdit = (address, city, state, zipCode, phoneNumber,second_email) => (event) => {
     event.preventDefault()
     axios
     .put(`/user-details.json/${this.props.user}`,{
@@ -31,41 +31,62 @@ class ViewStudentRecord extends Component {
       city: city,
       state: state,
       zipCode: zipCode,
-      phoneNumber: phoneNumber
+      phoneNumber: phoneNumber,
+      second_email: second_email,
     })
     .then(res=>{
       this.setState({
-        account: res.data,
-        isEdit: false
+        account: res.data.data,
+        isEdit: false,
+        result:res
+      })
+    })
+    .catch(err=>{
+      this.setState({
+        result:err
       })
     })
   }
   handlePassword = (currentPassword, newPassword) => {
-    
-    console.log('running');
     event.preventDefault();
-    axios
-    .post('/token-auth',{
-      email: this.state.account.email,
-      password:currentPassword,
-    })
-    .then(res=>{
+    if (currentPassword == newPassword) {
+      this.setState({result:{response:
+        {data:
+          {message:"The new password cannot be the same as the old password"},
+          status:400
+        }
+      }})
+    }
+    else{
       axios
-      .put('/user-password-change',{
+      .post('/token-auth',{
         email: this.state.account.email,
-        password: newPassword,
+        password:currentPassword,
       })
       .then(res=>{
-        localStorage.removeItem('token')
-        window.location.replace('/login')
+        axios
+        .put('/user-password-change',{
+          email: this.state.account.email,
+          password: newPassword,
+        })
+        .then(res=>{
+          this.setState({result:res})
+          localStorage.removeItem('token')
+          window.location.replace('/login')
+        })
+        .catch(err =>{
+          this.setState({result:err})
+        })
       })
-      .catch(err =>{
-        this.setState({status:err})
+      .catch(err=>{
+        this.setState({result:{response:
+          {data:
+            {message:"The old password is incorrect"},
+            status:400
+          }
+        }})
       })
-    })
-    .catch(err=>{
-      console.log(err)
-    })
+    }
   }
   handleIsEdit = event => {
     event.preventDefault();
@@ -78,7 +99,7 @@ class ViewStudentRecord extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <h2 className="col-md-12 text-center">My Profile</h2>

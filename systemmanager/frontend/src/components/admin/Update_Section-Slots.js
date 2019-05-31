@@ -31,13 +31,13 @@ class UpdateSectionMaster extends Component {
     axios
     .get(`/course-section-details.json/${this.props.data.state.id}`)
     .then(res => {
-      this.setState({'section': res.data})
+      this.setState({'section': res.data.data})
       this.compareSlot()
     })
     axios
     .get('/time-list.json')
     .then(res => {
-      this.setState({'timeList': res.data})
+      this.setState({'timeList': res.data.data})
     })
   }
   handleFind = event => {
@@ -54,7 +54,7 @@ class UpdateSectionMaster extends Component {
         }
       })
       .then(res => {
-        this.setState({'slotList': res.data})
+        this.setState({'slotList': res.data.data})
       })
   }
   handleTerm = event => {   
@@ -99,7 +99,7 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
-      this.setState({section:res.data,})
+      this.setState({section:res.data.data})
       axios
       .get('/slot-list.json',{
         params: {
@@ -112,7 +112,7 @@ class UpdateSectionMaster extends Component {
         }
       })
       .then(res => {
-        this.setState({'slotList': res.data})
+        this.setState({'slotList': res.data.data})
         this.compareSlot()
       })
     })
@@ -124,7 +124,7 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
-      this.setState({section:res.data})
+      this.setState({section:res.data.data})
       axios
       .get('/slot-list.json',{
         params: {
@@ -137,7 +137,7 @@ class UpdateSectionMaster extends Component {
         }
       })
       .then(res => {
-        this.setState({'slotList': res.data})
+        this.setState({'slotList': res.data.data})
         this.compareSlot()
       })
     })

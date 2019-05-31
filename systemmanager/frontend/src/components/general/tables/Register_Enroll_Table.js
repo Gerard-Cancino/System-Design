@@ -51,8 +51,11 @@ class TableSection extends PureComponent {
     this.setState({
       student: this.props.student,
     })
+    this.getEnrollments(); 
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({student:newProps.student});
     this.getEnrollments();
-    
   }
   handleEnroll = (event,section) => {
     event.preventDefault()
@@ -65,6 +68,10 @@ class TableSection extends PureComponent {
       .then(res => {
         this.setState({status:res.data})
         this.getEnrollments()
+        this.props.handleResult(res)
+      })
+      .catch(err=>{
+        this.props.handleResult(err)
       })
     }
 

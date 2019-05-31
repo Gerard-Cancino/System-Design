@@ -43,33 +43,36 @@ class StudentTerm extends Component{
     student: undefined,
     enrollmentList: undefined,
     enrollment: undefined,
-    status: undefined
+    status: undefined,
+    result:undefined
   }
   componentDidMount() {
-    this.getTerm()
-  }
-  getTerm = () => {
-    let term = checkTerm()
     axios
-    .get(`/term-details.json/${term.season}/${term.year}`)
+    .get('/term-list.json')
     .then(res=>{
-      this.setState({term:res.data})
-      console.log(res.data)
+      this.setState({termList:res.data.data,term:res.data.data[0].id})
     })
+  }
+  handleTerm = event => {
+    this.setState({term:event.target.value||undefined})
   }
   handleStudent = event => {
     this.setState({studentUsername: event.target.value || undefined})
   }
   findStudent = () => {
+
     axios
     .get('/enrollment-list.json',{
       params: {
         student: this.state.studentUsername,
-        term: this.state.term.id
+        term: this.state.term
       }
     })
     .then(res => {
-      this.setState({enrollmentList: res.data})
+      this.setState({enrollmentList: res.data.data})
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   handleFindStudent = event => {
@@ -82,13 +85,16 @@ class StudentTerm extends Component{
     .delete(`/enrollment-details.json/${enrollment}/${student}`)
     .then(res => {
       this.findStudent()
-      this.setState({status:res.data})
+      this.setState({result:res})
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   render() {
     return (
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
           <div className="col-md-12">
@@ -98,7 +104,8 @@ class StudentTerm extends Component{
           </div>
             <h2 className="col-md-12 text-center">Search Student's Term</h2>
             <form className="col-md-12" onSubmit={this.handleFindStudent}>
-              <SearchStudent onChange={this.handleStudent.bind(this)}/>
+              <SearchTerm onChange={this.handleTerm} termList={this.state.termList} isRequired={true}/>
+              <SearchStudent onChange={this.handleStudent.bind(this)} isRequired={true}/>
               <button className="col-md-12 btn btn-primary" type="submit">Search Term</button>
             </form>
             <hr />

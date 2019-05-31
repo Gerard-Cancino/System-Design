@@ -7,7 +7,12 @@ class SearchTerm extends PureComponent {
     return (
       <div className="form-group col-md-12">
         <label htmlFor="studentUsername">Student's Username</label>
-        <input id="studentUsername" className="form-control" type="text" placeholder="Enter Student's Username" onChange={onChange} required/>
+        {this.props.isRequired?(
+          <input id="studentUsername" className="form-control" type="text" placeholder="Enter Student's Username" onChange={onChange} required/>
+
+        ):(
+          <input id="studentUsername" className="form-control" type="text" placeholder="Enter Student's Username" onChange={onChange}/>
+        )}
       </div>
     )
   }

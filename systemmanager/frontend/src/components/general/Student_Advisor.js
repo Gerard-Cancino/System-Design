@@ -10,7 +10,7 @@ class ProfileUser extends PureComponent {
       ) : (        
         <div>
           <p><strong>Advisor: </strong>{advisor.faculty.user.firstName} {advisor.faculty.user.lastName}</p>
-          <p>email: {advisor.faculty.user.email}</p>
+          <a href={"mailto:"+advisor.faculty.user.email+"@garageuniversity.me"}>Email: {advisor.faculty.user.email}@garageuniveristy.me</a>
         </div>       
       )
     )

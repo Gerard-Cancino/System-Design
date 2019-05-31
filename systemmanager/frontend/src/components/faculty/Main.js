@@ -14,7 +14,35 @@ class Main extends Component {
             <div className="col-md-4 p-4">
               <div className="card">
                 <div className="card-body">
-                  <p className="text-center h3"><Link to="/faculty/view-term">View Term</Link></p>
+                  <p className="text-center h3"><Link to="/faculty/view-course-list">View Course List</Link></p>
+                </div>
+              </div>
+            </div> 
+            <div className="col-md-4 p-4">
+              <div className="card">
+                <div className="card-body">
+                  <p className="text-center h3"><Link to="/faculty/view-advisee-list">View Advisee List</Link></p>
+                </div>
+              </div>
+            </div> 
+            <div className="col-md-4 p-4">
+              <div className="card">
+                <div className="card-body">
+                  <p className="text-center h3"><Link to="/faculty/search-student-advisor">Search Student Advisor</Link></p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 p-4">
+              <div className="card">
+                <div className="card-body">
+                  <p className="text-center h3"><Link to="/faculty/view-office-hours">View Office Hours</Link></p>
+                </div>
+              </div>
+            </div> 
+            <div className="col-md-4 p-4">
+              <div className="card">
+                <div className="card-body">
+                  <p className="text-center h3"><Link to="/faculty/declare-student-major-minor">Declare Student's Major or Minor</Link></p>
                 </div>
               </div>
             </div>

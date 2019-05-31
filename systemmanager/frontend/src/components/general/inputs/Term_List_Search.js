@@ -14,12 +14,20 @@ class SearchTerm extends PureComponent {
         ) : (
           <div className="form-group col-md-12">
             <label htmlFor="term">Term:</label>
-            <select id="term" className="form-control" onChange={onChange}>
-              <option value={''}>All Terms</option>
-              {termList.map(single => (
-                <option key={single.id} value={single.id}>{single.season}: {single.year}</option>
-              ))}
-            </select>
+            {this.props.isRequired?(
+              <select id="term" className="form-control" onChange={onChange} required>
+                {termList.map(single => (
+                  <option key={single.id} value={single.id}>{single.season}: {single.year}</option>
+                ))}
+              </select>
+            ):(
+              <select id="term" className="form-control" onChange={onChange}>
+                <option value=''>All Terms</option>
+                {termList.map(single => (
+                  <option key={single.id} value={single.id}>{single.season}: {single.year}</option>
+                ))}
+              </select>
+            )}
           </div>
 
         )

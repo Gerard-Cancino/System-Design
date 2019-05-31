@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {NavLink } from "react-router-dom";
+import Exception from  '../../general/Error_Handler.js';
 
 class Header extends Component {
 
@@ -9,8 +10,8 @@ class Header extends Component {
   }
   render(){
     return (
-      <header id="navtop" className="container-fluid sticky-top border-bottom">
-        <nav className="row navbar navbar-expand-md bg-white navbar-light">
+      <header id="navtop" className="container-fluid sticky-top">
+        <nav className="row navbar navbar-expand-md bg-white navbar-light border-bottom">
           <a id="logo" className="navbar-brand" href="/">Garage University</a>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
            <span className="navbar-toggler-icon"></span>
@@ -41,6 +42,7 @@ class Header extends Component {
             </ul>
           </div>
         </nav>
+        <Exception res={this.props.res} />
       </header>
     );
   }

@@ -12,12 +12,20 @@ class SearchTime extends PureComponent {
         ) : (
           <div className="form-group col-md-12">
             <label>Time:</label>
-            <select className="form-control" onChange={onChange}>
-              <option value=''>All Times</option>
-              {timeList.map(el => (
-                <option key={el.id} value={el.id}>{el.start} - {el.end}</option>
-              ))}
-            </select>
+            {this.props.isRequired?(
+              <select className="form-control" onChange={onChange} required>
+                {timeList.map(el => (
+                  <option key={el.id} value={el.id}>{el.start} - {el.end}</option>
+                ))}
+              </select>
+            ):(
+              <select className="form-control" onChange={onChange}>
+                <option value=''>All Times</option>
+                {timeList.map(el => (
+                  <option key={el.id} value={el.id}>{el.start} - {el.end}</option>
+                ))}
+              </select>
+            )}
           </div>
         )
       )

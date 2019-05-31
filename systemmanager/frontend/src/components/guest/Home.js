@@ -25,12 +25,12 @@ class Home extends Component {
           <span id="home" style={{paddingTop:'40px'}}></span>
         </section>
         <section className="container-fluid col-md-12" style={{background: '#fe0000',height:'300px', color:'white'}}>
-          <div className="text-center h-100 align-items-center row p-4" >
-            <div className="col-md-12">
+          <div className="text-center h-100 align-items-center row p-4 justify-content-center" >
+            <div className="col-md-8">
               <h2><strong>Disclaimer:</strong></h2>
-              <p>This is not a real university</p>
-              <p>We do not use this application for any purpose other than to learn and practice web application development</p>
-              <p>The information populated into the database is based on Cooper Union University, Manhattan University, and SUNY Old Westbury</p>
+              <p>This is not a real university.
+              We do not use this application for any purpose other than to learn and practice web application development.
+              The information populated into the database is based on Cooper Union University, Manhattan University, and SUNY Old Westbury.</p>
             </div>
           </div>
         </section>
@@ -328,9 +328,9 @@ class Home extends Component {
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>Django</h3>
-                  <p>Used to Create an API</p>
-                  <p>MVT</p>
-                  <p>Enforces Clean Code</p>
+                  <p>We used Django to create an API, resulting in django only communicating to the frontend through request and responses.  We chose django 
+                    over other frameworks for the strict enforcement on coding; Django code can be less than 5 lines, but only if the code is clean and has correct naming nomemclature.  
+                    Django supplies async responses to the frontend.</p>
                 </div>
               </div>
             </div>
@@ -340,8 +340,9 @@ class Home extends Component {
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>React</h3>
-                  <p>Front-End</p>
-                  <p>Component Based</p>
+                  <p>We used React as our frontend.  The work outlook for component based frontend far exceeds the job outlook for html and SCSS. React, unlike the Angular.js and Vue.js, has more documentation
+                    than its competitors.  As such, React has a steep, but easier learning curve than Angular.js and Vue.js.  Together with Django, React sends async request to Django. 
+                  </p>
                 </div>
               </div>
             </div>
@@ -351,7 +352,9 @@ class Home extends Component {
                 <div className="col-md-12 card-body">
                   <hr />
                   <h3>MySQL</h3>
-                  <p>Database</p>
+                  <p>Unlike React or Django, the team knew MySQL.  We decided on using MySQL for practice, and attempted to mimic real world web development the best we could.
+                      We started with creating business rules and then created an ERD.  Luckily, Django took care of creating the database, acknowledging constraints, and maintaining the data through the use of models.  
+                  </p>
                 </div>
               </div>
             </div>
@@ -361,33 +364,26 @@ class Home extends Component {
           <span id="profile" style={{paddingTop:'40px'}}></span>
           <div className="row pt-4 pb-4">
             <div className="col-md-4">
-              <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
+              <div className="text-center card m-4">
                 <div className="col-md-12 card-body">
-                  <hr />
                   <h3>Gerard Cancino</h3>
-                  <p>Backend</p>
-                  <p>Frontend</p>
-                  <p>Database</p>
-                  <p>Server Administrator</p>
+                  <p>Project Manager, Lead Developer, Full Stack Developer, Server Administrator</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
+              <div className="text-center card m-4" >
                 <div className="col-md-12 card-body">
-                  <hr />
                   <h3>Dan Dabrowski</h3>
-                  <p>Backend</p>
-                  <p>Frontend</p>
-                  <p>Database</p>
+                  <p>Full Stack Developer</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="text-center card" style={{width: '28rem', margin: 'auto'}}>
+              <div className="text-center card m-4" >
                 <div className="col-md-12 card-body">
                   <h3>Haojun Cai</h3>
-                  <p>Database</p>
+                  <p>Frontend and Database Developer</p>
                 </div>
               </div>
             </div>

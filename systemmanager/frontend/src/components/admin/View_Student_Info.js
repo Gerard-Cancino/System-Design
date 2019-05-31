@@ -14,31 +14,51 @@ class ViewStudentRecord extends Component {
     student: undefined,
     placeholder: undefined,
     advisor: undefined,
-    isLoaded: false
+    isLoaded: false,
+    newAdvisor: undefined,
   }
 
   handleChange = event => {
     this.setState({ studentUsername: event.target.value || undefined});
     //console.log(this.state.studentUsername);
   }
+  handleAdvisor = event => {
+    this.setState({newAdvisor: event.target.value})
+  }
 
   handleSubmit = event => {
     event.preventDefault();
     axios
-      .get(`/student-details.json/${this.state.studentUsername}`)
-      .then(res => {
-        this.setState({
-          student: res.data,
-          isLoaded: true
-        })
+    .get(`/student-details.json/${this.state.studentUsername}`)
+    .then(res => {
+      this.setState({
+        student: res.data.data,
+        isLoaded: true
       })
-    axios
-      .get(`/advisor-details.json/${this.state.studentUsername}`)
+      axios
+      .get(`/advisor-details.json/${res.data.data.user.email}`)
       .then( res=> {
         this.setState({
-          advisor: res.data,
+          advisor: res.data.data,
+          result: res
         })
       })
+      .catch(err=>{
+        this.setState({result:err})
+      })
+    })
+    .catch(err=>{
+      this.setState({result:err})
+    })
+    axios
+    .get(`/faculty-list.json`)
+    .then(res=>{
+      this.setState({facultyList:res.data.data})
+      this.setState({newAdvisor:res.data.data[0].user.id})
+    })
+    .catch(err=>{
+      this.setState({result:err})
+    })
   }
   handleSubmit0 = event => {
     event.preventDefault();
@@ -51,9 +71,13 @@ class ViewStudentRecord extends Component {
         .get(`/student-details.json/${this.state.studentUsername}`)
         .then(res => {
           this.setState({
-            student: res.data,
+            student: res.data.data,
+            result: res,
             isLoaded: true
         })
+      })
+      .catch(err=>{
+        this.setState({result:err})
       })
     })
   }  
@@ -68,11 +92,30 @@ class ViewStudentRecord extends Component {
         .get(`/student-details.json/${this.state.studentUsername}`)
         .then(res => {
           this.setState({
-            student: res.data,
+            student: res.data.data,
+            result: res,
             isLoaded: true
+        })
+        .catch(err=>{
+          this.setState({result:err})
         })
       })
     })
+  }
+  updateAdvisor = (e) =>{
+    e.preventDefault();
+    axios
+    .post(`/advisor-list.json`,{
+      faculty:this.state.newAdvisor,
+      email:this.state.student.user.email
+    })
+    .then(res=>{
+      this.setState({advisor:res.data.data,result:res})
+    })
+    .catch(err=>{
+      this.setState({result:err})
+    })
+
   }
 
 
@@ -99,7 +142,7 @@ class ViewStudentRecord extends Component {
       );
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <h2 className="col-md-12 text-center">View Student Information</h2>
@@ -118,6 +161,20 @@ class ViewStudentRecord extends Component {
                 <ProfileUser account={this.state.student.user} />
                 <hr />
                 <StudentAdvisor advisor={this.state.advisor} />
+                {!this.state.facultyList?(
+                  <p></p>
+                ):(
+                  <form className="form-group" onSubmit={this.updateAdvisor}>
+                    <label className="col-md-12" htmlFor="newAdvisor">Change Advisor</label>
+                    <select onChange={this.handleAdvisor} className="col-md-8">
+                      {this.state.facultyList.map(el=>(
+                        <option value={el.user.id}>{el.user.firstName} {el.user.lastName}</option>
+                      ))}
+                    </select>
+                    <button className="col-md-4 btn btn-primary" type="submit">Update Advisor</button>
+                  </form>
+                )}
+                <br />
                 <Lock/>
               </div>
             )}

@@ -13,7 +13,8 @@ class ProfileUser extends PureComponent {
           <p><strong>Address:</strong></p>
           <p>{account.address}</p>
           <p>{account.city}, {account.state} {account.zipCode}</p>
-          <p>Email: {account.email}@garageuniversity.tech</p>
+          <p>Email: {account.email}@garageuniversity.me</p>
+          <p>Second Email: {account.second_email}</p>
           <p>Phone Number: {account.phoneNumber}</p>
         </div>       
       )

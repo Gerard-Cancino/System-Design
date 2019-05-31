@@ -37,29 +37,33 @@ class SectionForm extends Component {
   componentDidMount() {
     if(this.props.term!=undefined){
       this.setState({term:this.props.term.id})
-    }
-    
+    } 
     axios
       .get('/department-list.json')
       .then(res => {
         this.setState({
-          departmentList: res.data,
+          departmentList: res.data.data
         })
       })
     axios
       .get('/term-list.json')
       .then(res =>{
         this.setState({
-          termList: res.data
+          termList: res.data.data
         })
       })
     axios
       .get('/time-list.json')
       .then(res => {
         this.setState({
-          timeList: res.data,
+          timeList: res.data.data
         })
       })
+  }
+  componentWillReceiveProps(newProps){
+    if(newProps.term!=undefined){
+      this.setState({term:newProps.term.id})
+    }
   }
   handleTerm = event => {
     this.setState({term: event.target.value || undefined});
@@ -68,19 +72,19 @@ class SectionForm extends Component {
     this.setState({department: event.target.value || undefined});
   }
   handleCourseName= event => {
-    this.setState({courseName: event.target.value});
+    this.setState({courseName: event.target.value || undefined});
   }
   handleCourseID= event => {
-    this.setState({courseID: event.target.value});
+    this.setState({courseID: event.target.value || undefined});
   }
   handleFacultyName= event => {
-    this.setState({facultyLastName: event.target.value});
+    this.setState({facultyLastName: event.target.value || undefined});
   }
   handleCreditMin= event => {
-    this.setState({creditMin: event.target.value});
+    this.setState({creditMin: event.target.value || undefined});
   }
   handleCreditMax= event => {
-    this.setState({creditMax: event.target.value});
+    this.setState({creditMax: event.target.value || undefined});
   }
   handleTime= event => {
     this.setState({time: event.target.value || undefined});
@@ -137,7 +141,7 @@ class SectionForm extends Component {
       })
       .then(res => {
         this.setState({
-          courseSect: res.data,
+          courseSect: res.data.data
         })
       })
   }
@@ -164,10 +168,11 @@ class SectionForm extends Component {
       })
       .then(res => {
         this.setState({
-          courseSect: res.data,
+          courseSect: res.data.data,
           isReload: false
         })
       })
+
     }    
   }
   render(){
@@ -182,7 +187,7 @@ class SectionForm extends Component {
               ):(
                 <div className="form-group col-md-12">
                   <label>Term</label>
-                  <input className="form-control" placeholder={this.props.term.season + this.props.term.year} disabled />
+                  <input className="form-control" placeholder={this.props.term.season +" "+ this.props.term.year} disabled />
                 </div>
               )}
 
@@ -200,7 +205,7 @@ class SectionForm extends Component {
           {this.state.courseSect==undefined?(
             <p></p>
           ):(
-            <SectionTable student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+            <SectionTable handleResult={this.props.handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
           )}
         </div>
       </React.Fragment>

@@ -37,7 +37,7 @@ const Table = ({data}) =>
           <tbody>
             {data.map(el => (
               <tr key={el.id}>
-                {Object.entries(el).map(el => 
+                {Object.entries(el).map(el =>
                   <td key={key(el)}>
                     {el[1]}
                   </td>)}

@@ -7,7 +7,7 @@ class Footer extends Component {
       <footer className="container-fluid border-top">
         <ul className="list-inline text-center mb-0">
           <li className="list-inline-item">
-            <Link className="text-muted" to="/">Home</Link>
+            <a className="text-muted" href="/#home">Home</a>
           </li>
           <li className="list-inline-item">
             <a className="text-muted" href="/#calendar">Calendar</a>

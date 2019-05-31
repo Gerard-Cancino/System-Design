@@ -137,7 +137,7 @@ class CreateSectionForm extends Component {
                     ) : (
                       <p>Current Professor: {this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
                     )}
-                    <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} />
+                    <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} isRequired={true}/>
                   </div>
                   <div className="form-group">
                     <label>Room</label>
@@ -146,8 +146,8 @@ class CreateSectionForm extends Component {
                     ) : (
                       <p>{this.state.section.room.building.name} {this.state.section.room.number}</p>
                     )}
-                    <SearchBuildingList onChange={this.handleBuilding.bind()} buildingList={this.state.buildingList} />
-                    <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} />
+                    <SearchBuildingList onChange={this.handleBuilding.bind()} buildingList={this.state.buildingList} isRequired={true}/>
+                    <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} isRequired={true}/>
                   </div>
                   <button type="submit" className="btn btn-primary">Submit</button>
                 </form>

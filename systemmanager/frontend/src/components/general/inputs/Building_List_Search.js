@@ -13,11 +13,20 @@ class SearchBuildingList extends PureComponent {
         ) : (
           <div className="form-group col-md-12">
             <label>Building:</label>
-            <select className="form-control" onChange={onChange}>
-              {buildingList.map(i => (
-                <option key={i.code} value={i.code}>{i.name}</option>
-              ))}
-            </select>
+            {this.props.isRequired?(
+              <select className="form-control" onChange={onChange} required>
+                {buildingList.map(i => (
+                  <option key={i.code} value={i.code}>{i.name}</option>
+                ))}
+              </select>
+            ):(
+              <select className="form-control" onChange={onChange}>
+                {<option value=''>All Buildings</option>}
+                {buildingList.map(i => (
+                  <option key={i.code} value={i.code}>{i.name}</option>
+                ))}
+              </select>
+            )}
           </div>
         )
       )

@@ -8,6 +8,7 @@ import Footer from './layout/Footer.js';
 import SearchFacultyList from '../general/inputs/Faculty_List_Search.js';
 import SearchRoomList from '../general/inputs/Room_List_Search.js';
 import SearchBuildingList from '../general/inputs/Building_List_Search.js';
+import InputNumSeats from '../general/inputs/Number_Seats_Input.js'
 
 
 // View Course Catalog -> Add (Button) -> Fill out Required 
@@ -19,42 +20,41 @@ class UpdateSectionMaster extends Component {
     faculty: undefined,
     facultyList: undefined,
     numOfSeats: undefined,
+    result: undefined
   }
   componentDidMount(){
     this.setState({'id': this.props.data.state.id})
     axios
     .get(`/course-section-details.json/${this.props.data.state.id}`)
     .then(res => {
-      this.setState({section: res.data})
-      this.setState({numOfSeats: res.data.numOfSeats})
+      this.setState({section: res.data.data})
+      this.setState({numOfSeats: res.data.data.numOfSeats})
       axios
       .get('/faculty-list.json', {
         params: {
-          'department': res.data.course.department.code
+          'department': res.data.data.course.department.code
         }
       })
       .then( res => {
         this.setState({
-          facultyList: res.data,
-          faculty: res.data[0].user.id
+          facultyList: res.data.data,
+          faculty: res.data.data[0].user.id
         })
       })
-      if(res.data.faculty!=undefined)
-        this.setState({'faculty': res.data.faculty.user.id})
     })
     axios
     .get('/building-list.json')
     .then(res => {
-      this.setState({'buildingList': res.data})
+      this.setState({'buildingList': res.data.data})
       axios
       .get('/room-list.json',{
         params:{
-          'building': res.data[0].code
+          'building': res.data.data[0].code
         }
       })
       .then(res => {
-        this.setState({'roomList': res.data})
-        this.setState({'room': res.data[0].id})
+        this.setState({'roomList': res.data.data})
+        this.setState({'room': res.data.data[0].id})
       })
     })
     
@@ -68,8 +68,8 @@ class UpdateSectionMaster extends Component {
       }
     })
     .then( res => {
-      this.setState({'roomList': res.data})
-      this.setState({'room': res.data[0].id})
+      this.setState({'roomList': res.data.data})
+      this.setState({'room': res.data.data[0].id})
     });
   }
   handleRoom = event => {   
@@ -79,7 +79,7 @@ class UpdateSectionMaster extends Component {
     this.setState({ faculty: event.target.value || undefined});
   }
   handleNumOfSeats =event => {
-    this.setState({numOfSeats: event.target.value})
+    this.setState({numOfSeats: event.target.value || undefined})
   }
 
   handleSubmit = event => {
@@ -91,17 +91,18 @@ class UpdateSectionMaster extends Component {
       room: this.state.room
     })
     .then(res=> {
-      this.setState({section: res.data})
-      this.setState({numOfSeats: res.data.numOfSeats})
-      if(res.data.faculty!=undefined)
-        this.setState({'faculty': res.data.faculty.user.id})
+      this.setState({
+        result: res,
+        section: res.data.data,
+        numOfSeats: res.data.data.numOfSeats
+      })
     })
     
   }
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
             {this.state.section==undefined?(
               <p></p>
@@ -122,29 +123,17 @@ class UpdateSectionMaster extends Component {
                   ) : (
                     <h4>{this.state.section.course.name} - Section: {this.state.section.number}</h4>
                   )}
-                  <div className="form-group">
-                    <label>Number of Seats:</label>
-                    <input className="form-control" onChange={this.handleNumOfSeats} placeholder={this.state.section.numOfSeats}></input>
-                    <p className="text-secondary">Number of Seats Currently Taken: {this.state.section.numOfTaken}</p>
-                  </div>
-                  <div className="form-group">
-                    <label>Faculty's Name:</label>
-                    {this.state.section.faculty==undefined?(
-                      <p>No Faculty Assigned</p>
-                    ) : (
-                      <p>Current Professor: {this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
-                    )}
-                    <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} />
-                  </div>
-                  <div className="form-group">
-                    <label>Room</label>
-                    {this.state.section.room==undefined?(
-                      <p>No Room Assigned</p>
-                    ) : (
-                      <p>{this.state.section.room.building.name} {this.state.section.room.number}</p>
-                    )}
-                    <SearchBuildingList onChange={this.handleBuilding.bind()} buildingList={this.state.buildingList} />
-                    <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} />
+                  <br />
+                  <p className="col-md-12 text-secondary"><strong>Number of Seats in Total: </strong>{this.state.section.numOfSeats}</p>
+                  <p className="col-md-12 text-secondary"><strong>Number of Seats Currently Taken: </strong>{this.state.section.numOfTaken}</p>
+                  <InputNumSeats onChange={this.handleNumOfSeats} isRequired={true}/>
+                  <p className="col-md-12 text-secondary"><strong>Current Professor: </strong>{this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
+                  <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} isRequired={true}/>
+                  <p className="col-md-12 text-secondary"><strong>Building and Room: </strong>{this.state.section.room.building.name} {this.state.section.room.number}</p>
+                  <div className="col-md-12 form-group">
+                    <label>Building and Room: </label>
+                    <SearchBuildingList onChange={this.handleBuilding.bind()} buildingList={this.state.buildingList} isRequired={true}/>
+                    <SearchRoomList onChange={this.handleRoom.bind()} roomList={this.state.roomList} isRequired={true}/>
                   </div>
                   <button type="submit" className="btn btn-primary">Submit</button>
                 </form>

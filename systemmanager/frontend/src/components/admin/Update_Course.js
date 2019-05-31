@@ -13,14 +13,15 @@ class UpdateCourse extends Component {
     courseName:undefined,
     courseDescription:undefined,
     courseCredits:undefined,
-    status:undefined
+    courseIsInCatalog: undefined,
+    result: undefined
   }
   componentDidMount(){
     this.setState({courseID:this.props.data.state.courseID})
     axios
     .get(`/course-details.json/${this.props.data.state.courseID}`)
     .then(res=>{
-      this.setState({course:res.data})
+      this.setState({course:res.data.data,courseIsInCatalog:res.data.data.isInCatalog})
     })
   }
   handleCourseName = (event) => {
@@ -32,22 +33,29 @@ class UpdateCourse extends Component {
   handleCourseCredits=(event)=>{
     this.setState({courseCredits:event.target.value||undefined})
   }
+  handleIsInCatalog=(e)=>{
+    if (e.target.value=="true")
+      this.setState({courseIsInCatalog:true})
+    else
+      this.setState({courseIsInCatalog:false})
+  }
   handleSubmit=(event)=>{
     event.preventDefault();
     axios
     .put(`/course-details.json/${this.state.course.id}`,{
       name:this.state.courseName,
       description:this.state.courseDescription,
-      numberOfCredits:this.state.courseCredits
+      numberOfCredits:this.state.courseCredits,
+      isInCatalog: this.state.courseIsInCatalog
     })
     .then(res=>{
-      this.setState({status:res.data})
+      this.setState({result:res})
     })
   }
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row h-100 p-4 m-4 border rounded">
             <div className="col-md-12">
@@ -80,6 +88,17 @@ class UpdateCourse extends Component {
                 <label>Course Credits</label>
                 <input className="form-control" onChange={this.handleCourseCredits} placeholder={this.state.course.numberOfCredits}/>
               </div>
+              <div className="form-group radio col-md-12">
+                <label>Course is in Catalog?</label>
+                <label>
+                  <input type="radio" value={true} checked={this.state.courseIsInCatalog == true} onChange={this.handleIsInCatalog}/>
+                  True
+                </label>
+                <label>
+                  <input type="radio" value={false} checked={this.state.courseIsInCatalog == false} onChange={this.handleIsInCatalog}/>
+                  False   
+                </label>
+              </div> 
               <button className="btn btn-primary col-md-12" type="submit">Update Course</button>
             </form>
           )}

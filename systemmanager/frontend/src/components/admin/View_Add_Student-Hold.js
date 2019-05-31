@@ -6,40 +6,41 @@ import Footer from './layout/Footer.js';
 
 class StudentHold extends Component {
   state = {
-    studentUsername: '',
-    holdSelected: '',
-    holdDeleted: '',
-    student: '',
-    hold: [],
+    studentUsername: undefined,
+    holdSelected: undefined,
+    holdDeleted: undefined,
+    student: undefined,
+    hold: undefined,
     isSuccessful: false,
-    isLoaded: false
+    isLoaded: false,
+    result: undefined
   }
   componentWillMount(){
     axios
       .get('/hold-list.json')
       .then(res => {
         this.setState({
-          hold: res.data,
-          holdSelected: res.data[0].name
+          hold: res.data.data,
+          holdSelected: res.data.data[0].name
         })
       })
   }
   handleChange = event => {   
-    this.setState({ studentUsername: event.target.value });
+    this.setState({ studentUsername: event.target.value});
   }
   handleChange1 = event => {    
-    this.setState({ holdSelected: event.target.value})
+    this.setState({ holdSelected: event.target.value || undefined})
   }
 
   handleSubmit = event => {
     event.preventDefault();
     axios
-      .get(`/student-details.json/${this.state.studentUsername}`)
-      .then(res => {
-        this.setState({
-          student: res.data
-        })
+    .get(`/student-details.json/${this.state.studentUsername}`)
+    .then(res => {
+      this.setState({
+        student: res.data.data,
       })
+    })
     this.setState({isLoaded: true})
   }
 
@@ -52,7 +53,14 @@ class StudentHold extends Component {
       )
       .then(res => {
         this.setState({
-          student: res.data
+          result: res
+        })
+        axios
+        .get(`/student-details.json/${this.state.studentUsername}`)
+        .then(res => {
+          this.setState({
+            student: res.data.data,
+          })
         })
       })
   }
@@ -65,13 +73,23 @@ class StudentHold extends Component {
       )
       .then(res => {
         this.setState({
-          student: res.data
+          result: res
         })
+        axios
+        .get(`/student-details.json/${this.state.studentUsername}`)
+        .then(res => {
+          this.setState({
+            student: res.data.data,
+          })
+        })
+      })
+      .catch(err =>{
+        this.setState({result:err})
       })
   }
   render(){
     const FindStudent = () => 
-      this.state.student != ''?(
+      this.state.student != undefined?(
         <div className="col-md-12">
           <hr />
           <form className="col-md-12" onSubmit={this.handleAdd} >
@@ -118,7 +136,7 @@ class StudentHold extends Component {
 
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <h2 className="col-md-12 text-center">Student Hold</h2>

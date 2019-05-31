@@ -49,10 +49,11 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         if password is not None:
             instance.set_password(password)
         instance.save()
+        print('created')
         return instance
     class Meta:
         model = User
-        fields = ('token','email','password','address','city','firstName','lastName','state','zipCode','phoneNumber','country','type')
+        fields = ('token','email','second_email','password','address','city','firstName','lastName','state','zipCode','phoneNumber','country','type')
 
 class BuildingSerializer(serializers.ModelSerializer):
     class Meta:

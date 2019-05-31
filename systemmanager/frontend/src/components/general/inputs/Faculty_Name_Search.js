@@ -7,7 +7,11 @@ class SearchFacultyName extends PureComponent {
     return (
       <div className="form-group col-md-12">
         <label htmlFor="facultyLastName">Faculty Last Name</label>
-        <input className="form-control" id="facultyLastName" placeholder="Enter Faculty's Last Name" onChange={onChange}/>
+        {this.props.isRequired?(
+          <input className="form-control" id="facultyLastName" placeholder="Enter Faculty's Last Name" onChange={onChange} required/>
+        ):(
+          <input className="form-control" id="facultyLastName" placeholder="Enter Faculty's Last Name" onChange={onChange}/>
+        )}
       </div>
     )
   }

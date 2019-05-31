@@ -39,8 +39,8 @@ class SearchCourseList extends PureComponent {
             <form className="col-md-12" onSubmit={this.handleSubmit}>
               <div className="form-group">
                 <DepartmentSearch onChange={this.handleDepartment.bind(this)} departmentList={this.state.departmentList}/>
-                <CourseNameSearch onChange={this.handleCourseName.bind(this)} />
-                <CourseIDSearch onChange={this.handleCourseID.bind(this)} />
+                <CourseNameSearch onChange={this.handleCourseName.bind(this)}/>
+                <CourseIDSearch onChange={this.handleCourseID.bind(this)}/>
                 <br />
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>

@@ -13,7 +13,7 @@ class FooterHome extends Component {
             <Link className="text-muted" to="/faculty/main">Main Page</Link>
           </li>
           <li className="list-inline-item">
-            <Link onClick={logout} className="text-muted" to="/login">Log Out</Link>
+            <Link className="text-muted" onClick={logout} to="/login">Log Out</Link>
           </li>
         </ul>
       </footer>

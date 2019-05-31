@@ -5,10 +5,17 @@ class SearchCourseName extends PureComponent {
     const {onChange} = this.props
   
     return (
-      <div className="form-group col-md-12">
-        <label htmlFor="courseName">Course Name:</label>
-        <input className="form-control" id="courseName" placeholder="Enter Course Name" onChange={onChange}/>
-      </div>
+      this.props.isRequired?(
+        <div className="form-group col-md-12">
+          <label htmlFor="courseName">Course Name:</label>
+          <input className="form-control" id="courseName" placeholder="Enter Course Name" onChange={onChange} required/>
+        </div>
+      ):(
+        <div className="form-group col-md-12">
+          <label htmlFor="courseName">Course Name:</label>
+          <input className="form-control" id="courseName" placeholder="Enter Course Name" onChange={onChange}/>
+        </div>
+      )
     )
   }
 }
