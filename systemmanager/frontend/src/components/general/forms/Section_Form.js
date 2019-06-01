@@ -31,7 +31,8 @@ class SectionForm extends Component {
       TH: true,
       FR: true,
     },
-    isReload: false
+    isReload: false,
+    isLoading: false
   }
 
   componentDidMount() {
@@ -121,6 +122,7 @@ class SectionForm extends Component {
   
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({'isLoading':true})
     axios
       .get('/course-section-list.json', {
         params: {
@@ -141,8 +143,14 @@ class SectionForm extends Component {
       })
       .then(res => {
         this.setState({
-          courseSect: res.data.data
+          courseSect: res.data.data,isLoading:false
         })
+      })
+      .catch(err =>{
+        this.setState({
+          courseSect:[]
+        }) 
+        this.props.handleResult(err)
       })
   }
   
@@ -176,7 +184,7 @@ class SectionForm extends Component {
     }    
   }
   render(){
-    const {SectionTable,student} = this.props;
+    const {SectionTable,student,handleResult} = this.props;
     return(
       <React.Fragment>
         <div className="col-md-12">
@@ -202,10 +210,15 @@ class SectionForm extends Component {
               <button type="submit" className="btn btn-primary">Submit</button> 
             </div>
           </form>
+          {this.state.isLoading==false?(
+            <p></p>
+          ):(
+            <p className="col-md-12 text-center">Searching...</p>
+          )}
           {this.state.courseSect==undefined?(
             <p></p>
           ):(
-            <SectionTable handleResult={this.props.handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+            <SectionTable handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
           )}
         </div>
       </React.Fragment>

@@ -79,7 +79,7 @@ class UpdateStudentGrade extends Component {
       }
     })
     .then(res => {
-      this.setState({enrollmentList: res.data.data})
+      this.setState({enrollmentList: res.data.data,result:undefined})
     })
     .catch(err=>{
       this.setState({result:err})
@@ -94,7 +94,10 @@ class UpdateStudentGrade extends Component {
     axios
     .get(`/grade-details.json/${this.state.studentUsername}/${e.target.value}`)
     .then(res=>{
-      this.setState({grade:res.data.data})
+      this.setState({grade:res.data.data,result:undefined})
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   handleLetterGrade = e => {
@@ -109,6 +112,17 @@ class UpdateStudentGrade extends Component {
     })
     .then(res=>{
       this.setState({result:res})
+      axios
+      .get(`/grade-details.json/${this.state.studentUsername}/${this.state.grade.course_section.id}`)
+      .then(res=>{
+        this.setState({grade:res.data.data,result:undefined})
+      })
+      .catch(err=>{
+        this.setState({result:err})
+      })
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   render() {
@@ -141,9 +155,9 @@ class UpdateStudentGrade extends Component {
                 ):(
                   checkAddDrop(this.state.grade.course_section.term)=='M'?(
                     <form onSubmit={(e) => this.changeGrade(e,'M')} className="col-md-12">
-                      <div className="form-control">
+                      <div className="form-group">
                         <label>Edit Midterm Grade</label>
-                        <select onChange={this.handleLetterGrade}>
+                        <select className="form-control" onChange={this.handleLetterGrade}>
                           <option value="A">A</option>
                           <option value="B">B</option>
                           <option value="C">C</option>
@@ -151,15 +165,15 @@ class UpdateStudentGrade extends Component {
                           <option value="F">F</option>
                         </select>
                         <p className="text-secondary">Current Grade: {this.state.grade.letterGrade}</p>
-                        <button type="submit">Submit</button>
+                        <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
                       </div>
                     </form>
                   ):(
                     checkAddDrop(this.state.grade.course_section.term)=='F'?(
                       <form onSubmit={(e) => this.changeGrade(e,'F')}>
-                        <div className="form-control">
+                        <div className="form-group">
                           <label>Edit Final Grade</label>
-                          <select onChange={this.handleLetterGrade}>
+                          <select className="form-control" onChange={this.handleLetterGrade}>
                             <option value="A">A</option>
                             <option value="B">B</option>
                             <option value="C">C</option>
@@ -168,7 +182,7 @@ class UpdateStudentGrade extends Component {
                           </select>    
                           <p className="text-secondary">Current Grade: {this.state.grade.letterGrade}</p>   
                         </div>
-                        <button type="submit">Submit</button>
+                        <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
                       </form>
                     ):(
                       <p></p>

@@ -30,71 +30,71 @@ class TableSection extends PureComponent {
         <p></p>
       ) : (
         sectionList.length == 0? (
-          <p>Could not find any course sections</p>
+          <p className="col-md-12 text-center">Could not find any course sections</p>
         ) : (
           <div className="col-md-12">
             <h2 className="col-md-12 text-center">Search Results</h2>
-            <table className="col-md-12">
-              <thead className="col-md-12">
-                <tr className="col-md-12">
-                  <td className='col-md-1'>ID</td>
-                  <td className='col-md-3'>Course</td>
-                  <td className='col-md-1'>Section</td>
-                  <td className='col-md-1'>Professor</td>
-                  <td className='col-md-1'># of Credits</td>
-                  <td className='col-md-2'>Time</td>
-                  <td className='col-md-1'>Term</td>
-                  <td className='col-md-1'>Building-Room</td> 
-                  <td className='col-md-1'># of Available Seats</td>
-                  <td className='col-md-1'></td>
-                  <td className='col-md-1'></td>
+            <table className="table table-striped">
+              <thead style={{backgroundColor:"#696969", color:"white"}}>
+                <tr>
+                  <td>ID</td>
+                  <td>Course</td>
+                  <td>Section</td>
+                  <td>Professor</td>
+                  <td># of Credits</td>
+                  <td>Time</td>
+                  <td>Term</td>
+                  <td>Building-Room</td> 
+                  <td># of Available Seats</td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </thead>
-              <tbody className="col-md-12">
+              <tbody>
                 {/* need extra conditions for null values*/}
                 {sectionList.map(el => (
-                  <tr className="col-md-12 border-top" key={el.id}>
-                    <td className='col-md-1'>{el.id}</td>
-                    <td className='col-md-3'>{el.course.name}</td>
-                    <td className='col-md-1'>{el.number}</td>
+                  <tr key={el.id}>
+                    <td >{el.id}</td>
+                    <td >{el.course.id} {el.course.name}</td>
+                    <td >{el.number}</td>
                     {el.faculty?(
-                      <td className='col-md-1'>{el.faculty.user.lastName}</td>
+                      <td >{el.faculty.user.lastName}</td>
                     ):(
-                      <td className='col-md-1'>TBA</td>
+                      <td >TBA</td>
                     )}
-                    <td className='col-md-1'>{el.course.numberOfCredits}</td>              
+                    <td >{el.course.numberOfCredits}</td>              
                     {el.slot.length == 0?(                      
-                    <td className='col-md-2'> 
+                    <td > 
                       <p>TBD</p>
                     </td>
                     ) : (       
-                    <td className='col-md-2'>   
+                    <td >   
                     {el.slot.map(i => (         
                       <p>{i.day.name} {i.time.start}-{i.time.end}</p>
                     ))}
                     </td>
                     )}
                     {el.term == undefined?(
-                      <td className='col-md-1'> 
+                      <td > 
                         <p>TBD</p> 
                       </td> 
                     ) : (
-                      <td className='col-md-1'> 
+                      <td > 
                         <p>{el.term.season} {el.term.year}</p>
                       </td> 
                     )}
                     {el.room == 0?(                      
-                      <td className='col-md-1'> 
+                      <td > 
                         <p>TBD</p>
                       </td>
                       ) : (      
-                      <td className='col-md-1'>      
+                      <td >      
                         <p>{el.room.building.code} {el.room.number}</p>
                       </td> 
                     )}
-                    <td className='col-md-1'>{el.numOfSeats - el.numOfTaken}</td>     
+                    <td >{el.numOfSeats-el.numOfTaken}/{el.numOfSeats}</td>     
                     {el.term.id==this.state.term?(
-                      <td className="col-md-6">
+                      <td >
                         <Link to={{
                           pathname: '/admin/update-section-info',
                           state: {
@@ -104,14 +104,14 @@ class TableSection extends PureComponent {
                         className="btn btn-info">Update</Link>
                       </td>
                     ):(
-                      <p></p>
+                      <td></td>
                     )}
                     {el.term.id==this.state.term?(
-                      <td className="col-md-6">
+                      <td >
                         <button className="btn btn-danger" type="submit" onClick={this.handleDelete(el.id)}>Remove</button>
                       </td>
                     ):(
-                      <p></p>
+                      <td></td>
                     )}
                   </tr>
                 ))}

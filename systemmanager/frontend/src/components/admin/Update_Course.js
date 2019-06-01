@@ -77,10 +77,6 @@ class UpdateCourse extends Component {
           ):(
             <form className="col-md-12" onSubmit={this.handleSubmit}>
               <div className="form-group col-md-12">
-                <label>Course Name</label>
-                <input className="form-control" onChange={this.handleCourseName} placeholder={this.state.course.name}/>
-              </div>
-              <div className="form-group col-md-12">
                 <label>Course Description</label>
                 <textarea className="form-control" onChange={this.handleCourseDescription} placeholder={this.state.course.description}/>
               </div>

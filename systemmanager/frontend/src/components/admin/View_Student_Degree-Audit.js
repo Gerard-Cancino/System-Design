@@ -82,7 +82,7 @@ class DegreeAudit extends Component {
       this.getOverallGPA(res.data.data)
     })
     .catch(err=>{
-      this.setState({result: err});
+      this.setState({result: err,transcriptList:undefined});
     })
   }
   getStudentMajorList(){

@@ -16,6 +16,8 @@ class ViewStudentRecord extends Component {
     advisor: undefined,
     isLoaded: false,
     newAdvisor: undefined,
+    majorList:undefined,
+    minorList:undefined
   }
 
   handleChange = event => {
@@ -51,13 +53,44 @@ class ViewStudentRecord extends Component {
       this.setState({result:err})
     })
     axios
-    .get(`/faculty-list.json`)
-    .then(res=>{
-      this.setState({facultyList:res.data.data})
-      this.setState({newAdvisor:res.data.data[0].user.id})
+    .get(`/student-major-list.json`,{
+      params:{
+        email:this.state.studentUsername
+      }
     })
-    .catch(err=>{
-      this.setState({result:err})
+    .then(res=>{
+      this.setState({majorList:res.data.data})
+      axios
+      .get(`/faculty-list.json`,{
+        params:{
+          department:res.data.data[0].major.department.code
+        }
+      })
+      .then(res=>{
+        this.setState({facultyList:res.data.data})
+        this.setState({newAdvisor:res.data.data[0].user.id})
+      })
+      .catch(err=>{
+        this.setState({result:err})
+        axios
+        .get(`/faculty-list.json`)
+        .then(res=>{
+          this.setState({facultyList:res.data.data})
+          this.setState({newAdvisor:res.data.data[0].user.id})
+        })
+        .catch(err=>{
+          this.setState({result:err})
+        })
+      })
+    })
+    axios
+    .get(`/student-minor-list.json`,{
+      params:{
+        email:this.state.studentUsername
+      }
+    })
+    .then(res=>{
+      this.setState({minorList:res.data.data})
     })
   }
   handleSubmit0 = event => {
@@ -159,6 +192,35 @@ class ViewStudentRecord extends Component {
             ) : (
               <div className="col-md-12">
                 <ProfileUser account={this.state.student.user} />
+                <hr />
+                {this.state.majorList==undefined?(
+                  <p></p>
+                ):(
+                  this.state.majorList.length==0?(
+                    <p>Student has no major</p>
+                  ) : (
+                    <div className="col-md-12">
+                      <p><strong>Major:</strong></p>
+                      {this.state.majorList.map(el=>(
+                        <p>{el.major.name}</p>
+                      ))}
+                    </div>
+                  )
+                )}
+                {this.state.minorList==undefined?(
+                  <p></p>
+                ):(
+                  this.state.minorList.length==0?(
+                    <p>Student has no minor</p>
+                  ) : (
+                    <div className="col-md-12">
+                      <p><strong>Minor:</strong></p>
+                      {this.state.minorList.map(el=>(
+                        <p>{el.minor.name}</p>
+                      ))}
+                    </div>
+                  )
+                )}
                 <hr />
                 <StudentAdvisor advisor={this.state.advisor} />
                 {!this.state.facultyList?(

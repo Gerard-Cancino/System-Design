@@ -39,7 +39,11 @@ class StudentHold extends Component {
     .then(res => {
       this.setState({
         student: res.data.data,
+        result: undefined
       })
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
     this.setState({isLoaded: true})
   }

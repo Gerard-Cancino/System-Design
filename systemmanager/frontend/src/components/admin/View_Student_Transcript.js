@@ -34,7 +34,7 @@ class StudentTranscript extends Component {
       this.setState({transcriptList:map,result:res})
     })
     .catch(err=>{
-      this.setState({result: err});
+      this.setState({result: err,transcriptList:undefined});
     }) 
   }
   handleChange = e => {

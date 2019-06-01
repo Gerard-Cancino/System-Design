@@ -159,7 +159,11 @@ class CreateSection extends Component {
                     </div>
                   )
                 )}
-                <button type="submit" className="btn btn-primary">Submit</button>
+                {this.state.section==undefined?(
+                  <button type="submit" className="btn btn-primary">Submit</button>
+                ):(
+                  <button type="submit" className="btn btn-primary" disabled>Submit</button>
+                )}
               </form>
             </div>
           )}

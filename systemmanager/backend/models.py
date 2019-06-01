@@ -251,6 +251,7 @@ class CourseSection(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     class Meta:
         db_table = "course_section"
+        unique_together = ("id","term")
 
 class Prerequisite(models.Model):
     REQUIRED_FIELDS = ('Course')

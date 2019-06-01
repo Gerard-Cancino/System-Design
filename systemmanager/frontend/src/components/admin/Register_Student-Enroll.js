@@ -17,16 +17,20 @@ function checkTerm() {
   let month = parseInt(today.getMonth());
   // Spring
   if((month>10||month<2)){
-    let beginTerm = new Date((year)+"-11-04");
-    let endTerm = new Date(year+1+"-01-27");
+    let beginTerm = new Date((year),'10','04');
+    let endTerm = new Date(year+1,'01','27');
+    console.log(beginTerm)
+    console.log(endTerm)
     if(beginTerm<today<endTerm){
       return ({season: 'SP',year:year+1});
     }
   }
   // Fall
   else if((month>5||month<10)){
-    let beginTerm = new Date(year+"-04-01");
-    let endTerm = new Date(year+"-09-01");
+    let beginTerm = new Date(year,'03','01');
+    let endTerm = new Date(year,'08','01');
+    console.log(beginTerm)
+    console.log(endTerm)
     if(beginTerm<today<endTerm){
       return ({season: 'F',year:year});
     }

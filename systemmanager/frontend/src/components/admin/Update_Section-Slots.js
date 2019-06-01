@@ -55,6 +55,7 @@ class UpdateSectionMaster extends Component {
       })
       .then(res => {
         this.setState({'slotList': res.data.data})
+        this.compareSlot()
       })
   }
   handleTerm = event => {   
@@ -99,7 +100,7 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
-      this.setState({section:res.data.data})
+      this.setState({section:res.data.data,result:undefined})
       axios
       .get('/slot-list.json',{
         params: {
@@ -116,6 +117,9 @@ class UpdateSectionMaster extends Component {
         this.compareSlot()
       })
     })
+    .catch(err => {
+      this.setState({result:err})
+    })
   }
   handleRemove = (slot) => (event) => {
     event.preventDefault()
@@ -124,7 +128,7 @@ class UpdateSectionMaster extends Component {
       'slot': slot
     })
     .then(res => {
-      this.setState({section:res.data.data})
+      this.setState({section:res.data.data,result:undefined})
       axios
       .get('/slot-list.json',{
         params: {
@@ -221,7 +225,7 @@ class UpdateSectionMaster extends Component {
     }
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid h-100">
           <div className="row border rounded m-4 p-4 h-100">
             <div className="col-md-12">
@@ -237,6 +241,7 @@ class UpdateSectionMaster extends Component {
               <TimeSearch onChange={this.handleTime.bind(this)} timeList={this.state.timeList} />
               <DaySearch onChange={this.handleDays.bind(this)} mon={this.state.days.MO} tues={this.state.days.TU} wed={this.state.days.WE} thurs={this.state.days.TH} fri={this.state.days.FR}/>
               <button className="btn btn-info" type="submit">Search for Slot</button>
+              <p className="text-secondary">Four slots is the maxed for each section</p>
             </form>
             <Slot />
           </div>

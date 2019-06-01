@@ -186,30 +186,27 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
     except:
       return Response({'message':'Could not find course'})
   def put(self,request,id):
-    try:
-      params = request.data
-      course = self.get_object(id)
-      name = params.get('name')
-      description = params.get('description')
-      numberOfCredits = params.get('numberOfCredits')
-      isInCatalog = params.get('isInCatalog')
-      if isInCatalog is not None:
-        course.isInCatalog = isInCatalog
-      if name is not None:
-        course.name = name
-      if description is not None:
-        course.description = description
-      if numberOfCredits is not None:
-        try:
-          if(0<numberOfCredits<5):
-            course.numberOfCredits = numberOfCredits
-        except:
+    params = request.data
+    course = self.get_object(id)
+    name = params.get('name')
+    description = params.get('description')
+    isInCatalog = params.get('isInCatalog')
+    if isInCatalog is not None:
+      course.isInCatalog = isInCatalog
+    if description is not None:
+      course.description = description
+    if params.get('numberOfCredits') is not None:
+      try:
+        numberOfCredits = int(params.get('numberOfCredits'))
+        if(1>numberOfCredits or numberOfCredits>4):
           return Response({'message':"Please input a number inclusively between 1 and 4 for number of credits"},status=status.HTTP_400_BAD_REQUEST)
-      course.save()
-      serializer = serializers.CourseSerializer(course)
-      return Response({'data':serializer.data,'message':"Successful!"})
-    except:
-      return Response({'message':"Failed to edit course"},status=status.HTTP_400_BAD_REQUEST)
+        else:
+          course.numberOfCredits = numberOfCredits
+      except:
+        return Response({'message': "Please input a number for the credits"}, status=status.HTTP_400_BAD_REQUEST)
+    course.save()
+    serializer = serializers.CourseSerializer(course)
+    return Response({'data':serializer.data,'message':"Successful! Course has been updated"})
   def delete(self,request,id):
     course = self.get_object(id).delete()
     return Response({'message':"Successful! Removed the course. Please return to the course list"},status=status.HTTP_200_OK)
@@ -249,24 +246,25 @@ class CourseList(generics.ListCreateAPIView):
       course = models.Course.objects.filter(name=params.get('name'))
       if course.count() != 0:
         return Response({'message':"The course name exist already"}, status=status.HTTP_400_BAD_REQUEST)
-      try:
-        course = models.Course.objects.create(
-          id = id,
-          department=department,
-          number=params.get('number'),
-          name=params.get('name'),
-          description=params.get('description'),
-          numberOfCredits=params.get('numberOfCredits'),
-          isGraduateCourse=False,
-          isActive=True,
-          isInCatalog = params.get('isInCatalog')
-        )
-        course.save()
-        course = models.Course.objects.get(id=course.id)
-        serializer = serializers.CourseSerializer(course)
-        return Response({'data':serializer.data, 'message':"Successful!! The course was successfully created"},status=status.HTTP_201_CREATED)
-      except:
-        return Response({'message':"The course id exist already"},status=status.HTTP_400_BAD_REQUEST)
+
+      course = models.Course.objects.filter(id=params.get('department') + params.get('number'))
+      if course.count() != 0:
+        return Response({'message':"The course ID exist already"}, status=status.HTTP_400_BAD_REQUEST)
+      course = models.Course.objects.create(
+        id = id,
+        department=department,
+        number=params.get('number'),
+        name=params.get('name'),
+        description=params.get('description'),
+        numberOfCredits=params.get('numberOfCredits'),
+        isGraduateCourse=False,
+        isActive=True,
+        isInCatalog = params.get('isInCatalog')
+      )
+      course.save()
+      course = models.Course.objects.get(id=course.id)
+      serializer = serializers.CourseSerializer(course)
+      return Response({'data':serializer.data, 'message':"Successful!! The course was successfully created"},status=status.HTTP_201_CREATED)
 @method_decorator(csrf_exempt, name='dispatch')
 class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self,id):
@@ -288,12 +286,16 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
       queryset = models.CourseSection.objects.get(id = id)
       slot = models.Slot.objects.get(id = params.get('slot'))
       if not slot in queryset.slot.all():
-        try:
-          section = models.CourseSection.objects.filter(term_id=queryset.term.id,slot_id=slot.id,room_id=queryset.room.id)
+        section = models.CourseSection.objects.filter(term_id=queryset.term.id,slot__id=slot.id,faculty_id=queryset.faculty.user_id)
+        if len(section) != 0:
+          return Response({'message':"Faculty has another class at this time"},status=status.HTTP_400_BAD_REQUEST)
+        if queryset.slot.count() > 3:
+          return Response({'message':"A course can only have 4 slots assigned"}, status=status.HTTP_400_BAD_REQUEST)
+        section = models.CourseSection.objects.filter(term_id=queryset.term.id,slot__id=slot.id,room_id=queryset.room.id)
+        if len(section) != 0:
           return Response({'message':"Room is not available at this time and day"},status=status.HTTP_400_BAD_REQUEST)
-        except:
-          slot.save()
-          queryset.slot.add(slot)
+        slot.save()
+        queryset.slot.add(slot)
       else:
         slot.save()
         queryset.slot.remove(slot)
@@ -363,6 +365,8 @@ class CourseSectionList(generics.ListCreateAPIView):
         days.append('4')
       if params.get('friday') == 'false':
         days.append('5')
+      if len(days) != 0:
+        filters.append(Q(slot__isnull=False))
       if not filters and len(days) == 0:
         queryset = models.CourseSection.objects.all()
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
@@ -457,8 +461,13 @@ class EnrollmentList(generics.ListCreateAPIView):
     params = request.query_params
     if params.get('student') is not None:
       if params.get('term') is not None:
-        user=models.User.objects.get(email=params.get('student'))
-        student=models.Student.objects.get(user_id=user.id)
+        user = None
+        student = None
+        try:
+          user=models.User.objects.get(email=params.get('student'))
+          student=models.Student.objects.get(user_id=user.id)
+        except:
+          return Response({'message':"Cannot find student"},status=status.HTTP_400_BAD_REQUEST)
         enrollment = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term_id=params.get('term')).distinct()
         serializer = serializers.EnrollmentSerializer(enrollment, many=True)
         term = models.Term.objects.get(id=params.get('term'))
@@ -1002,9 +1011,12 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
         except models.Grade.DoesNotExist:
             raise Http404
     def get(self, request, email, course_section_id):
+      try:
         grade = self.get_object(email, course_section_id)
         serializer = serializers.GradeSerializer(grade)
         return Response({'data':serializer.data,'message':"Successful!"})
+      except:
+        return Response({'message':"Could not find a grade.  Please ask the faculty to create a grade"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, email, course_section_id):
         params = request.data
@@ -1041,18 +1053,18 @@ class GradeList(generics.ListCreateAPIView):
   def list(self,request):
     params = query_params
     if params.get('student') is not None:
-      gradeObject = models.Grade.objects.filter(student__user__email=student)
+      gradeObject = models.Grade.objects.filter(student__user__email=params.get('student'))
       print(gradeObject)
       serializer = serializers.GradeSerializer(gradeObject, many=True)
-      return Response({'data':serializer.data})
+      return Response({'data':serializer.data},status=status.HTTP_200_OK)
     elif params.get('section') is not None:
       grade_list = models.Grade.objects.filter(course_section=params.get('section'))
       serializer = serializers.GradeSerializer(grade_list,many=True)
-      return Response({'data':serializer.data})
+      return Response({'data':serializer.data},status=status.HTTP_200_OK)
     else:
       gradeObject = models.Grade.objects.all()
       serializer = serializers.GradeSerializer(gradeObject)
-      return Response({'data':serializer.data})
+      return Response({'data':serializer.data},status=status.HTTP_200_OK)
   def post(self,request):
     params = request.data
     if params.get('course_section_id') is not None or \
@@ -1135,13 +1147,12 @@ class PrerequisiteList(generics.ListCreateAPIView):
 class StudentMajorList(generics.ListCreateAPIView):
   def list(self,request):
     params = request.query_params
-    try:
-      if params.get('email') is not None:
-        student_major = models.StudentMajor.objects.filter(student__user__email=params.get('email'))
-        serializer = serializers.StudentMajorSerializer(student_major,many=True)
-        return Response({'data':serializer.data,'message':"Successful!"})
-    except:
-      return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
+    if params.get('email') is not None:
+      student_major = models.StudentMajor.objects.filter(student__user__email=params.get('email'))
+      if len(student_major) == 0:
+        return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
+      serializer = serializers.StudentMajorSerializer(student_major,many=True)
+      return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
     if params.get('email') is not None and params.get('major') is not None:
@@ -1159,13 +1170,12 @@ class StudentMajorList(generics.ListCreateAPIView):
 class StudentMinorList(generics.ListCreateAPIView):
   def list(self,request):
     params = request.query_params
-    try:
-      if params.get('email') is not None:
-        student_minor = models.StudentMinor.objects.filter(student__user__email=params.get('email'))
-        serializer = serializers.StudentMinorSerializer(student_minor,many=True)
-        return Response({'data':serializer.data,'message':"Successful!"})
-    except:
-      return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
+    if params.get('email') is not None:
+      student_minor = models.StudentMinor.objects.filter(student__user__email=params.get('email'))
+      if len(student_minor) == 0:
+        return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
+      serializer = serializers.StudentMinorSerializer(student_minor,many=True)
+      return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
     if params.get('email') is not None and params.get('minor') is not None:
