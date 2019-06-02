@@ -1,5 +1,6 @@
 from backend import models
 
+import re 
 from datetime import datetime
 import io
 import jwt
@@ -585,12 +586,20 @@ class FacultyList(generics.ListCreateAPIView):
   def list(self,request):
     params = request.query_params
     if params.get('department') is not None:
-      faculty = models.Faculty.objects.filter(department=params.get('department'))
+      faculty = models.Faculty.objects.filter(department_id=params.get('department'))
       serializer = serializers.FacultySerializer(faculty, many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
     faculty = models.Faculty.objects.all()
     serializer = serializers.FacultySerializer(faculty,many=True)
     return Response({'data':serializer.data,'message':"Obtained all faculty"})
+  def post(self,request):
+    params = request.data
+    if params.get('department') is not None and params.get('user_id') is not None:
+      faculty = models.Faculty.objects.create(department_id=params.get('department'),user_id=params.get('user_id'))
+      faculty.save()
+      faculty = models.Faculty.objects.get(user_id=params.get('user_id'))
+      serializer = serializers.FacultySerializer(faculty)
+      return Response({'data':serializer.data,'message':"Successful!  Created a faculty"},status=status.HTTP_200_OK)
 
 class HoldList(generics.ListCreateAPIView):
   queryset = models.Hold.objects.all()
@@ -825,22 +834,21 @@ class UserList(APIView):
     serializer = serializers.UserSerializer(user)
     return Response({'data':serializer.data,'message':"Successful!"})
   def post(self, request):
-    try:
-      print(request.data)
-      serializer = serializers.UserSerializerWithToken(data=request.data)
-      if serializer.is_valid():
-        serializer.save()
-        print("serializer is valid")
-        if request.data.get('type')=='S':
-          print('creating student')
-          userID = models.User.objects.get(email=request.data.get('email')).id
-          print(userID)
-          student = models.Student.objects.create(user_id=userID)
-          print('created')
-        return Response({'data':serializer.data, 'message':'Successfully created the users account'}, status=status.HTTP_201_CREATED)
-      return Response({'message':"Could not create an account.  The username must be unique"},status=status.HTTP_400_BAD_REQUEST)
-    except:
-      return Response({'message':"Could not create an account.  The username must be unique"},status=status.HTTP_400_BAD_REQUEST)
+    print(request.data)
+    regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]') 
+    if not regex.search(request.data.get('password')):
+      return Response({'message':"Password must contain a special character"},status=status.HTTP_400_BAD_REQUEST)
+    if len(request.data.get('password')) < 9:
+      return Response({'message':"Password must be at least 8 characters long"},status=status.HTTP_400_BAD_REQUEST)
+    if len(request.data.get('phoneNumber')) != 10 and not isinstance(request.data.get('phoneNumber'),int):
+      return Response({'message':"Phone number must be valid"},status=status.HTTP_400_BAD_REQUEST)
+    serializer = serializers.UserSerializerWithToken(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      user = models.User.objects.get(email=request.data.get('email'))
+      serializer = serializers.UserSerializer(user)
+      return Response({'data':serializer.data, 'message':'Successfully created the users account'}, status=status.HTTP_201_CREATED)
+    return Response({'message':"Could not create an account.  The username must be unique"},status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AdviseeDetailsFaculty(APIView):
@@ -884,7 +892,6 @@ class AdvisorList(generics.ListCreateAPIView):
     def post( self, request):
         data = request.data
         today = datetime.now().date()
-        print(data.get('email'))
         student = models.Student.objects.get(user__email=data.get("email"))
         old_advisors = models.Advisor.objects.filter(student_id=student.user_id)
         if old_advisors.count() != 0:
@@ -917,10 +924,20 @@ class AdviseeDetails(APIView):
 @method_decorator(csrf_exempt, name='dispatch') ##not going to work unless student id is a foreign key in attendance
 class AttendanceList(generics.ListCreateAPIView):
   serializer_class = serializers.EnrollmentSerializer
-  def list(self, request, course_section_id):
-    attendance=models.Attendance.objects.filter(enrollment__course_section_id=course_section_id)
-    serializer = serializers.EnrollmentSerializer(attendance, many=True)
-    return Response({'data':serializer.data,'message':"Successful!"})
+  def list(self, request):
+    params = request.query_params
+    if params.get('course_section') is not None:
+      attendance=models.Attendance.objects.filter(enrollment__course_section_id=params.get('course_section'))
+      serializer = serializers.EnrollmentSerializer(attendance, many=True)
+      return Response({'data':serializer.data,'message':"Successful!"})
+  # I need a course section id and a student
+  def post(self, request):
+    params = request.data
+    if params.get('enrollment') is not None and params.get('isPresent') is not None:
+      attendance = models.Attendance.objects.create(enrollment_id=params.get('course_section'),isPresent=params.get('isPresent'))
+      attendance.save()
+      serializer = serializers.AttendanceSerializer(attendance)
+      return Response({'data':serializer.data,'message':"Successful! Student has attended the class"},status=status.HTTP_200_OK)
 
 # class TranscriptDetails(generics.RetrieveUpdateDestroyAPIView):
 #    serializer_class = serializers.TranscriptSerializer
@@ -1020,19 +1037,15 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
 
     def put(self, request, email, course_section_id):
         params = request.data
-        print(params.get('grade'))
         if params.get('grade') is not None and params.get('type') is not None:
             queryset = models.Grade.objects.get(student__user__email=email, course_section_id=int(course_section_id), type=params.get('type'))
             if queryset.letterGrade == params.get('grade'):
               return Response({'message':"Failed.  The submitted grade is equivalent to the grade already submitted"},status=status.HTTP_400_BAD_REQUEST)
             try:
-              print(queryset.course_section.term.season)
               transcript = models.Transcript.objects.get(student__user__email=email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
-              print(transcript)
               transcript.gradeReceived = params.get('grade')
               transcript.save()
             except:
-              print("Failed transcript")
               return Response({'message':"Failed.  The system cannot find a correlating transcript"},status=status.HTTP_400_BAD_REQUEST)
             queryset.letterGrade = params.get('grade')
             queryset.save()
@@ -1144,24 +1157,52 @@ class PrerequisiteList(generics.ListCreateAPIView):
       serializer = serializers.PrerequisiteSerializer(prerequisite)
       return Response({'data':serializer.data,'message':"Successful! Added the prerequisite to " + str(course.id)})
 
+class StudentList(generics.ListCreateAPIView):
+  def post(self,request):
+    params = request.data
+    print(params)
+    if params.get('user_id') is not None:
+      student = models.Student.objects.create(user_id=params.get('user_id'))
+      student.save()
+      student = models.Student.objects.get(user_id=params.get('user_id'))
+      serializer = serializers.StudentSerializer(student)
+      return Response({'data':serializer.data,'message':"Successful! Created a Student"},status=status.HTTP_200_OK)
+
+class StudentMajorDetails(generics.RetrieveUpdateDestroyAPIView):
+  def delete(self,request,student,major):
+    student_major = models.StudentMajor.objects.get(student__user__email=student,major_id=major)
+    student_major.delete()
+    #Email
+    return Response({'message':"Successful! Removed the students major"},status=status.HTTP_200_OK)
+
+class StudentMinorDetails(generics.RetrieveUpdateDestroyAPIView):
+  def delete(self,request,student,minor):
+    student_minor = models.StudentMinor.objects.get(student__user__email=student,minor_id=minor)
+    student_minor.delete()
+    #Email
+    return Response({'message':"Successful! Removed the students minor"},status=status.HTTP_200_OK)
+
 class StudentMajorList(generics.ListCreateAPIView):
   def list(self,request):
     params = request.query_params
     if params.get('email') is not None:
       student_major = models.StudentMajor.objects.filter(student__user__email=params.get('email'))
-      if len(student_major) == 0:
-        return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
       serializer = serializers.StudentMajorSerializer(student_major,many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
     if params.get('email') is not None and params.get('major') is not None:
-      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('email').id))
+      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('email')).id)
       majors = models.StudentMajor.objects.filter(student=student)
       if len(majors)>3:
         return Response({'message':"The student is limited to two majors"},status=status.HTTP_400_BAD_REQUEST)
-      major = models.Major.objects.filter(id=params.get('major'))
-      student_major = models.StudentMajor.objects.create(student=student,major=major,dateDeclared=datatime.today())
+      for major in majors:
+        print(major.major.id)
+        print(params.get('major'))
+        if major.major.id==int(params.get('major')):
+          return Response({'message':"The student is already assigned to this major"},status=status.HTTP_400_BAD_REQUEST)
+      major = models.Major.objects.get(id=params.get('major'))
+      student_major = models.StudentMajor.objects.create(student_id=student.user_id,major_id=major.id,dateDeclared=datetime.today().date())
       student_major.save()
       serializer = serializers.StudentMajorSerializer(student_major)
       return Response({'data':serializer.data, 'message':'Successful!!  The student is assigned to the major'},status=status.HTTP_201_CREATED)
@@ -1172,19 +1213,17 @@ class StudentMinorList(generics.ListCreateAPIView):
     params = request.query_params
     if params.get('email') is not None:
       student_minor = models.StudentMinor.objects.filter(student__user__email=params.get('email'))
-      if len(student_minor) == 0:
-        return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
       serializer = serializers.StudentMinorSerializer(student_minor,many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
     if params.get('email') is not None and params.get('minor') is not None:
-      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('email').id))
+      student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('email')).id)
       minors = models.StudentMinor.objects.filter(student=student)
       if len(minors)>1:
         return Response({'message':"The student is limited to one minor"}, status=status.HTTP_400_BAD_REQUEST)
-      minor = models.Minor.objects.filter(id=params.get('minor'))
-      student_minor = models.StudentMinor.objects.create(student=student,minor=minor,dateDeclared=datatime.today())
+      minor = models.Minor.objects.get(id=params.get('minor'))
+      student_minor = models.StudentMinor.objects.create(student_id=student.user_id,minor_id=minor.id,dateDeclared=datetime.today().date())
       student_minor.save()
       serializer = serializers.StudentMinorSerializer(student_minor)
       return Response({'data':serializer.data, 'message':"Successful!!  The student is assigned to the minor"},status=status.HTTP_201_CREATED)

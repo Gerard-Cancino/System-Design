@@ -55,8 +55,8 @@ class View_Grade_List extends Component {
             <table className="col-md-12">
               <thead className="col-md-12">
                 <tr className="col-md-12">
-                  <td className='col-md-3'>Class Name</td>
-                  <td className='col-md-2'>Department</td>
+                  <td className='col-md-3'>Course</td>
+                  <td className='col-md-2'>Section</td>
                   <td className='col-md-2'>Grade Type</td>
                   <td className='col-md-3'>Grade Recieved</td>
                   <td className='col-md-2'># Of Credits</td>
@@ -65,11 +65,11 @@ class View_Grade_List extends Component {
               <tbody>
                 {this.state.gradeString.map(el => (
                   <tr key={el.id}>
-                    {/*<td className='col-md-3'>{el.student.user.firstName} {el.student.user.lastName}</td>
-                    <td className='col-md-2'>{el.student.user.email}</td>
-                    <td className='col-md-2'>{el.dateAssigned}</td>
-                    <td className='col-md-2'>{el.student.user.id}</td>
-                    <td className='col-md-2'>{el.student.}</td>*/}
+                    <td className='col-md-3'>{el.course_section.course.name}</td>
+                    <td className='col-md-2'>{el.course_section.course.id}</td>
+                    <td className='col-md-2'>{el.type}</td>
+                    <td className='col-md-2'>{el.letterGrade}</td>
+                    <td className='col-md-2'>{el.course_section.course.numberOfCredits}</td>
                   </tr>
                 ))}
               </tbody>
@@ -105,7 +105,7 @@ class View_Grade_List extends Component {
                 )
               )}
 
-              //<Tables />
+              <Tables />
             </div>
           </div>
         </section>

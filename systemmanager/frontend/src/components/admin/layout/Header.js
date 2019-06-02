@@ -3,7 +3,6 @@ import {Link } from "react-router-dom";
 import Exception from  '../../general/Error_Handler.js';
 
 class HeaderHome extends PureComponent {
-
   render(){
     const logout = () => {
       localStorage.removeItem('token');
@@ -12,7 +11,7 @@ class HeaderHome extends PureComponent {
       <React.Fragment> 
       <header id="navtop" className="container-fluid sticky-top">
         <nav className="row navbar navbar-expand-md bg-white navbar-light border-bottom">
-          <a id="logo" className="navbar-brand" href="#">Garage University</a>
+          <Link id="logo" className="navbar-brand" to="/admin/main">Garage University</Link>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
            <span className="navbar-toggler-icon"></span>
           </button>

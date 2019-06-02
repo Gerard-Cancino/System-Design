@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from "prop-types";
 import axios from 'axios';
 
 import Header from './layout/Header.js';
@@ -75,7 +74,6 @@ class ViewAdviseeList extends Component {
         )
       )
     )
-    console.log("reloading page");
     return(
       <React.Fragment>
         <Header />
@@ -100,38 +98,4 @@ class ViewAdviseeList extends Component {
     );
   }
 }
-/*
-  render(){
-    return(
-      <React.Fragment>
-        <Header />
-        <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
-          <h2 className="col-md-12 text-center">Search Advisors</h2>
-          <form className="col-md-12" onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="facultyName">Enter Faculty email</label>
-              <input type="text" className="form-control" id="facultyid" placeholder="Enter Faculty ID" onChange={this.handleFaculty}/>
-            </div>
-            <button type="submit" className="btn btn-primary">Submit</button>
-          </form>
-          {this.state.adviseeString==undefined?(
-            <p></p>
-          ):(
-            <div>
-              <br></br>
-              <h4>Advisor: {this.state.adviseeString.faculty.user.id}, {this.state.adviseeString.faculty.user.lastName}, {this.state.adviseeString.faculty.user.firstName}</h4>
-              <p>Advisee: {this.state.adviseeString.student.user.firstName}, {this.state.adviseeString.student.user.lastName}</p>
-            </div>
-
-          )}
-
-          </div>
-        </section>
-        <Footer />
-      </React.Fragment>
-    );
-  }
-}
-*/
 export default ViewAdviseeList;
