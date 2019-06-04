@@ -1,20 +1,34 @@
 import React, { Component } from 'react';
-import {Link } from "react-router-dom";
-// import Component from '---';
 
-// import Header from './layout/Header.js';
-// import Footer from './layout/Footer.js';
+import Header from './layout/Header.js';
+import Footer from './layout/Footer.js';
 
-class BASENAME extends Component {
+import SearchSection from '../general/forms/Section_Form.js';
+import TableSection from './Section_Table.js';
+
+class MasterSchedule extends Component {
   state = {
+    result: undefined
   }
-  componentDidMount(){
+  handleResult = (result) => {
+   this.setState({result:result}) 
   }
   render(){
     return(
-      console.log('BASE TEMPLATE')
-    )
+      <React.Fragment>
+        <Header res={this.state.result} username={this.props.user}/>
+        <section className="container-fluid">
+          <div className="row justify-content-center">
+            <div className="col-md-10 rounded border p-4 m-4">
+              <h2 className="col-md-12 text-center">Master Schedule</h2>
+              <SearchSection handleResult={this.handleResult} SectionTable={TableSection} />
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </React.Fragment>
+    );
   }
 }
 
-export default BASENAME;
+export default MasterSchedule;

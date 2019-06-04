@@ -6,53 +6,37 @@ import Footer from './layout/Footer.js';
 
 class ViewAdviseeList extends Component {
   state = {
-    faculty: undefined,
-    adviseeString: undefined,
-    advisor: undefined
-  }
-
-  getAdviseeList(){
-    axios
-    .get('/advisor-list.json')
-    .then(res => {
-      this.setState({
-        adviseeString: res.data
-      })
-    })
+    adviseeList: undefined,
+    result:undefined
   }
 
   componentDidMount(){
-  }
-
-
-  handleFaculty = (event) => {
-    this.setState({ faculty: event.target.value || undefined});
-  }
-
-  handleSubmit = (event) => {
-    event.preventDefault();
     axios
-      .get(`/advisor-list.json/${this.state.faculty}`)
-      .then(res => {
-        this.setState({
-          adviseeString: res.data
-        })
-      })
-    this.setState({isLoaded: true})
+    .get(`/advisor-list.json`,{
+      params:{
+        faculty_email:this.props.user
+      }
+    })
+    .then(res => {
+      this.setState({adviseeList: res.data.data})
+    })
+    .catch(err=>{
+      this.setState({result:err})
+    })
   }
 
   render(){
     const Tables = () => (
-      this.state.adviseeString == undefined?(
+      this.state.adviseeList == undefined?(
         <p></p>
       ):(
-        this.state.adviseeString.length == 0? (
-          <p><br></br>Advisees: None</p>
+        this.state.adviseeList.length == 0? (
+          <p className="col-md-12 text-center">This faculty has no advisee</p>
         ):(
           <div className="col-md-12">
-            <table className="col-md-12">
-              <thead className="col-md-12">
-                <tr className="col-md-12">
+            <table className="table table-striped">
+              <thead style={{backgroundColor:"#696969", color:"white"}}>
+                <tr>
                   <td className='col-md-3'>Advisee's Name</td>
                   <td className='col-md-3'>Advisee's Email</td>
                   <td className='col-md-3'>Date Assigned</td>
@@ -60,12 +44,12 @@ class ViewAdviseeList extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.adviseeString.map(el => (
+                {this.state.adviseeList.map(el => (
                   <tr key={el.id}>
-                    <td className='col-md-1'>{el.student.user.firstName} {el.student.user.lastName}</td>
-                    <td className='col-md-3'>{el.student.user.email}</td>
-                    <td className='col-md-4'>{el.dateAssigned}</td>
-                    <td className='col-md-1'>{el.student.user.id}</td>
+                    <td>{el.student.user.firstName} {el.student.user.lastName}</td>
+                    <td>{el.student.user.email}</td>
+                    <td>{el.dateAssigned}</td>
+                    <td>{el.student.user.id}</td>
                   </tr>
                 ))}
               </tbody>
@@ -76,19 +60,11 @@ class ViewAdviseeList extends Component {
     )
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">
               <h2 className="col-md-12 text-center">View Advisee List</h2>
-              <form className="col-md-12" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="studentCourseSection">Enter Faculty ID</label>
-                  <input type="text" className="form-control" id="studentCourseSection" placeholder="Enter Faculty ID" onChange={this.handleFaculty}/>
-                  <br />
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-              </form>
               <Tables />
             </div>
           </div>

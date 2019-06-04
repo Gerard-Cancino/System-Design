@@ -1,7 +1,8 @@
 import React,{PureComponent } from 'react';
 
 let transition={
-  opacity:'1'
+  opacity:'1',
+  display:'block',
 }
 class ErrorHandler extends PureComponent{
   componentWillReceiveProps(props){
@@ -9,7 +10,7 @@ class ErrorHandler extends PureComponent{
     while (id--) {
       window.clearTimeout(id); // will do nothing if no timeout with id is present
     }
-    transition = {opacity:'1'}
+    transition = {opacity:'1',display:'block'}
     if(transition.opacity==1){
       setTimeout(()=>{
         transition = {opacity:0.75}
@@ -20,7 +21,7 @@ class ErrorHandler extends PureComponent{
         this.forceUpdate()
       },5000)
       setTimeout(()=>{
-        transition = {opacity:0}
+        transition = {opacity:0,display:'none'}
         this.forceUpdate()
       },9000)
     }

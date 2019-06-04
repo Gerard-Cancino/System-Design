@@ -97,25 +97,25 @@ class AdvisorDetails(APIView):
     advisor = self.get_object(student)
     advisor.delete()
     return Reponse({'message':'Advisor was deleted'}, status=status.HTTP_200_OK)
-class AdvisorList(APIView):
-  def get_object(self,faculty):
-    try:
-      advisor = models.Advisor.objects.filter(faculty_id=faculty)
-      return advisor
-    except models.Advisor.DoesNotExist:
-      raise Http404
-  def get(self, request, faculty):
-    try:
-      advisor = self.get_object(faculty)
-      serializer = serializers.AdvisorSerializer(advisor)
-      return Response({'data':serializer.data})
-    except:
-      return Response({'message':"Could not find faculty's advisee list"})
-  def post(self, request):
-    serializer = serializer.AdvisorSerializer(data=request.data)
-    if serializer.is_valid:
-      return Response({'data':serializer.data,'message':"Successfully assigned advisor"},status=HTTP_201_CREATED)
-    return Response({'message':"Could not assign advisor"},status=HTTP_400_BAD_REQUEST)
+# class AdvisorList(APIView):
+#   def get_object(self,faculty):
+#     try:
+#       advisor = models.Advisor.objects.filter(faculty_id=faculty)
+#       return advisor
+#     except models.Advisor.DoesNotExist:
+#       raise Http404
+#   def get(self, request, faculty):
+#     try:
+#       advisor = self.get_object(faculty)
+#       serializer = serializers.AdvisorSerializer(advisor)
+#       return Response({'data':serializer.data})
+#     except:
+#       return Response({'message':"Could not find faculty's advisee list"})
+#   def post(self, request):
+#     serializer = serializer.AdvisorSerializer(data=request.data)
+#     if serializer.is_valid:
+#       return Response({'data':serializer.data,'message':"Successfully assigned advisor"},status=HTTP_201_CREATED)
+#     return Response({'message':"Could not assign advisor"},status=HTTP_400_BAD_REQUEST)
 
 class TokenUser(generics.RetrieveUpdateDestroyAPIView):
   def get(self, request):
@@ -133,8 +133,10 @@ class UserPasswordChange(generics.RetrieveUpdateDestroyAPIView):
     try:
       user = models.User.objects.get(email=request.data.get('email'))
       password = user.password
-      if 8 < len(request.data.get('password')) < 15:
-        Response({'message': "Failed! The password's length needs to be inclusively between 8 and 15"}) 
+      print(request.data.get('password'))
+      print(len(request.data.get('password')))
+      if 8 > len(request.data.get('password')) or len(request.data.get('password')) > 15:
+        return Response({'message': "Failed! The password's length needs to be inclusively between 8 and 15"},status=status.HTTP_400_BAD_REQUEST) 
       if -1 != request.data.get('password').find('@') or \
         -1 != request.data.get('password').find('!') or \
         -1 != request.data.get('password').find('#') or \
@@ -278,7 +280,7 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     try:
       section = self.get_object(id)
       serializer = serializers.CourseSectionSerializer(section)
-      return Response({'data':serializer.data,'message':"Successful!"})
+      return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
     except:
       return Response({'message':'Could not find course'})
   def put(self, request,id):
@@ -334,6 +336,10 @@ class CourseSectionList(generics.ListCreateAPIView):
   serializer_class = serializers.CourseSectionSerializer
   def list(self, request):
     params = request.query_params
+    if params.get('faculty_username') is not None and params.get('term_id') is not None:
+      course_section_list = models.CourseSection.objects.filter(faculty__user__email=params.get('faculty_username'),term_id=params.get('term_id'))
+      serializer = serializers.CourseSectionSerializer(course_section_list,many=True)
+      return Response({'data':serializer.data,'message':"Successfully returned the faculty's courses"},status=status.HTTP_200_OK)
     try:
       filters=[]
       days = []
@@ -434,6 +440,10 @@ class DepartmentList(generics.ListCreateAPIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
+  def get(self,request,section_id,student_id):
+    enrollment = models.Enrollment.objects.get(student_id=student_id,course_section_id=section_id)
+    serializer = serializers.EnrollmentSerializer(enrollment)
+    return Response({'data':serializer.data,'message':"Successful! Retrieved the enrollment"},status=status.HTTP_200_OK)
   def delete(self,request,section_id,student_id):
     enrollment = models.Enrollment.objects.get(student_id=student_id,course_section_id=section_id)
     term = enrollment.course_section.term
@@ -475,7 +485,7 @@ class EnrollmentList(generics.ListCreateAPIView):
         return Response({'data':serializer.data,'message':"Successful! Recieved Term " + term.season + " " + term.year})
     if params.get('section') is not None:
       enrollment = models.Enrollment.objects.filter(course_section=params.get('section'))
-      serializer = serializers.EnrollmentSerializer(enrollment)
+      serializer = serializers.EnrollmentSerializer(enrollment,many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
     if params.get('student') is not None:
       student = models.Student.objects.get(user_id=models.User.objects.get(email=params.get('student')))
@@ -490,7 +500,7 @@ class EnrollmentList(generics.ListCreateAPIView):
         student = models.Student.objects.get(user_id=user.id)
         section = models.CourseSection.objects.get(id = params.get('section'))
         section_serializer = serializers.CourseSectionSerializer(section)
-        if params.get('admin') is not None:
+        if params.get('admin') is None:
           enrollmentList = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term__id=section.term.id)
           credit = 0
           for enroll in enrollmentList:
@@ -499,8 +509,6 @@ class EnrollmentList(generics.ListCreateAPIView):
             return Response({'message':"The student cannot take more than 18 credits.  If you want to take more please contact an admin"},status=status.HTTP_400_BAD_REQUEST)
           if student.hold.count() > 0:
             return Response({"message":"Student has a hold"},status=status.HTTP_400_BAD_REQUEST)
-          print(section.numOfSeats)
-          print(section.numOfTaken)
           if int(section.numOfSeats)-int(section.numOfTaken)<=0:
             return Response({'message':"The section has no available seats"},status=status.HTTP_400_BAD_REQUEST)
           prereq_list = model.Prerequisite.objects.filter(course_section=params.get('section'))
@@ -876,19 +884,19 @@ class AdviseeDetailsFaculty(APIView):
 class AdvisorList(generics.ListCreateAPIView):
     queryset = models.Advisor.objects.all()
     serializer_class=serializers.AdvisorSerializer
-    def list(self,request, faculty):
-        #params = request.query_params
-        if faculty is not None:
-            advisor = models.Advisor.objects.filter(faculty_id=faculty)
-            print(advisor)
+    def list(self,request):
+        params = request.query_params
+        print(params)
+        if params.get('faculty_email') is not None:
+            advisor = models.Advisor.objects.filter(faculty__user__email=params.get('faculty_email'))
             serializer = serializers.AdvisorSerializer(advisor, many=True)
             # print(serializer)
             ##model to json object
-            return Response({'data':serializer.data,'message':"Successful!"})
+            return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
         else:
             advisor = models.Advisor.objects.all()
             serializer = serializers.AdvisorSerializer(advisor)
-            return Response({'data':serializer.data,'message':"Successful!"})
+            return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
     def post( self, request):
         data = request.data
         today = datetime.now().date()
@@ -926,8 +934,8 @@ class AttendanceList(generics.ListCreateAPIView):
   serializer_class = serializers.EnrollmentSerializer
   def list(self, request):
     params = request.query_params
-    if params.get('course_section') is not None:
-      attendance=models.Attendance.objects.filter(enrollment__course_section_id=params.get('course_section'))
+    if params.get('enrollment_id') is not None:
+      attendance=models.Attendance.objects.filter(enrollment__course_section_id=params.get('course_section'),)
       serializer = serializers.EnrollmentSerializer(attendance, many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
   # I need a course section id and a student
@@ -1064,10 +1072,13 @@ class GradeList(generics.ListCreateAPIView):
   queryset = models.Grade.objects.all()
   serializer_class=serializers.GradeSerializer
   def list(self,request):
-    params = query_params
+    params = request.query_params
+    if params.get('student_email') is not None and params.get('course_section_id') is not None:
+      gradeList = models.Grade.objects.filter(student__user__email=params.get('student_email'),course_section_id=params.get('course_section_id'))
+      serializer = serializers.GradeSerializer(gradeList,many=True)
+      return Response({'data':serializer.data,'message':"Successfully retrieved a grade list for section"},status=status.HTTP_200_OK)
     if params.get('student') is not None:
       gradeObject = models.Grade.objects.filter(student__user__email=params.get('student'))
-      print(gradeObject)
       serializer = serializers.GradeSerializer(gradeObject, many=True)
       return Response({'data':serializer.data},status=status.HTTP_200_OK)
     elif params.get('section') is not None:

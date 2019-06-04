@@ -8,7 +8,7 @@ class Main extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header  username={this.props.user}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10">
@@ -64,7 +64,7 @@ class Main extends Component {
                 <div className="col-md-4 ">
                   <div className="card">
                     <div className="card-body">
-                      <p className="text-center h3"><Link to="/admin/view-grade-list">View/Edit Student's Grades</Link></p>
+                      <p className="text-center h3"><Link to="/admin/update-student-grade">Update Student's Grades</Link></p>
                     </div>
                   </div> 
                 </div>            

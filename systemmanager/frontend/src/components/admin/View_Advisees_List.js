@@ -78,7 +78,7 @@ class ViewAdviseeList extends Component {
     console.log("reloading page");
     return(
       <React.Fragment>
-        <Header />
+        <Header  username={this.props.user}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">

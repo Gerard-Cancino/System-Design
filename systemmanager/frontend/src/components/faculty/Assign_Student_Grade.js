@@ -5,16 +5,16 @@ import {Link } from "react-router-dom";
 // import Header from './layout/Header.js';
 // import Footer from './layout/Footer.js';
 
-class BASENAME extends Component {
+class AssignStudentGrade extends Component {
   state = {
   }
   componentDidMount(){
   }
   render(){
     return(
-      console.log('BASE TEMPLATE')
+      <p>Test</p>
     )
   }
 }
 
-export default BASENAME;
+export default AssignStudentGrade;

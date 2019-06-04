@@ -7,60 +7,56 @@ import Footer from './layout/Footer.js';
 
 class ViewClassRoster extends Component {
   state = {
-    classRosterString: undefined,
-    CourseSectionID: undefined,
-    facultyID:undefined
+    enrollmentList: undefined,
+    courseSection:undefined
   }
-
-
   componentDidMount(){
-
+    this.getClassRoster();
   }
-
-  handleFaculty = (event) => {
-    this.setState({ facultyID: event.target.value || undefined});
-  }
-  handleCourseSectionID = (event) => {
-    this.setState({ CourseSectionID: event.target.value || undefined});
-  }
-
-  handleSubmit = (event) => {
-    event.preventDefault();
+  getClassRoster = () => {
     axios
-      .get(`/class-roster-list.json/${this.state.CourseSectionID}/${this.state.facultyID}`)
-      .then(res => {
-        this.setState({
-          classRosterString: res.data
-        })
-      })
-    this.setState({isLoaded: true})
+    .get(`/course-section-details.json/${this.props.data.state.course_section_id}`)
+    .then(res=>{this.setState({courseSection:res.data.data})})
+    axios
+    .get(`/enrollment-list.json`,{
+      params:{
+        section:this.props.data.state.course_section_id
+      }
+    })
+    .then(res=>{this.setState({enrollmentList: res.data.data})
+    })
+    .catch(err=>{this.setState({result:err})})
   }
 
   render(){
     const Tables = () => (
-      this.state.classRosterString == undefined?(
+      this.state.enrollmentList == undefined?(
         <p></p>
       ):(
-        this.state.classRosterString.length == 0? (
+        this.state.enrollmentList.length == 0? (
           <p><br></br>Roster: None, check with an admin if this is incorrect</p>
         ):(
           <div className="col-md-12">
-            <table className="col-md-12">
-              <thead className="col-md-12">
-                <tr className="col-md-12">
-                  <td className='col-md-2'>Student Name</td>
-                  <td className='col-md-8'>Student ID</td>
-                  <td className='col-md-1'>Course</td>
-                  <td className='col-md-1'>Term</td>
+            <table className="table table-striped">
+              <thead style={{backgroundColor:"#696969", color:"white"}}>
+                <tr>
+                  <td>Student ID</td>
+                  <td>Student Name</td>
+                  <td></td>
                 </tr>
               </thead>
               <tbody>
-                {this.state.classRosterString.map(el => (
+                {this.state.enrollmentList.map(el => (
                   <tr key={el.id}>
-                  <td className='col-md-3'>{el.student.user.firstName} {el.student.user.lastName}</td>
-                  <td align="middle">{el.student.user.id}</td>
-                  <td align="middle">{el.course_section.course.id}</td>
-                  <td align="right">{el.course_section.term.season} {el.course_section.term.year}</td>
+                    <td>{el.student.user.id}</td>
+                    <td>{el.student.user.firstName} {el.student.user.lastName}</td>
+                    <td><Link to={{
+                      pathname:"/admin/view-student-details",
+                      state:{enrollmentID:el.id,
+                        courseSectionID:this.props.data.state.course_section_id,
+                        studentID:el.student.user.id}
+                      }}className="col-md-12">View Student</Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -76,29 +72,17 @@ class ViewClassRoster extends Component {
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">
-            <h2 className="col-md-12 text-center">View Class Roster</h2>
-              <form className="col-md-12" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="CourseSection">Enter Course Section ID</label>
-                  <input type="text" className="form-control" id="CourseSection" placeholder="Enter Course Section ID" onChange={this.handleCourseSectionID}/>
-                  <br />
-                  <label htmlFor="facultyid">Enter Student Email to search by</label>
-                  <input type="text" className="form-control" id="facultyid" placeholder="Enter Faculty ID" onChange={this.handleFaculty}/>
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-              </form>
-              <br></br>
-              {this.state.classRosterString == undefined?(
+            {this.state.courseSection==undefined?(
+              <p className="col-md-12 text-center">Loading...</p>
+            ):(
+              <h2 className="col-md-12 text-center">{this.state.courseSection.id} {this.state.courseSection.course.name} - {this.state.courseSection.number}</h2>
+            )}
+            <h4 className="col-md-12 text-center">Class Roster</h4>
+              {this.state.enrollmentList == undefined?(
                 <p></p>
               ):(
-                this.state.classRosterString.length == 0? (
-                  <p> Nothing found in DB</p>
-                ):(
-
-                  <h3>Professor Name: {this.state.classRosterString[0].course_section.faculty.user.firstName}, {this.state.classRosterString[0].course_section.faculty.user.lastName} </h3>
-                )
+                <Tables />
               )}
-              <Tables />
             </div>
           </div>
         </section>

@@ -55,7 +55,7 @@ class UpdateCourse extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header res={this.state.result}/>
+        <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid h-100">
           <div className="row h-100 p-4 m-4 border rounded">
             <div className="col-md-12">

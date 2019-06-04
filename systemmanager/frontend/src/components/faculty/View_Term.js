@@ -6,100 +6,101 @@ import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
 import SearchTerm from '../general/inputs/Term_List_Search.js';
-import SearchStudent from '../general/inputs/Student_Search.js';
-import TableEnrollment from '../general/tables/Enrollment_Table.js';
 
-
-
-class StudentTerm extends Component{
+class FacultyTerm extends Component{
   state = {
-    termList: undefined,
-    term: undefined,
-    studentUsername: undefined,
-    student: undefined,
-    enrollmentList: undefined,
-    enrollment: undefined,
-    status: undefined
+    courseSectionList: undefined,
+    result:undefined
   }
   componentDidMount() {
     axios
     .get('/term-list.json')
-    .then(res => {
-      this.setState({
-        termList: res.data,
-        term: res.data[0].id
+    .then(res=>{
+      this.setState({termList:res.data.data})
+      axios
+      .get('/course-section-list.json',{
+        params:{
+          faculty_username: this.props.user,
+          term_id:res.data.data[0].id
+        }
+      })
+      .then(res=>{
+        this.setState({courseSectionList:res.data.data})
+      })
+      .catch(err=>{
+        this.setState({result:err})
       })
     })
   }
   handleTerm = event => {
-    this.setState({term: event.target.value || undefined});
-  }
-  handleStudent = event => {
-    this.setState({studentUsername: event.target.value || undefined})
-  }
-  findStudent = () => {
     axios
-    .get('/enrollment-list.json',{
-      params: {
-        student: this.state.studentUsername,
-        term: this.state.term
+    .get('/course-section-list.json',{
+      params:{
+        faculty_username: this.props.user,
+        term_id:event.target.value
       }
     })
-    .then(res => {
-      this.setState({enrollmentList: res.data})
+    .then(res=>{
+      this.setState({courseSectionList:res.data.data})
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
-  handleFindStudent = event => {
-    event.preventDefault();
-    this.findStudent();
-  }
-  handleDrop = (event,enrollment,student) => {
-    event.preventDefault()
-    axios
-    .delete(`/enrollment-details.json/${enrollment}/${student}`)
-    .then(res => {
-      this.findStudent()
-      this.setState({status:res.data})
-    })
-  }
+  
   render() {
     return (
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
-          <div className="col-md-12">
-            <Link to={{
-                  pathname: '/admin/register-student-enroll'
-                }} className="col-md-2 float-right btn btn-info">Enroll Student</Link>
-          </div>
-            <h2 className="col-md-12 text-center">Search Student's Term</h2>
-            <form className="col-md-12" onSubmit={this.handleFindStudent}>
-              {this.state.termList==undefined?(
-                <p></p>
-              ):(
-                <div className="form-group col-md-12">
-                  <label>Term:</label>
-                  <select id="term" className="form-control" onChange={this.handleTerm}>
-                    {this.state.termList.map(single => (
-                      <option key={single.id} value={single.id}>{single.season}: {single.year}</option>
-                    ))}
-                  </select>
-                </div>  
-              )}
-              <SearchStudent onChange={this.handleStudent.bind(this)}/>
-              <button className="col-md-12 btn btn-primary" type="submit">Search Term</button>
-            </form>
-            <hr />
-            {this.state.enrollmentList==undefined?(
-              <p></p>
-            ):(
-              <div className="col-md-12">
-                <br />
-                <TableEnrollment enrollmentList={this.state.enrollmentList} handleDrop={this.handleDrop}/>
+          <div className="row justify-content-center">
+            <div className="col-md-10 rounded m-4 p-4 border">
+              <h2 className="col-md-12 text-center">Faculty's Schedule</h2>
 
-              </div>
-            )}
+              <SearchTerm onChange={this.handleTerm} termList={this.state.termList} isRequired={true}/>
+              {this.state.courseSectionList==undefined || this.state.courseSectionList.length == 0?(
+                <p className="col-md-12 text-center">Faculty is not teaching this semester</p>
+              ):(
+                <div className="col-md-12">
+                  <table className="table table-striped">
+                    <thead style={{backgroundColor:"#696969", color:"white"}}>
+                      <tr>
+                        <td>ID</td>
+                        <td>Course Name and Number</td>
+                        <td>Time</td>
+                        <td>Term</td>
+                        <td>Location</td>
+                        <td></td> {/*Attendance*/}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.courseSectionList.map(el=>(    
+                        <tr>
+                          <td>{el.id}</td>
+                          <td>{el.course.name} - {el.number}</td>
+                          <td>{el.slot.length==0?('TBA')
+                            :(
+                              el.slot.map(slot=>(
+                                <p>{slot.day.name} {slot.time.start} - {slot.time.end}</p>
+                              ))
+                              )}
+                          </td>
+                          <td>{el.term.season=='F'?('Fall'):('Spring')} {el.term.year}</td>
+                          <td>{el.room.building.code}{el.room.number}</td>
+                          <td>
+                          <Link to={{
+                            pathname:"/faculty/view-section-details",
+                            state:{course_section_id:el.id}
+                          }} className="col-md-12 btn btn-info">View Details
+                          </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </section>
         <Footer />
@@ -108,4 +109,4 @@ class StudentTerm extends Component{
   }
 }
 
-export default StudentTerm;
+export default FacultyTerm;

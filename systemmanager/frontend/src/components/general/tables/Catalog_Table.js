@@ -20,7 +20,7 @@ class CatalogTable extends PureComponent {
             <h5 className="col-md-12 text-center">{major.type} in {major.name}</h5>
           )}
           <table className="table table-striped">
-            <thead>
+            <thead style={{backgroundColor:"#696969", color:"white"}}>
               <tr>
                 <td>Course ID</td>
                 <td>Course Name</td>

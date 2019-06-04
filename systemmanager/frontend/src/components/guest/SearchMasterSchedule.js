@@ -7,15 +7,21 @@ import SearchSection from '../general/forms/Section_Form.js';
 import TableSection from './Section_Table.js';
 
 class MasterSchedule extends Component {
+  state = {
+    result: undefined
+  }
+  handleResult = (result) => {
+   this.setState({result:result}) 
+  }
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 rounded border p-4 m-4">
               <h2 className="col-md-12 text-center">Master Schedule</h2>
-              <SearchSection SectionTable={TableSection} />
+              <SearchSection SectionTable={TableSection} handleResult={this.handleResult.bind(this)}/>
             </div>
           </div>
         </section>

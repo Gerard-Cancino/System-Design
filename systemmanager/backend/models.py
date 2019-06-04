@@ -228,7 +228,7 @@ class Course(models.Model):
     REQUIRED_FIELDS = ('Department',)
     id = models.CharField(max_length=5, primary_key=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    number = models.CharField(max_length=5, null=False, unique=True)
+    number = models.CharField(max_length=5, null=False)
     name = models.CharField(max_length=200, null=False, unique=True)
     description = models.TextField(null=False)
     numberOfCredits = models.IntegerField(max_length=1, null=False)

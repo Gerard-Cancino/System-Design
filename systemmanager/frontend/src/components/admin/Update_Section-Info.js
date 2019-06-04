@@ -102,7 +102,7 @@ class UpdateSectionMaster extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header res={this.state.result}/>
+        <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid h-100">
             {this.state.section==undefined?(
               <p></p>

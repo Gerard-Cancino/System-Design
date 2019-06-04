@@ -8,39 +8,16 @@ import Footer from './layout/Footer.js';
 
 // Add Grade Too
 
-class StudentSectionDetails extends Component {
+class SectionDetails extends Component {
   state = {
     section: undefined,
-    prerequisiteList:undefined,
     result: undefined
   }
   componentDidMount(){
     axios
     .get(`/course-section-details.json/${this.props.data.state.course_section_id}`)
     .then(res=>{
-      console.log(res)
       this.setState({section:res.data.data})
-      if (this.props.data.state.isEnrolled==true){
-        axios
-        .get(`/grade-list.json`,{
-          params:{
-            'student_email':this.props.user,
-            'course_section_id':res.data.data.id
-          }
-        })
-        .then(res=>{
-          this.setState({gradeList:res.data.data})
-        })
-      }
-      axios
-      .get(`/prerequisite-list.json/`,{
-        params:{
-          course: res.data.data.course.id
-        }
-      })
-      .then(res=>{
-        this.setState({prerequisiteList: res.data.data})
-      })
     })
     .catch(err=>{
       this.setState({result:err})
@@ -99,6 +76,14 @@ class StudentSectionDetails extends Component {
                     )}
                   </div>
                 )}
+                <Link to={{
+                  pathname:"/faculty/view-enrollment-list",
+                  state:{
+                    course_section_id:this.props.data.state.course_section_id
+                  }
+                }} className="col-md-6 btn btn-primary">View Class Roster</Link>
+                <Link
+                className="col-md-6 btn btn-danger">Assign Attendance</Link>
               </div>
             </div>
           </section>
@@ -109,4 +94,4 @@ class StudentSectionDetails extends Component {
   }
 }
 
-export default StudentSectionDetails;
+export default SectionDetails;

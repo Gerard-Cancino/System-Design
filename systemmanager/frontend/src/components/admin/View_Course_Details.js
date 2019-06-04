@@ -69,7 +69,7 @@ class CourseDetails extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header res={this.state.result}/>
+        <Header res={this.state.result} username={this.props.user}/>
         {this.state.course==undefined?(
           <p>The course does not exist</p>
         ):(

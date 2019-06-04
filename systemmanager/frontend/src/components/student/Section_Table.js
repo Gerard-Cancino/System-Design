@@ -37,6 +37,7 @@ class TableSection extends PureComponent {
                   <td>Term</td>
                   <td>Building-Room</td> 
                   <td># of Available Seats</td>
+                  <td></td>
                 </tr>
               </thead>
               <tbody>
@@ -82,6 +83,13 @@ class TableSection extends PureComponent {
                       </td> 
                     )}
                     <td >{el.numOfSeats-el.numOfTaken}/{el.numOfSeats}</td>     
+                    <td>
+                      <Link to={{
+                        pathname:"/student/view-section-details",
+                        state:{course_section_id:el.id,isEnrolled:false}
+                      }} className="col-md-12 btn btn-primary">View Details
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -35,7 +35,7 @@ class ViewAdviseeDetails extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header username={this.props.user}/>
         <section className="container-fluid h-100">
           <Exception res={this.state.result} />
           <div className="row border rounded m-4 p-4 h-100">

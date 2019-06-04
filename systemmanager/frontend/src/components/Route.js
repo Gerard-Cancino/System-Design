@@ -42,6 +42,7 @@ import FacultyAssignStudentAttendance from './faculty/Assign_Student_Attendance.
 import FacultyViewStudentGradeList from './faculty/View_Grade_List.js';
 import FacultyAssignStudentGrade from './faculty/Assign_Student_Grade.js';
 import FacultyViewAdviseeList from './faculty/View_Advisee_List.js';
+import FacultyViewSectionDetails from './faculty/View_Section_Details.js';
 
 import StudentMain from './student/Main.js';
 import StudentViewSectionList from './student/View_Section_List.js';
@@ -52,6 +53,7 @@ import StudentViewEditProfile from './student/View_Edit_Profile.js';
 import StudentViewTranscript from './student/View_Transcript.js';
 import StudentViewDegreeAudit from './student/View_Degree_Audit.js';
 import StudentViewSectionDetails from './student/View_Section_Details.js';
+import StudentViewInfo from './student/View_Info.js';
 
 
 
@@ -91,7 +93,7 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
       if (localStorage.getItem('token')==undefined && user.email!=undefined){
         handleUser(undefined,'G')
         window.location.replace("/login")
-        return undefined;
+        return null;
 
       }
       if (allowedRoles.includes(user.role)) {
@@ -100,15 +102,15 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
       else{
         if (user.role=="A"){
           window.location.replace("/admin/main")
-          return undefined;
+          return null;
         }
         else if (user.role=='F'){
           window.location.replace("/faculty/main")
-          return undefined;
+          return null;
         }
         else if (user.role=='S'){
           window.location.replace("/student/main")
-          return undefined;
+          return null;
         }
         else if (user.role=='R'){
           <Redirect to="/researcher/main"/>
@@ -167,6 +169,7 @@ class MyRoute extends Component {
     const FFacultyViewStudentGradeList = Authorization(this.state.user,this.handleUser.bind(this), FacultyViewStudentGradeList,['F']);
     const FFacultyAssignStudentGrade  = Authorization(this.state.user,this.handleUser.bind(this),FacultyAssignStudentGrade,['F']);
     const FFacultyViewAdviseeList = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewAdviseeList,['F']);
+    const FFacultyViewSectionDetails = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewSectionDetails,['F']);
 
     const SStudentMain = Authorization(this.state.user,this.handleUser.bind(this),StudentMain,['S']);
     const SStudentViewSectionList = Authorization(this.state.user,this.handleUser.bind(this),StudentViewSectionList,['S']);
@@ -177,6 +180,7 @@ class MyRoute extends Component {
     const SStudentViewTranscript = Authorization(this.state.user,this.handleUser.bind(this),StudentViewTranscript,['S']);
     const SStudentViewDegreeAudit = Authorization(this.state.user,this.handleUser.bind(this),StudentViewDegreeAudit,['S']);
     const SStudentViewSectionDetails = Authorization(this.state.user,this.handleUser.bind(this),StudentViewSectionDetails,['S']);
+    const SStudentViewInfo = Authorization(this.state.user,this.handleUser.bind(this),StudentViewInfo,['S']);
 
     return (
       <BrowserRouter>
@@ -211,11 +215,12 @@ class MyRoute extends Component {
 
           <Route path="/faculty/main" component={FFacultyMain} />
           <Route path="/faculty/view-section-list" component={FFacultyViewSectionList} />
+          <Route path="/faculty/view-section-details" component={FFacultyViewSectionDetails} />
           <Route path="/faculty/view-term" component={FFacultyViewTerm} />
-          <Route path="/faculty/view-edit-profile" componenet={FFacultyViewEditProfile} />
-          <Route path="/faculty/view-enrollment-list" componenet={FFacultyViewEnrollmentList} />
-          <Route path="/faculty/view-student-attendance" componenet={FFacultyViewStudentAttendance} />
-          <Route path="/faculty/assign-student-attendance" componenet={FFacultyAssignStudentAttendance} />
+          <Route path="/faculty/view-edit-profile" component={FFacultyViewEditProfile} />
+          <Route path="/faculty/view-enrollment-list" component={FFacultyViewEnrollmentList} />
+          <Route path="/faculty/view-student-attendance" component={FFacultyViewStudentAttendance} />
+          <Route path="/faculty/assign-student-attendance" component={FFacultyAssignStudentAttendance} />
           <Route path="/faculty/view-student-grade-list" componenet={FFacultyViewStudentGradeList} />
           <Route path="/faculty/assign-student-grade" componenet={FFacultyAssignStudentGrade} />
           <Route path="/faculty/view-advisee-list" component={FFacultyViewAdviseeList} />
@@ -225,10 +230,11 @@ class MyRoute extends Component {
           <Route path="/student/view-term" component={SStudentViewTerm} />
           <Route path="/student/register-enroll" component={SStudentRegisterEnroll} />
           <Route path="/student/view-hold-list" component={SStudentViewHoldList} />
-          <Route path="/student/view-edit-profile" componenet={SStudentViewEditProfile} />
-          <Route path="/student/view-transcript" componenet={SStudentViewTranscript} />
-          <Route path="/student/view-degree-audit" componenet={SStudentViewDegreeAudit} />
-          <Route path="/student/view-section-details" componenet={SStudentViewSectionDetails} />
+          <Route path="/student/view-edit-profile" component={SStudentViewEditProfile} />
+          <Route path="/student/view-transcript" component={SStudentViewTranscript} />
+          <Route path="/student/view-degree-audit" component={SStudentViewDegreeAudit} />
+          <Route path="/student/view-section-details" component={SStudentViewSectionDetails} />
+          <Route path="/student/view-info" component={SStudentViewInfo} />
 
 
         </div>
