@@ -146,7 +146,7 @@ class TableSection extends PureComponent {
                     )}
                     <td className='col-md-1'>{el.numOfSeats - el.numOfTaken}</td>     
                     <td className="col-md-6">
-                      <button className="btn btn-info" type="submit" onClick={(e)=>this.handleEnroll(e,el)}>Enroll</button>
+                      <button className="btn btn-info" type="submit" onClick={this.props.handleEnroll?((e)=>this.props.handleEnroll(e,el)):((e)=>this.handleEnroll(e,el))}>Enroll</button>
                     </td>
                   </tr>
                 ))}

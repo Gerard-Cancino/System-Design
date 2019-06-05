@@ -34,15 +34,15 @@ import AdminAssignStudentMajorMinor from './admin/Assign_Student_Major_Minor.js'
 // npm run dev to create main.js
 import FacultyMain from './faculty/Main.js';
 import FacultyViewSectionList from './faculty/View_Section-List.js';
+import FacultyViewSectionDetails from './faculty/View_Section_Details.js';
 import FacultyViewTerm from './faculty/View_Term.js';
 import FacultyViewEditProfile from './faculty/View_Edit_Profile.js';
 import FacultyViewEnrollmentList from './faculty/View_Enrollment_List.js';
 import FacultyViewStudentAttendance from './faculty/View_Student_Attendance.js';
 import FacultyAssignStudentAttendance from './faculty/Assign_Student_Attendance.js';
-import FacultyViewStudentGradeList from './faculty/View_Grade_List.js';
+import FacultyViewStudentInfo from './faculty/View_Student_Info.js';
 import FacultyAssignStudentGrade from './faculty/Assign_Student_Grade.js';
 import FacultyViewAdviseeList from './faculty/View_Advisee_List.js';
-import FacultyViewSectionDetails from './faculty/View_Section_Details.js';
 
 import StudentMain from './student/Main.js';
 import StudentViewSectionList from './student/View_Section_List.js';
@@ -80,6 +80,7 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
         handleUser(res.data.data.email,res.data.data.type)
       })
       .catch(res=>{
+        localStorage.removeItem('token')
         handleUser(undefined,'G')
       })
     }
@@ -161,15 +162,15 @@ class MyRoute extends Component {
 
     const FFacultyMain = Authorization(this.state.user,this.handleUser.bind(this), FacultyMain, ['F']);
     const FFacultyViewSectionList = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewSectionList,['F']);
+    const FFacultyViewSectionDetails = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewSectionDetails,['F']);
     const FFacultyViewTerm = Authorization(this.state.user, this.handleUser.bind(this), FacultyViewTerm, ['F']);
     const FFacultyViewEditProfile = Authorization(this.state.user, this.handleUser.bind(this),FacultyViewEditProfile,['F']);
     const FFacultyViewEnrollmentList = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewEnrollmentList,['F']);
     const FFacultyViewStudentAttendance = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewStudentAttendance,['F']);
     const FFacultyAssignStudentAttendance = Authorization(this.state.user,this.handleUser.bind(this),FacultyAssignStudentAttendance,['F']);
-    const FFacultyViewStudentGradeList = Authorization(this.state.user,this.handleUser.bind(this), FacultyViewStudentGradeList,['F']);
+    const FFacultyViewStudentInfo = Authorization(this.state.user,this.handleUser.bind(this), FacultyViewStudentInfo,['F']);
     const FFacultyAssignStudentGrade  = Authorization(this.state.user,this.handleUser.bind(this),FacultyAssignStudentGrade,['F']);
     const FFacultyViewAdviseeList = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewAdviseeList,['F']);
-    const FFacultyViewSectionDetails = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewSectionDetails,['F']);
 
     const SStudentMain = Authorization(this.state.user,this.handleUser.bind(this),StudentMain,['S']);
     const SStudentViewSectionList = Authorization(this.state.user,this.handleUser.bind(this),StudentViewSectionList,['S']);
@@ -221,8 +222,8 @@ class MyRoute extends Component {
           <Route path="/faculty/view-enrollment-list" component={FFacultyViewEnrollmentList} />
           <Route path="/faculty/view-student-attendance" component={FFacultyViewStudentAttendance} />
           <Route path="/faculty/assign-student-attendance" component={FFacultyAssignStudentAttendance} />
-          <Route path="/faculty/view-student-grade-list" componenet={FFacultyViewStudentGradeList} />
-          <Route path="/faculty/assign-student-grade" componenet={FFacultyAssignStudentGrade} />
+          <Route path="/faculty/view-student-info" component={FFacultyViewStudentInfo} />
+          <Route path="/faculty/assign-student-grade" component={FFacultyAssignStudentGrade} />
           <Route path="/faculty/view-advisee-list" component={FFacultyViewAdviseeList} />
 
           <Route path="/student/main" component={SStudentMain} />

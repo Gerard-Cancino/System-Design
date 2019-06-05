@@ -8,42 +8,36 @@ class Main extends Component {
   render(){
     return(
       <React.Fragment>
-        <Header />
+        <Header username={this.props.user}/>
         <section className="container-fluid">
-          <div className="row">
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/faculty/view-course-list">View Course List</Link></p>
-                </div>
+          <div className="row justify-content-center">
+            <div className="col-md-10">
+              <div className="row m-2 p-4 bg-info">
+                <div className="col-md-12 ">
+                  <div className="card">
+                    <div className="card-body">
+                      <p className="text-center h3"><Link to="/faculty/view-section-list">Master Schedule</Link></p>
+                    </div>
+                  </div>
+                </div>  
               </div>
-            </div> 
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/faculty/view-advisee-list">View Advisee List</Link></p>
-                </div>
+              <div className="row m-2 p-4 bg-danger">
+                <div className="col-md-12">
+                  <div className="card">
+                    <div className="card-body">
+                      <p className="text-center h3"><Link to="/faculty/view-advisee-list">View Advisee List</Link></p>
+                    </div>
+                  </div>
+                </div>      
               </div>
-            </div> 
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/faculty/search-student-advisor">Search Student Advisor</Link></p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/faculty/view-office-hours">View Office Hours</Link></p>
-                </div>
-              </div>
-            </div> 
-            <div className="col-md-4 p-4">
-              <div className="card">
-                <div className="card-body">
-                  <p className="text-center h3"><Link to="/faculty/declare-student-major-minor">Declare Student's Major or Minor</Link></p>
-                </div>
+              <div className="row m-2 p-4 bg-success">
+                <div className="col-md-12">
+                  <div className="card">
+                    <div className="card-body">
+                      <p className="text-center h3"><Link to="/faculty/view-term">Schedule</Link></p>
+                    </div>
+                  </div>
+                </div> 
               </div>
             </div>
           </div>

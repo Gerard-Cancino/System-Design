@@ -72,11 +72,12 @@ class StudentTerm extends Component{
   }
   handleEnrollStudent = (event,section) => {
     event.preventDefault()
+    console.log(this.props.user)
     axios
     .post(`/enrollment-list.json`,{
-      section: section,
+      section: section.id,
       student: this.state.studentUsername,
-      admin: this.props.user,
+      admin: this.props.user
     })
     .then( res => {
       this.setState({enrollment: res.data.data,result:res})
@@ -109,7 +110,7 @@ class StudentTerm extends Component{
               ):(
                 <div className="col-md-12">
                   <h2 className="text-center">Enroll Student</h2>
-                  <SearchSection handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                  <SearchSection handleEnroll={this.handleEnrollStudent.bind(this)} handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
                 </div>
               )}
             </div>

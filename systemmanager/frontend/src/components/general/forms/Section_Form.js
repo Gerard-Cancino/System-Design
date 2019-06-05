@@ -218,7 +218,11 @@ class SectionForm extends Component {
           {this.state.courseSect==undefined?(
             <p></p>
           ):(
-            <SectionTable handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+            this.props.handleEnroll!=undefined?(
+              <SectionTable handleEnroll={this.props.handleEnroll.bind(this)} handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+            ):(            
+              <SectionTable handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+            )
           )}
         </div>
       </React.Fragment>

@@ -210,7 +210,7 @@ class Day(models.Model):
       ("TU", "Tuesday"),
       ("WE", "Wednesday"),
       ("TH", "Thursday"),
-      ("F", "Friday"),
+      ("FR", "Friday"),
       ("SA", "Saturday")
     )
     name = models.CharField(choices=DAY_TYPE, max_length=2, null=False)
@@ -324,7 +324,7 @@ class Transcript(models.Model):
     )
     season = models.CharField(max_length=2, choices=SEASON)
     class Meta:
-        unique_together = (("student","course"))
+        unique_together = (("student","course","year",'season'))
         db_table = "transcript"
 
 class Attendance(models.Model):

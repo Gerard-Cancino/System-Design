@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
@@ -51,11 +52,11 @@ class ViewClassRoster extends Component {
                     <td>{el.student.user.id}</td>
                     <td>{el.student.user.firstName} {el.student.user.lastName}</td>
                     <td><Link to={{
-                      pathname:"/admin/view-student-details",
+                      pathname:"/faculty/view-student-info",
                       state:{enrollmentID:el.id,
                         courseSectionID:this.props.data.state.course_section_id,
-                        studentID:el.student.user.id}
-                      }}className="col-md-12">View Student</Link>
+                        studentEmail:el.student.user.email}
+                      }}className="col-md-12 btn btn-info">View Student</Link>
                     </td>
                   </tr>
                 ))}
@@ -68,7 +69,7 @@ class ViewClassRoster extends Component {
     console.log("reloading page");
     return(
       <React.Fragment>
-        <Header />
+        <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">

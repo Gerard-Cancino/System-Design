@@ -62,7 +62,6 @@ def auth_view(request):
   try:
     user = auth.authenticate(username=username, password=password)
     if user is not None:
-      print(user)
       user_model = models.User.objects.get(id=user.id)
       if user_model.isLockout == True:
         return Response({'message':"The account is locked.  Please contact an admin to unlock it"},status=status.HTTP_400_BAD_REQUEST)
@@ -121,11 +120,13 @@ class TokenUser(generics.RetrieveUpdateDestroyAPIView):
   def get(self, request):
     params = request.query_params
     if params.get('token') is not None:
-      token = jwt.decode(str(params.get('token')),None,None)
-      print(token)
-      user = models.User.objects.get(id=token['user_id'])
-      serializer = serializers.UserSerializer(user)
-      return Response({'data':serializer.data})
+      try:
+        token = jwt.decode(str(params.get('token')),None,None)
+        user = models.User.objects.get(id=token['user_id'])
+        serializer = serializers.UserSerializer(user)
+        return Response({'data':serializer.data},status=status.HTTP_200_OK)
+      except:
+        return Response({'message':"The token is invalid"},status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserPasswordChange(generics.RetrieveUpdateDestroyAPIView):
@@ -133,8 +134,6 @@ class UserPasswordChange(generics.RetrieveUpdateDestroyAPIView):
     try:
       user = models.User.objects.get(email=request.data.get('email'))
       password = user.password
-      print(request.data.get('password'))
-      print(len(request.data.get('password')))
       if 8 > len(request.data.get('password')) or len(request.data.get('password')) > 15:
         return Response({'message': "Failed! The password's length needs to be inclusively between 8 and 15"},status=status.HTTP_400_BAD_REQUEST) 
       if -1 != request.data.get('password').find('@') or \
@@ -321,7 +320,7 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
         queryset.faculty=faculty
         queryset.save()
     if params.get('numOfSeats') is not None:
-      if queryset.numOfTaken >= params.get('numOfSeats'):
+      if queryset.numOfTaken >= int(params.get('numOfSeats')):
         return Response({'message':'The inputted number of seats is smaller than the number of seats taken'})
       queryset.numOfSeats = params.get('numOfSeats')
       queryset.save()
@@ -494,6 +493,7 @@ class EnrollmentList(generics.ListCreateAPIView):
       return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
+    print(params)
     if params.get('section') is not None:
       if params.get('student') is not None:
         user = models.User.objects.get(email=params.get('student'))
@@ -511,18 +511,18 @@ class EnrollmentList(generics.ListCreateAPIView):
             return Response({"message":"Student has a hold"},status=status.HTTP_400_BAD_REQUEST)
           if int(section.numOfSeats)-int(section.numOfTaken)<=0:
             return Response({'message':"The section has no available seats"},status=status.HTTP_400_BAD_REQUEST)
-          prereq_list = model.Prerequisite.objects.filter(course_section=params.get('section'))
+          prereq_list = models.Prerequisite.objects.filter(course_id=section.course.id)
           if prereq_list.count()!=0:
             enrollment_list = models.Enrollment.objects.exclude(course_section__term__id=section.term.id)
             for prereq in prereq_list:
               isTaken = False
               for enrollment in enrollment_list:
-                if prereq.course_section.id==enrollment.course_section.id:
+                if prereq.course.id==enrollment.course_section.course.id:
                   grade_received = models.Grade.objects.get(type="F",course_section__id=enrollment.course_section.id,student__id=student.id).letterGrade
                   if grade_received < prereq.requiredGrade + 1:
                     isTaken = True
               if isTaken == False:
-                return Response({'message':"The student does not meet the prerequisites"}) 
+                return Response({'message':"The student does not meet the prerequisites"},status=status.HTTP_400_BAD_REQUEST) 
         enrollmentList = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term__id=section.term.id)
         credit = 0
         for enroll in enrollmentList:
@@ -1073,6 +1073,7 @@ class GradeList(generics.ListCreateAPIView):
   serializer_class=serializers.GradeSerializer
   def list(self,request):
     params = request.query_params
+    print(params)
     if params.get('student_email') is not None and params.get('course_section_id') is not None:
       gradeList = models.Grade.objects.filter(student__user__email=params.get('student_email'),course_section_id=params.get('course_section_id'))
       serializer = serializers.GradeSerializer(gradeList,many=True)
@@ -1085,50 +1086,49 @@ class GradeList(generics.ListCreateAPIView):
       grade_list = models.Grade.objects.filter(course_section=params.get('section'))
       serializer = serializers.GradeSerializer(grade_list,many=True)
       return Response({'data':serializer.data},status=status.HTTP_200_OK)
-    else:
-      gradeObject = models.Grade.objects.all()
-      serializer = serializers.GradeSerializer(gradeObject)
-      return Response({'data':serializer.data},status=status.HTTP_200_OK)
+    return Response({'message':"Could not retrieve grade. Please check the query"},status=status.HTTP_400_BAD_REQUEST)
   def post(self,request):
     params = request.data
-    if params.get('course_section_id') is not None or \
-      params.get('student_id') is not None:
-      if params.get('admin') is None:
-        date = datetime.now().date()
-        try:
-          start_date = None
-          end_date = None
-          section = models.CourseSection.objects.get(id=params.get('course_section_id'))
-          term = section.term
-          if params.get('type') == 'F':
-            if term.season == 'SP':
-              start_date = datetime(int(term.year),5,1)
-              end_date = datetime(int(term.year),5,31)
-            else:
-              start_date = datetime(int(term.year),12,1)
-              end_date = datetime(int(term.year),12,31)
+    print(params)
+    if params.get('course_section_id') is not None and params.get('student_email') is not None:
+      date = datetime.now().date()
+      start_date = None
+      end_date = None
+      section = models.CourseSection.objects.get(id=params.get('course_section_id'))
+      term = section.term
+      print(term.season)
+      try:
+        if params.get('type') == 'F':
+          if term.season == 'SP':
+            start_date = datetime(int(term.year),5,1).date()
+            end_date = datetime(int(term.year),7,1).date()
           else:
-            if term.season == 'SP':
-              start_date = datetime(int(term.year),2,15)
-              end_date = datetime(int(term.year),3,15)
-            else:
-              start_date = datetime(int(term.year),10,15)
-              end_date = datetime(int(term.year),11,15)
-          if start_date > date > end_date:
-            return Response({'message':"Failed! The grades are passed the final date"},status=status.HTTP_400_BAD_REQUEST)
-        except:
-          return Response({'message':"Failed! The course section was not found"},status=status.HTTP_400_BAD_REQUEST)
-        grade = models.Grade.objects.create( \
-          id = params.get('id'),
+            start_date = datetime(int(term.year),12,1).date()
+            end_date = datetime(int(term.year),12,31).date()
+        else:
+          if term.season == 'SP':
+            start_date = datetime(int(term.year),2,15).date()
+            end_date = datetime(int(term.year),3,15).date()
+          else:
+            start_date = datetime(int(term.year),10,15).date()
+            end_date = datetime(int(term.year),11,15).date()
+        if start_date > date or date > end_date:
+          return Response({'message':"Failed! The grades are passed the final date"},status=status.HTTP_400_BAD_REQUEST)
+      except:
+        return Response({'message':"Failed! The course section was not found"},status=status.HTTP_400_BAD_REQUEST)
+      try:
+        grade = models.Grade.objects.create(
           type= params.get('type'), 
           letterGrade=params.get('letterGrade'), 
           course_section_id=params.get('course_section_id'),
-          student_id=params.get('student_id')
+          student_id=models.User.objects.get(email=params.get('student_email')).id
         )
         grade.save()
-        grade = models.Grade.objects.get(student_id=grade.student_id)
+        grade = models.Grade.objects.get(id=grade.id)
         serializer = serializers.GradeSerializer(grade)
-        return Response({'data':serializer.data,'message':"Successful!! Assigned a grade"},status=status.HTTP_201_CREATED)
+        return Response({'data':serializer.data,'message':"Successful!! Assigned a grade"},status=status.HTTP_200_OK)
+      except:
+        return Response({'message':"Failed! A grade exist already. Please ask the admin to update the grade"},status=status.HTTP_400_BAD_REQUEST)
 
 # Prereq and below in models
 @method_decorator(csrf_exempt, name='dispatch')

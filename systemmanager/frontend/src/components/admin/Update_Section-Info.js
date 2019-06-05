@@ -126,7 +126,7 @@ class UpdateSectionMaster extends Component {
                   <br />
                   <p className="col-md-12 text-secondary"><strong>Number of Seats in Total: </strong>{this.state.section.numOfSeats}</p>
                   <p className="col-md-12 text-secondary"><strong>Number of Seats Currently Taken: </strong>{this.state.section.numOfTaken}</p>
-                  <InputNumSeats onChange={this.handleNumOfSeats} isRequired={true}/>
+                  <InputNumSeats onChange={this.handleNumOfSeats} />
                   <p className="col-md-12 text-secondary"><strong>Current Professor: </strong>{this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
                   <SearchFacultyList onChange={this.handleFaculty.bind()} facultyList={this.state.facultyList} isRequired={true}/>
                   <p className="col-md-12 text-secondary"><strong>Building and Room: </strong>{this.state.section.room.building.name} {this.state.section.room.number}</p>

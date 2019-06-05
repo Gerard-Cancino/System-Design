@@ -8,8 +8,8 @@ USE system;
 -- Faculty
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
-(10001, '5678', 'F', 'cancinog', 'Gerard', 'Cancino', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'randomemail1@gmail.com'),
-(10002, '4584','F','caih','Haojun','Cai','223 store hill rd','old westbury','NY','USA','11568','9293008380', 0, 'randomemail2@gmail.com'),
+(10001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'F', 'cancinog', 'Gerard', 'Cancino', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'randomemail1@gmail.com'),
+(10002, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=','F','caih','Haojun','Cai','223 store hill rd','old westbury','NY','USA','11568','9293008380', 0, 'randomemail2@gmail.com'),
 (10003,'2324','F','chungs','Sikho','Chung','101 Main St','Lynbrrok','NY','USA','11563','5167900666', 0, 'randomemail3@gmail.com'),
 (10004,'2425','F','harrisond','David','Harrison','546 Hill St','Garden City','NY','USA','11560','5164545555', 0, 'randomemail4@gmail.com'),
 (10005,'2526','F','algare','Edward','Algar','7th Ave','New York','NY','USA','11020','2475684747', 0, 'randomemail5@gmail.com'),
@@ -21,12 +21,14 @@ INSERT INTO `user`
 (10011,'4502','F','chend','Denna','Chen','59 Moonside St','Valley Stream','NY','USA','11580','5166338080', 0, 'randomemail11@gmail.com'),
 (10012,'4503','F','parkm','Marie','Park','258 Golf Rd','New Rochelle','NY','USA','10530','9145257778', 0, 'randomemail12@gmail.com'),
 (10013,'4504','F','dantet','Thomas','Dante','699 Hill Ave','Toronto','CA','Canada','0015','156-555-0000', 0, 'randomemail13@gmail.com'),
-(10014,'1111','F','sheltond','Dawn','Shelton','529 Newton Street','St Cloud','MN','USA','11178','3202911613', 0, 'randomemail14@gmail.com');
+(10014,'1111','F','sheltond','Dawn','Shelton','529 Newton Street','St Cloud','MN','USA','11178','3202911613', 0, 'randomemail14@gmail.com'),
+(10015,'1234','F','jamsayj','james','ramsay','123 Adddress Str','25 City', 'NY', 'USA', '11115', '1234567890',0,'randomemail15@gmail.com'),
+(10016,'1234','F','snowj','johan','snow','1 Winterfell Str','5 Westeros', 'NY', 'USA', '11112', '1234567890',0,'randomemail15@gmail.com');
 
 -- Admin
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
-(20001, '9101', 'A', 'dabrowd', 'Daniel', 'Dabrowski', '50 Hill Ave', 'Forest Hill', 'NY', 'USA', '11568', '7184502569', 0,'randomemail15@gmail.com'),
+(20001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'A', 'dabrowd', 'Daniel', 'Dabrowski', '50 Hill Ave', 'Forest Hill', 'NY', 'USA', '11568', '7184502569', 0,'randomemail15@gmail.com'),
 (20002,'9102','A','moorem','Mark','Moore','50 Hill Ave','Forest Hill','NY','USA','11568','7184502570', 0, 'randomemail16@gmail.com'),
 (20003,'2021','A','markj','Jannet','Mark','1000 Horton Ave','Manhattan','NY','USA','11100','2125468900', 0, 'randomemail17@gmail.com'),
 (20004,'3120','A','davism','Maria','Davis','788 Dixie Rd','Farmingdale','NY','USA','11590','516-363-6666', 0, 'randomemail18@gmail.com');
@@ -34,14 +36,14 @@ INSERT INTO `user`
 -- Researcher
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
-(30001, '1213', 'R', 'shawp', 'Paul', 'Shaw', '45 Mill Rd', 'Valley', 'NY', 'USA', '11570', '5164506000', 0, 'randomemail19@gmail.com'),
+(30001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'R', 'shawp', 'Paul', 'Shaw', '45 Mill Rd', 'Valley', 'NY', 'USA', '11570', '5164506000', 0, 'randomemail19@gmail.com'),
 (30002, '4010','R','thomase','Eddie','Thomas','112 Carl Ave','Lynbrook','NY','USA','11563','5167122020', 0, 'randomemail20@gmail.com');
 
 USE system;
 -- Student
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
-(40001, '2234', 'S', 'toothG', 'George', 'Tooth', '223 Grand Ave', 'Garden City', 'NY', 'USA', '11530', '5165601525', 0, 'randomemail21@gmail.com'), -- Chemical Engineering Freshmen // Minor Math
+(40001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'S', 'toothG', 'George', 'Tooth', '223 Grand Ave', 'Garden City', 'NY', 'USA', '11530', '5165601525', 0, 'randomemail21@gmail.com'), -- Chemical Engineering Freshmen // Minor Math
 (40002, '1415', 'S','millH','Harry','Mill','78 Bail Rd','White Plains','NY','USA','11710','9146321550', 0, 'randomemail22@gmail.com'), 
 (40003, '1516', 'S','LynerC','Carl','Lyner','890 Wake Rd', 'Garden City', 'NY', 'USA', '11530', '5169698500', 0, 'randomemail23@gmail.com'),
 (40004,'2223','S','GuzmanG', 'Garry', 'Guzman', '45 Lewis Rd', 'Riverdale', 'NY', 'USA', '11710', '9144507777', 0, 'randomemail24@gmail.com'),
@@ -220,19 +222,8 @@ INSERT INTO `department` (`code`, `name`) VALUES
 ('EE', 'Electrical Engineering'),  -- 5 Prof
 ('MA', 'Mathematics'), -- 2 Prof
 ('PH', 'Physics'), -- 2 Prof
-('ACC', 'Accounting'),
-('BIO', 'Biology'),
-('BP', 'BioPhysics'),
-('AGR', 'Agriculture'),
-('PSY', 'Psychology'),
-('BE', 'Bioengineering'),
-('CS', 'Computer Science'),
-('ES', 'Earth Science'),
-('FI', 'Finance'),
-('GEO', 'Geography'),
-('PR', 'Public Relations'),
-('RE', 'Real Estate'),
-('HU', 'Humantities'); -- 2 Prof 
+('HU', 'Humantities'), -- 2 Prof 
+('GE', 'General Electives'); -- 2 Prof 
 
 -- ET
 INSERT INTO `faculty` (`user_id`, `isFullTime`, `department_id`, `room_id`) VALUES
@@ -249,7 +240,9 @@ INSERT INTO `faculty` (`user_id`, `isFullTime`, `department_id`, `room_id`) VALU
 (10011, 1, 'PH', 'ET4'), -- Physics
 (10012, 1, 'PH', 'ET4'),
 (10013, 1, 'HU', 'CC1'), -- Humanities
-(10014, 1, 'HU', 'CC1');
+(10014, 1, 'HU', 'CC1'),
+(10015, 1, 'GE', 'CC1'), -- General Electives
+(10016, 1, 'GE', 'CC1');
 
 INSERT INTO `hold` (`name`, `type`, `description`) VALUES
 ('BB01', 'Bursar', 'Unpaid Balance'),
@@ -483,7 +476,7 @@ INSERT INTO `advisor` (`id`, `faculty_id`, `student_id`,`dateAssigned`) VALUES
 (98,10005, 40418, '2017-07-22'),
 (99,10005, 40419, '2017-07-22'),
 (100,10005, 40420, '2017-07-22'),
-(101, 10006, 40001, '2017-07-21');
+(101,10006, 40001, '2017-07-21');
 
 INSERT INTO `admin` (`user_id`) VALUES
 (20001),
@@ -572,13 +565,11 @@ INSERT INTO `course` (`id`, `department_id`, `number`, `name`, `description`, `n
 ('HU103','HU',103,'The Making of Modern Society',"The Making of Modern Society Description",3,0,1,1),
 ('HU104','HU',104,'The Modern Context: Figures and Topics',"Famous people's influence -- Description",3,0,1,1),
 -- Electrical Engineering
-('EE101','EE',101,'Engineering Design and Problem Solving',"Engineering Design and Problem Solving Description",3,0,1,1),
-('EE102','EE',102,'Engineering Design Graphics',"Engineering Design Graphics Description",1,0,1,1),
 ('EE150','EE',150,'Digital Logic Design',"Digital Logic Design Description",3,0,1,1),
 ('EE160','EE',160,'Programming for Electrical Engineers',"Programming for Electrical Engineers Description",3,0,1,1),
 ('EE240','EE',240,'Circuit Analysis',"Circuit Analysis Description",3,0,1,1),
 ('EE211','EE',211,'Signal Processing & Systems Analysis',"Signal Processing & Systems Analysis Descprition",3,0,1,1),
-('EE241','EE',244,'Electronics I',"Robotic Legos!!!!!",4,0,1,1),
+('EE241','EE',241,'Electronics I',"Robotic Legos!!!!!",4,0,1,1),
 ('EE251','EE',251,'Computer Architecture',"Gateways to Heaven",3,0,1,1),
 ('EE264','EE',264,'Data Structures & Algorithms I',"Description", 3,0,1,1),
 ('EE300','EE',300,'Communication Theory',"01101000 01110100 01110100 01110000 01110011 00111010 00101111 00101111 01111001 01101111 01110101 01110100 01110101 00101110 01100010 01100101 00101111 01100100 01010001 01110111 00110100 01110111 00111001 01010111 01100111 01011000 01100011 01010001",3,0,1,1),
@@ -596,16 +587,17 @@ INSERT INTO `course` (`id`, `department_id`, `number`, `name`, `description`, `n
 ('PH101','PH',101,'Physics I',"Somehow this class bends time",4,0,1,1),
 ('PH102','PH',102,'Physics II',"The Star Wars sequel we never wanted",4,0,1,1),
 ('PH103','PH',103,'Physics III',"Modern Physics. How does light bend around dense masses?",4,0,1,1),
-('MA105','MA',601,'Algebra',"numbers",4,0,1,0),
 -- General
-('AC106','ACC',602,'Accounting 101',"more numbers",4,0,1,0),
-('GE107','BIO',603,'Biology 101',"organisms",4,0,1,0),
-('BP108','BP',604,'Biophysics 101',"biophysics",4,0,1,0),
-('AG109','AGR',605,'Agriculture 101',"farms",4,0,1,0),
-('PS110','PSY',606,'Psychology',"how the brain works",4,0,1,0),
-('BE111','BE',607,'Bioengineering 101',"BE",4,0,1,0),
-('CS112','CS',608,'Python 101',"python",4,0,1,0),
-('ES113','ES',609,'Earth Science 101',"Earth",4,0,1,0);
+('GE101','GE',101,'English 101',"How to english?",4,0,1,1),
+('GE102','GE',102,'English 102',"How to english II?",4,0,1,1),
+('GE103','GE',103,'Engineering Design and Problem Solving',"Engineering Design and Problem Solving Description",3,0,1,1),
+('GE104','GE',104,'Engineering Design Graphics',"Engineering Design Graphics Description",1,0,1,1),
+('GE105','GE',105,'Earth Science 101',"Earth",4,0,1,1),
+('GE106','GE',106,'Accounting 101',"more numbers",4,0,1,1),
+('GE107','GE',107,'Biology 101',"organisms",4,0,1,1),
+('GE108','GE',108,'Biophysics 101',"biophysics",4,0,1,1),
+('GE109','GE',109,'Agriculture 101',"farms",4,0,1,1),
+('GE110','GE',110,'Psychology',"how the brain works",4,0,1,1);
 
 -- To create more sections, add 1 to the first number in id, and change the term id to + 2, every other/ fall and spring are different
 -- ^ Please insert fall 2018, spring 2019 and fall 2019
@@ -652,10 +644,16 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (20039,'EE395',1,10005,30,30,2,'ET35'),
 (20040,'EE396',1,10005,30,30,2,'ET36'),
 (20041,'EE396',1,10005,30,30,2,'ET36'),
-(20042,'EE101',1,10008,30,30,2,'ET36'),
-(20043,'EE101',1,10008,30,30,2,'ET36'),
-(20044,'EE102',1,10007,30,30,2,'ET35'),
-(20045,'EE102',1,10007,30,30,2,'ET35');
+(20042,'GE101',1,10015,30,30,2,'ET36'),
+(20043,'GE102',1,10015,30,30,2,'ET37'),
+(20044,'GE103',1,10015,30,30,2,'ET38'),
+(20045,'GE104',1,10015,30,30,2,'ET39'),
+(20050,'GE105',1,10015,30,30,2,'ET40'),
+(20051,'GE106',1,10016,30,30,2,'ET36'),
+(20052,'GE107',1,10016,30,30,2,'ET37'),
+(20053,'GE108',1,10016,30,30,2,'ET38'),
+(20054,'GE109',1,10016,30,30,2,'ET39'),
+(20055,'GE110',1,10016,30,30,2,'ET40');
 
 -- Spring 2017
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -698,7 +696,18 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (21038,'EE264',1,10006,30,30,3,'ET34'),
 (21039,'EE303',1,10006,30,30,3,'ET34'),
 (21040,'EE360',1,10005,30,30,3,'ET35'),
-(21041,'EE394',1,10005,30,30,3,'ET35');
+(21041,'EE394',1,10005,30,30,3,'ET35'),
+(21046,'GE101',1,10015,30,30,2,'ET36'),
+(21047,'GE102',1,10015,30,30,2,'ET37'),
+(21048,'GE103',1,10015,30,30,2,'ET38'),
+(21049,'GE104',1,10015,30,30,2,'ET39'),
+(21050,'GE105',1,10015,30,30,2,'ET40'),
+(21051,'GE106',1,10016,30,30,2,'ET36'),
+(21052,'GE107',1,10016,30,30,2,'ET37'),
+(21053,'GE108',1,10016,30,30,2,'ET38'),
+(21054,'GE109',1,10016,30,30,2,'ET39'),
+(21055,'GE110',1,10016,30,30,2,'ET40');
+
 
 -- Fall 2017
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -743,10 +752,17 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (30039,'EE395',1,10005,30,30,4,'ET35'),
 (30040,'EE396',1,10005,30,30,4,'ET36'),
 (30041,'EE396',1,10005,30,30,4,'ET36'),
-(30042,'EE101',1,10008,30,30,4,'ET36'),
-(30043,'EE101',1,10008,30,30,4,'ET36'),
-(30044,'EE102',1,10007,30,30,4,'ET35'),
-(30045,'EE102',1,10007,30,30,4,'ET35');
+(30042,'GE101',1,10015,30,30,2,'ET36'),
+(30043,'GE102',1,10015,30,30,2,'ET37'),
+(30044,'GE103',1,10015,30,30,2,'ET38'),
+(30045,'GE104',1,10015,30,30,2,'ET39'),
+(30050,'GE105',1,10015,30,30,2,'ET40'),
+(30051,'GE106',1,10016,30,30,2,'ET36'),
+(30052,'GE107',1,10016,30,30,2,'ET37'),
+(30053,'GE108',1,10016,30,30,2,'ET38'),
+(30054,'GE109',1,10016,30,30,2,'ET39'),
+(30055,'GE110',1,10016,30,30,2,'ET40');
+
 
 -- Spring 2018
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -789,7 +805,18 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (31038,'EE264',1,10006,30,30,5,'ET34'),
 (31039,'EE303',1,10006,30,30,5,'ET34'),
 (31040,'EE360',1,10005,30,30,5,'ET35'),
-(31041,'EE394',1,10005,30,30,5,'ET35');
+(31041,'EE394',1,10005,30,30,5,'ET35'),
+(31046,'GE101',1,10015,30,30,2,'ET36'),
+(31047,'GE102',1,10015,30,30,2,'ET37'),
+(31048,'GE103',1,10015,30,30,2,'ET38'),
+(31049,'GE104',1,10015,30,30,2,'ET39'),
+(31050,'GE105',1,10015,30,30,2,'ET40'),
+(31051,'GE106',1,10016,30,30,2,'ET36'),
+(31052,'GE107',1,10016,30,30,2,'ET37'),
+(31053,'GE108',1,10016,30,30,2,'ET38'),
+(31054,'GE109',1,10016,30,30,2,'ET39'),
+(31055,'GE110',1,10016,30,30,2,'ET40');
+
 
 -- Fall 2018
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -834,10 +861,17 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (40039,'EE395',1,10005,30,30,6,'ET35'),
 (40040,'EE396',1,10005,30,30,6,'ET36'),
 (40041,'EE396',1,10005,30,30,6,'ET36'),
-(40042,'EE101',1,10008,30,30,6,'ET36'),
-(40043,'EE101',1,10008,30,30,6,'ET36'),
-(40044,'EE102',1,10007,30,30,6,'ET35'),
-(40045,'EE102',1,10007,30,30,6,'ET35');
+(40042,'GE101',1,10015,30,30,2,'ET36'),
+(40043,'GE102',1,10015,30,30,2,'ET37'),
+(40044,'GE103',1,10015,30,30,2,'ET38'),
+(40045,'GE104',1,10015,30,30,2,'ET39'),
+(40050,'GE105',1,10015,30,30,2,'ET40'),
+(40051,'GE106',1,10016,30,30,2,'ET36'),
+(40052,'GE107',1,10016,30,30,2,'ET37'),
+(40053,'GE108',1,10016,30,30,2,'ET38'),
+(40054,'GE109',1,10016,30,30,2,'ET39'),
+(40055,'GE110',1,10016,30,30,2,'ET40');
+
 
 -- Spring 2019
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -880,7 +914,18 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (41038,'EE264',1,10006,30,30,7,'ET34'),
 (41039,'EE303',1,10006,30,30,7,'ET34'),
 (41040,'EE360',1,10005,30,30,7,'ET35'),
-(41041,'EE394',1,10005,30,30,7,'ET35');
+(41041,'EE394',1,10005,30,30,7,'ET35'),
+(41042,'GE101',1,10015,30,30,2,'ET36'),
+(41043,'GE102',1,10015,30,30,2,'ET37'),
+(41044,'GE103',1,10015,30,30,2,'ET38'),
+(41045,'GE104',1,10015,30,30,2,'ET39'),
+(41050,'GE105',1,10015,30,30,2,'ET40'),
+(41051,'GE106',1,10016,30,30,2,'ET36'),
+(41052,'GE107',1,10016,30,30,2,'ET37'),
+(41053,'GE108',1,10016,30,30,2,'ET38'),
+(41054,'GE109',1,10016,30,30,2,'ET39'),
+(41055,'GE110',1,10016,30,30,2,'ET40');
+
 
 -- Fall 2019
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -925,10 +970,17 @@ INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats
 (50039,'EE395',1,10005,30,30,8,'ET35'),
 (50040,'EE396',1,10005,30,30,8,'ET36'),
 (50041,'EE396',1,10005,30,30,8,'ET36'),
-(50042,'EE101',1,10008,30,30,8,'ET36'),
-(50043,'EE101',1,10008,30,30,8,'ET36'),
-(50044,'EE102',1,10007,30,30,8,'ET35'),
-(50045,'EE102',1,10007,30,30,8,'ET35');
+(50042,'GE101',1,10015,30,30,2,'ET36'),
+(50043,'GE102',1,10015,30,30,2,'ET37'),
+(50044,'GE103',1,10015,30,30,2,'ET38'),
+(50045,'GE104',1,10015,30,30,2,'ET39'),
+(50050,'GE105',1,10015,30,30,2,'ET40'),
+(50051,'GE106',1,10016,30,30,2,'ET36'),
+(50052,'GE107',1,10016,30,30,2,'ET37'),
+(50053,'GE108',1,10016,30,30,2,'ET38'),
+(50054,'GE109',1,10016,30,30,2,'ET39'),
+(50055,'GE110',1,10016,30,30,2,'ET40');
+
 
 INSERT INTO `prerequisite` (`id`,`requiredGrade`,`course_id`,`prereq_id`) VALUES
 (1,'C','EE240','MA113'),
@@ -960,41 +1012,35 @@ INSERT INTO `prerequisite` (`id`,`requiredGrade`,`course_id`,`prereq_id`) VALUES
 (25,'C','CE382','CE381');
 
 INSERT INTO `minor` (`id`,`name`,`department_id`) VALUES 
-(1,'Mathematics','MA'),
-(2,'Accounting','ACC'),
-(3,'Biology','BI'),
-(4,'Biophysics','BP'),
-(5,'Agriculture','AG'),
-(6,'Psychology','PS'),
-(7,'Bioengineering','BE'),
-(8,'Computer Science','CS'),
-(9,'Earth Science','ES');
+(1,'Mathematics','MA');
+-- (2,'Accounting','ACC'),
+-- (3,'Biology','BI'),
+-- (4,'Biophysics','BP'),
+-- (5,'Agriculture','AG'),
+-- (6,'Psychology','PS'),
+-- (7,'Bioengineering','BE'),
+-- (8,'Computer Science','CS'),
+-- (9,'Earth Science','ES');
 
 INSERT INTO `major` (`id`,`name`,`department_id`,`type`) VALUES 
+(5,'General Elective','GE','BS'),
 (1,'Electrical Engineering','EE','BS'),
-(2,'Mathematics','MA','BS'),
-(3,'Accounting','ACC','BS'),
-(4,'Biology','BIO','BS'),
-(5,'Biophysics','BP','BS'),
-(6,'Agriculture','AGR','BS'),
-(7,'Psychology','PSY','BS'),
-(8,'Bioengineering','BE','BS'),
-(9,'Computer Science','CS','BS'),
-(10,'Earth Science','ES','BS'),
-(11,'Chemical Engineering','CE','BS');
+(2,'Chemical Engineering','CE','BS'),
+(3,'Mathematics','MA','BS');
 
 
 -- Please follow major requirements when inserting to minor requirements
-INSERT INTO `minor_requirements` (`id`,`minor_id`,`course_id`) VALUES 
-(1,1,'MA105'),
-(2,2,'ACC106'),
-(3,3,'BIO107'),
-(4,4,'BP108'),
-(5,5,'AGR109'),
-(6,6,'PSY110'),
-(7,7,'BE111'),
-(8,8,'CS112'),
-(9,9,'ES113');
+INSERT INTO `minor_requirement` (`id`,`minor_id`,`course_id`) VALUES 
+(1,1,'MA110'),
+(2,1,'MA111'),
+(3,1,'MA113'),
+(4,1,'MA223'),
+(5,1,'MA240'),
+(6,1,'MA224'),
+(7,1,'MA302'),
+(8,1,'MA303'),
+(9,1,'MA304'),
+(10,1,'MA305');
 
 -- NOTE: Not all courses are in the requirements 
   -- i.e. students need to take 2 '300' or '400' course level
@@ -1002,8 +1048,6 @@ INSERT INTO `minor_requirements` (`id`,`minor_id`,`course_id`) VALUES
 INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 -- General engineering. All engineers need to take
 -- NOTE: Please add this to CE too
-(1,1,'EE101'),
-(2,1,'EE102'),
 -- Actual EE
 (3,1,'EE150'),
 (4,1,'EE160'),
@@ -1018,64 +1062,52 @@ INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 (13,1,'EE365'),
 (14,1,'EE303'),
 (15,1,'EE360'),
--- General for all engineers
--- Please add this to CE too
-(16,1,'PH101'),
-(17,1,'PH102'),
-(18,1,'PH103'),
-(19,1,'HU101'),
-(20,1,'HU102'),
-(21,1,'HU103'),
-(22,1,'HU104'),
-(23,1,'MA110'),
-(24,1,'MA111'),
-(25,1,'MA113'),
-(26,1,'MA223'),
-(27,1,'MA224'),
-(28,1,'MA302'),
-(29,1,'MA303');
+(16,1,'MA302'),
+(17,1,'MA303');
 
 INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 -- General engineering. All engineers need to take
-(30,2,'EE101'),
-(31,2,'EE102'),
 -- Actual CE
-(32,2,'CE110'),
-(33,2,'CE111'),
-(34,2,'CE160'),
-(35,2,'CE211'),
-(36,2,'CE221'),
-(37,2,'CE232'),
-(38,2,'CE331'),
-(39,2,'CE341'),
-(40,2,'CE351'),
-(41,2,'CE352'),
-(42,2,'CE361'),
-(43,2,'CE371'),
-(44,2,'CE372'),
--- General for CE
-(45,2,'PH101'),
-(46,2,'PH102'),
-(47,2,'PH103'),
-(48,2,'HU101'),
-(49,2,'HU102'),
-(50,2,'HU103'),
-(51,2,'HU104'),
-(52,2,'MA110'),
-(53,2,'MA111'),
-(54,2,'MA113'),
-(55,2,'MA223'),
-(56,2,'MA224'),
-(57,2,'MA302'),
-(58,2,'MA303'),
-(59,3,'ACC106'),
-(61,4,'BIO107'),
-(62,5,'BP108'),
-(63,6,'AGR109'),
-(64,7,'PSY110'),
-(65,8,'BE111'),
-(66,9,'CS112'),
-(67,10,'ES113');
+(30,2,'CE110'),
+(31,2,'CE111'),
+(32,2,'CE160'),
+(33,2,'CE211'),
+(34,2,'CE221'),
+(35,2,'CE232'),
+(36,2,'CE331'),
+(37,2,'CE341'),
+(38,2,'CE351'),
+(39,2,'CE352'),
+(40,2,'CE361'),
+(41,2,'CE371'),
+(42,2,'CE372'),
+(43,2,'MA302'),
+(44,2,'MA303');
+
+-- General Elective
+INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
+(60,5,'PH101'),
+(61,5,'PH102'),
+(62,5,'PH103'),
+(63,5,'HU101'),
+(64,5,'HU102'),
+(65,5,'HU103'),
+(66,5,'HU104'),
+(67,5,'MA110'),
+(68,5,'MA111'),
+(69,5,'MA113'),
+(70,5,'MA223'),
+(71,5,'MA224'),
+(72,5,'GE101'),
+(73,5,'GE102'),
+(74,5,'GE103'),
+(75,5,'GE104'),
+(76,5,'GE105'),
+(77,5,'GE106'),
+(78,5,'GE107'),
+(79,5,'GE108'),
+(80,5,'GE109'),
+(81,5,'GE110');
 
 
 INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES
@@ -1512,31 +1544,29 @@ INSERT INTO `course_section_slot` (`id`,`coursesection_id`,`slot_id`) VALUES
 (359,50045,28),
 (360,50045,29);
 
--- haojun sql
 INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`student_id`) VALUES 
 (1,'B','2017','F','MA110','40201'),
 (2,'A','2017','F','EE365','40201'),
 (3,'F','2017','F','PH102','40201'),
-(4,'B','2017','F','EE101','40201'),
-(5,'B','2017','F','EE102','40201'),
-
+(4,'B','2017','F','GE101','40201'),
+(5,'B','2017','F','GE102','40201'),
 (6,'B','2018','SP','MA113','40201'),
 (7,'B','2018','SP','MA304','40201'),
 (8,'A','2018','SP','EE241','40201'),
 (9,'A','2018','SP','EE251','40201'),
 (10,'A','2018','SP','EE264','40201'),
-
 (11,'B','2018','F','HU103','40201'),
 (12,'B','2018','F','PH102','40201'),
 (13,'A','2018','F','EE300','40201'),
 (14,'A','2018','F','EE310','40201'),
-(15,'A','2018','F','EE342','40201')，
-
-(16, NULL,'2019','SP','PH103','40201'),
-(17, NULL,'2019','SP','MA305','40201'),
-(19, NULL,'2019','SP','EE360','40201'),
-(20, NULL,'2019','SP','EE394','40201')，
+(15,'A','2018','F','EE342','40201'),
 (21,'A','2019','SP','EE303','40201');
+
+INSERT INTO `transcript` (`id`,`year`,`season`,`course_id`,`student_id`) VALUES 
+(16, '2019','SP','PH103','40201'),
+(17, '2019','SP','MA305','40201'),
+(19, '2019','SP','EE360','40201'),
+(20, '2019','SP','EE394','40201');
 
 
 INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
@@ -1546,7 +1576,6 @@ INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) 
 (3,'2018-05-20',40029,'40201'),
 (4,'2018-05-20',40031,'40201'),
 (5,'2018-05-20',40034,'40201'),
-
 (6,'2018-05-20',40014,'40001'),
 (7,'2018-05-20',40014,'40202'),
 (8,'2018-05-20',40014,'40203'),
@@ -1588,21 +1617,18 @@ INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) 
 (43,'2018-12-20',40018,'40218'),
 (44,'2018-12-20',40018,'40219'),
 (45,'2018-12-20',40018,'40220'),
-
 -- 2017 fall
 (51,'2017-05-20',30014,'40201'),
 (52,'2017-05-20',30037,'40201'),
 (53,'2017-05-20',30025,'40201'),
 (54,'2017-05-20',30042,'40201'),
 (55,'2017-05-20',30044,'40201'),
-
 -- 2018 spring
 (56,'2017-12-20',31014,'40201'),
 (57,'2017-12-20',31017,'40201'),
 (58,'2017-12-20',31035,'40201'),
 (59,'2017-12-20',31037,'40201'),
 (60,'2017-12-20',31038,'40201'),
-
 -- 2019 spring
 (46,'2018-12-20',41026,'40201'),
 (47,'2018-12-20',41017,'40201'),
@@ -1613,68 +1639,48 @@ INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) 
 
 
 INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`) VALUES
-
 -- (fall 2018)
 (1,'M','B',40023,40201), 
 (2,'F','B',40023,40201),
-
 (3,'M','A',40025,40201),
 (4,'F','B',40025,40201),
-
 (5,'M','B',40029,40201),
 (6,'F','F',40029,40201),
-
 (7,'M','C',40031,40201),
 (8,'F','A',40031,40201),
-
 (9,'M','B',40034,40201),
 (10,'F','B',40034,40201),
-
---spring 2019
+-- spring 2019
 (11,'M','B',41026,40201),
 (12,'F','A',41026,40201),
-
 (13,'M','B',41017,40201),
 (14,'F','B',41017,40201),
-
 (15,'M','A',41039,40201),
 (16,'F','A',41039,40201),
-
 (17,'M','A',41040,40201),
 (18,'F','A',41040,40201),
-
 (19,'M','B',41041,40201),
 (20,'F','A',41041,40201),
-
 -- (fall 2017)
 (21,'M','B',30031,40201), 
 (22,'F','B',30031,40201),
-
 (23,'M','A',30037,40201),
 (24,'F','A',30037,40201),
-
 (25,'M','B',30025,40201),
 (26,'F','F',30025,40201),
-
 (27,'M','B',30042,40201),
 (28,'F','B',30042,40201),
-
 (29,'M','B',30044,40201),
 (30,'F','B',30044,40201),
-
 -- (2018 spring)
 (31,'M','B',31014,40201),
 (32,'F','B',31014,40201),
-
 (33,'M','B',31017,40201),
 (34,'F','B',31017,40201),
-
 (35,'M','A',31035,40201),
 (36,'F','A',31035,40201),
-
 (37,'M','A',31037,40201),
 (38,'F','A',31037,40201),
-
 (39,'M','A',31038,40201),
 (40,'F','A',31038,40201);
 
