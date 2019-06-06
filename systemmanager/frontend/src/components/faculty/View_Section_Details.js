@@ -15,7 +15,7 @@ class SectionDetails extends Component {
   }
   componentDidMount(){
     axios
-    .get(`/course-section-details.json/${this.props.data.state.course_section_id}`)
+    .get(`/course-section-details.json/${this.props.data.state.courseSectionID}`)
     .then(res=>{
       this.setState({section:res.data.data})
     })
@@ -79,11 +79,15 @@ class SectionDetails extends Component {
                 <Link to={{
                   pathname:"/faculty/view-enrollment-list",
                   state:{
-                    course_section_id:this.props.data.state.course_section_id
+                    courseSectionID:this.props.data.state.courseSectionID
                   }
                 }} className="col-md-6 btn btn-primary">View Class Roster</Link>
-                <Link
-                className="col-md-6 btn btn-danger">Assign Attendance</Link>
+                <Link to={{
+                  pathname:"/faculty/assign-student-attendance",
+                  state:{
+                    courseSectionID:this.props.data.state.courseSectionID
+                  }
+                }} className="col-md-6 btn btn-danger">Assign Attendance</Link>
               </div>
             </div>
           </section>

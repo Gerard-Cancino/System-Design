@@ -934,8 +934,8 @@ class AttendanceList(generics.ListCreateAPIView):
   serializer_class = serializers.EnrollmentSerializer
   def list(self, request):
     params = request.query_params
-    if params.get('enrollment_id') is not None:
-      attendance=models.Attendance.objects.filter(enrollment__course_section_id=params.get('course_section'),)
+    if params.get('course_section_id') is not None:
+      attendance=models.Attendance.objects.filter(enrollment__course_section_id=params.get('course_section_id'),)
       serializer = serializers.EnrollmentSerializer(attendance, many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
   # I need a course section id and a student

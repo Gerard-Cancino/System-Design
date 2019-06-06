@@ -90,7 +90,7 @@ class FacultyTerm extends Component{
                           <td>
                           <Link to={{
                             pathname:"/faculty/view-section-details",
-                            state:{course_section_id:el.id}
+                            state:{courseSectionID:el.id}
                           }} className="col-md-12 btn btn-info">View Details
                           </Link>
                           </td>

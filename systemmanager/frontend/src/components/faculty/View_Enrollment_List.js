@@ -16,12 +16,12 @@ class ViewClassRoster extends Component {
   }
   getClassRoster = () => {
     axios
-    .get(`/course-section-details.json/${this.props.data.state.course_section_id}`)
+    .get(`/course-section-details.json/${this.props.data.state.courseSectionID}`)
     .then(res=>{this.setState({courseSection:res.data.data})})
     axios
     .get(`/enrollment-list.json`,{
       params:{
-        section:this.props.data.state.course_section_id
+        section:this.props.data.state.courseSectionID
       }
     })
     .then(res=>{this.setState({enrollmentList: res.data.data})
@@ -54,7 +54,7 @@ class ViewClassRoster extends Component {
                     <td><Link to={{
                       pathname:"/faculty/view-student-info",
                       state:{enrollmentID:el.id,
-                        courseSectionID:this.props.data.state.course_section_id,
+                        courseSectionID:this.props.data.state.courseSectionID,
                         studentEmail:el.student.user.email}
                       }}className="col-md-12 btn btn-info">View Student</Link>
                     </td>
