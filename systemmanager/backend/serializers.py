@@ -234,6 +234,7 @@ class MinorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Minor
         fields = ('__all__')
+        depth = 1
 
 class StudentMajorSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False)
@@ -257,7 +258,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     #attendance = AttendanceSerializer(many=False, required=True)
     class Meta:
         model = Enrollment
-        fields = ('student','course_section')#'__all__')
+        fields = ('__all__')
 
 class AttendanceSerializer(serializers.ModelSerializer):
     enrollment = EnrollmentSerializer(many=False)

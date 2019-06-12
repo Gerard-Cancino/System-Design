@@ -284,6 +284,8 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
       return Response({'message':'Could not find course'})
   def put(self, request,id):
     params = request.data
+
+    queryset = models.CourseSection.objects.get(id = id)
     if params.get('slot') is not None:
       queryset = models.CourseSection.objects.get(id = id)
       slot = models.Slot.objects.get(id = params.get('slot'))
@@ -306,22 +308,23 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
       return Response({'data':serializer.data,'message':"Successful!"})
     # if params.get('numOfSeats') is not None:
     #   data.append(Q(numOfSeats=params.get('numOfSeats')))
-    queryset = self.get_object(id)
     if params.get('faculty') is not None:
       faculty = models.Faculty.objects.get(user_id=params.get('faculty'))
-      try:
-        section = models.CourseSection.objects.get(faculty=faculty, slot__day__id__in=section.slot.day.id, slot__time__id__in=section.slot.time.id, term_id=section.term.id)
-        if section is not None:
-          return Response({'message':"Faculty already "})
-      except:
-        # Get COurse Sections where faculty = this faculty
-        # Get Course slot
-        # Compare the time of slot
+      if queryset.slot.count() != 0:
+        print(queryset.slot.count())
+        for slot in queryset.slot:
+          try:
+            section = models.CourseSection.objects.get(faculty=faculty, slot__day__id=slot.day.id, slot__time__id=slot.time.id, term_id=section.term.id)
+          except:
+            return Response({'message':"Faculty already has a class"})
         queryset.faculty=faculty
         queryset.save()
     if params.get('numOfSeats') is not None:
-      if queryset.numOfTaken >= int(params.get('numOfSeats')):
-        return Response({'message':'The inputted number of seats is smaller than the number of seats taken'})
+      try:
+        if queryset.numOfTaken >= int(params.get('numOfSeats')):
+          return Response({'message':'The inputted number of seats is smaller than the number of seats taken'},status=status.HTTP_400_BAD_REQUEST)
+      except:
+        return Response({'message':"Please input an integer for number of seats total"},status=status.HTTP_400_BAD_REQUEST)
       queryset.numOfSeats = params.get('numOfSeats')
       queryset.save()
     serializer = serializers.CourseSectionSerializer(queryset)
@@ -345,11 +348,17 @@ class CourseSectionList(generics.ListCreateAPIView):
       if params.get('courseID') is not None:
         filters.append(Q(course_id=params.get('courseID')))
       if params.get('creditMin') is not None:
-        filters.append(Q(course__numberOfCredits__gte=int(params.get('creditMin'))))
+        try:
+          filters.append(Q(course__numberOfCredits__gte=int(params.get('creditMin'))))
+        except:
+          return Response({'message':"Not a valid credit minimum"},status=status.HTTP_400_BAD_REQUEST)
       if params.get('creditMax') is not None:
-        filters.append(Q(course__numberOfCredits__lte=int(params.get('creditMax'))))
+        try:
+          filters.append(Q(course__numberOfCredits__lte=int(params.get('creditMax'))))
+        except:
+          return Response({'message':"Not a valid credit maximum"},status=status.HTTP_400_BAD_REQUEST)
       if params.get('facultyLastName') is not None:
-        filters.append(Q(faculty__user__lastName=params.get('facultyLastName')))
+        filters.append(Q(faculty__user__lastName__icontains=params.get('facultyLastName')))
       if params.get('courseName') is not None:
         filters.append(Q(course__name__icontains=params.get('courseName')))
       if params.get('department') is not None:
@@ -399,7 +408,10 @@ class CourseSectionList(generics.ListCreateAPIView):
     section = models.CourseSection.objects.create(course_id=course,number=number+1,term_id=term,room_id=room)
     numOfSeats = params.get('numOfSeats')
     if numOfSeats is not None:
-      section.numOfSeats = numOfSeats
+      try:
+        section.numOfSeats = int(numOfSeats)
+      except:
+        return Response({'message':"The number of seats is invalid"},status=status.HTTP_400_BAD_REQUEST)
     faculty = params.get('faculty')
     if faculty is not None:
       faculty = models.Faculty.objects.get(user_id=faculty)
@@ -439,12 +451,12 @@ class DepartmentList(generics.ListCreateAPIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
-  def get(self,request,section_id,student_id):
-    enrollment = models.Enrollment.objects.get(student_id=student_id,course_section_id=section_id)
+  def get(self,request,course_section_id,student_email):
+    enrollment = models.Enrollment.objects.get(student__user__email=student_email,course_section_id=course_section_id)
     serializer = serializers.EnrollmentSerializer(enrollment)
     return Response({'data':serializer.data,'message':"Successful! Retrieved the enrollment"},status=status.HTTP_200_OK)
-  def delete(self,request,section_id,student_id):
-    enrollment = models.Enrollment.objects.get(student_id=student_id,course_section_id=section_id)
+  def delete(self,request,course_section_id,student_email):
+    enrollment = models.Enrollment.objects.get(student__user__email=student_email,course_section_id=course_section_id)
     term = enrollment.course_section.term
     date = datetime.now().date()
     start_date = None
@@ -518,9 +530,10 @@ class EnrollmentList(generics.ListCreateAPIView):
               isTaken = False
               for enrollment in enrollment_list:
                 if prereq.course.id==enrollment.course_section.course.id:
-                  grade_received = models.Grade.objects.get(type="F",course_section__id=enrollment.course_section.id,student__id=student.id).letterGrade
-                  if grade_received < prereq.requiredGrade + 1:
-                    isTaken = True
+                  transcript_list = models.Transcript.objects.filter(course_id=enrollment.course_section.course.id,student__user__id=student.user.id)
+                  for transcript in transcript_list:
+                    if transcript.gradeRecieved is None or transcript.gradeReceived <= prereq.requiredGrade:
+                      isTaken = True
               if isTaken == False:
                 return Response({'message':"The student does not meet the prerequisites"},status=status.HTTP_400_BAD_REQUEST) 
         enrollmentList = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term__id=section.term.id)
@@ -553,7 +566,6 @@ class EnrollmentList(generics.ListCreateAPIView):
             print(enrollment.count())
             if enrollment.count() != 0:
               return Response({'message': "The student is enrolled in a class with the same time slot"},status=status.HTTP_400_BAD_REQUEST)
-        
  
         enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
         enrollment = models.Enrollment.objects.get(id=enrollment.id)
@@ -934,16 +946,31 @@ class AttendanceList(generics.ListCreateAPIView):
   serializer_class = serializers.EnrollmentSerializer
   def list(self, request):
     params = request.query_params
-    if params.get('course_section_id') is not None:
-      attendance=models.Attendance.objects.filter(enrollment__course_section_id=params.get('course_section_id'),)
-      serializer = serializers.EnrollmentSerializer(attendance, many=True)
-      return Response({'data':serializer.data,'message':"Successful!"})
+    if params.get('course_section_id') is not None and params.get('student_email') is not None:
+      attendance = models.Attendance.objects.filter(enrollment__course_section__id=params.get('course_section_id'),enrollment__student__user__email=params.get('student_email'))
+      serializer = serializers.AttendanceSerializer(attendance,many=True)
+      return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
+    if params.get('course_section_id') is not None and params.get('student_email') is None:
+      attendance=models.Attendance.objects.filter(enrollment__course_section__id=params.get('course_section_id'),dayAttended=datetime.now())
+      serializer = serializers.AttendanceSerializer(attendance, many=True)
+      return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
   # I need a course section id and a student
   def post(self, request):
     params = request.data
-    if params.get('enrollment') is not None and params.get('isPresent') is not None:
-      attendance = models.Attendance.objects.create(enrollment_id=params.get('course_section'),isPresent=params.get('isPresent'))
+    if params.get('course_section_id') is not None and params.get('isPresent') is not None and params.get('student_id'):
+      isTrue = None
+      if params.get('isPresent') == 'false':
+        isTrue = False
+      else:
+        isTrue = True
+      enrollment = models.Enrollment.objects.get(course_section_id=params.get('course_section_id'), student__user__id=params.get('student_id'))
+
+      attendance = models.Attendance.objects.filter(enrollment__course_section=params.get('course_section_id'),dayAttended=datetime.now())
+      if len(attendance) != 0:
+        return Response({'message':"Failed! Student is already assigned today"},status=status.HTTP_400_BAD_REQUEST)
+      attendance = models.Attendance.objects.create(enrollment=enrollment,isPresent=isTrue,dayAttended=datetime.now())
       attendance.save()
+      attendance = models.Attendance.objects.get(id=attendance.id)
       serializer = serializers.AttendanceSerializer(attendance)
       return Response({'data':serializer.data,'message':"Successful! Student has attended the class"},status=status.HTTP_200_OK)
 
@@ -1029,28 +1056,28 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_class =[
         permissions.AllowAny
     ]
-    def get_object(self, email, course_section_id):
+    def get_object(self, id):
         try:
-            grade=models.Grade.objects.get(student__user__email=email, course_section__id=int(course_section_id))
+            grade=models.Grade.objects.get(id=id)
             return grade
         except models.Grade.DoesNotExist:
             raise Http404
-    def get(self, request, email, course_section_id):
+    def get(self, request, id):
       try:
-        grade = self.get_object(email, course_section_id)
+        grade = self.get_object(id)
         serializer = serializers.GradeSerializer(grade)
         return Response({'data':serializer.data,'message':"Successful!"})
       except:
         return Response({'message':"Could not find a grade.  Please ask the faculty to create a grade"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, email, course_section_id):
+    def put(self, request, id):
         params = request.data
         if params.get('grade') is not None and params.get('type') is not None:
-            queryset = models.Grade.objects.get(student__user__email=email, course_section_id=int(course_section_id), type=params.get('type'))
+            queryset = models.Grade.objects.get(id=id)
             if queryset.letterGrade == params.get('grade'):
               return Response({'message':"Failed.  The submitted grade is equivalent to the grade already submitted"},status=status.HTTP_400_BAD_REQUEST)
             try:
-              transcript = models.Transcript.objects.get(student__user__email=email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
+              transcript = models.Transcript.objects.get(student__user__email=queryset.student.user.email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
               transcript.gradeReceived = params.get('grade')
               transcript.save()
             except:
@@ -1200,6 +1227,10 @@ class StudentMajorList(generics.ListCreateAPIView):
       student_major = models.StudentMajor.objects.filter(student__user__email=params.get('email'))
       serializer = serializers.StudentMajorSerializer(student_major,many=True)
       return Response({'data':serializer.data,'message':"Successful!"})
+    if params.get('major_id') is not None:
+      student_major = models.StudentMajor.objects.filter(major_id=params.get('major_id'))
+      serializer = serializers.StudentMajorSerializer(student_major, many=True)
+      return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
     if params.get('email') is not None and params.get('major') is not None:
@@ -1239,3 +1270,60 @@ class StudentMinorList(generics.ListCreateAPIView):
       serializer = serializers.StudentMinorSerializer(student_minor)
       return Response({'data':serializer.data, 'message':"Successful!!  The student is assigned to the minor"},status=status.HTTP_201_CREATED)
     return Response({'message':"Could not find student or section"}, status=status.HTTP_400_BAD_REQUEST)
+
+class Popular(generics.ListCreateAPIView):
+  def getDate(self,term_id):
+    term = models.Term.objects.get(id=term_id)
+  # Season + year
+  # Fall
+  # 04-01-year => 10-30-year
+  # Spring
+  # 11-01-year => 03-28-year+1
+    date_compare = {}
+    if term.season == 'F':
+      date_compare['start_date']=datetime(int(term.year),4,1).date()
+      date_compare['end_date']=datetime(int(term.year),10,30).date()
+      return date_compare
+    else:
+      date_compare['start_date']=datetime(int(term.year),11,1).date()
+      date_compare['end_date']=datetime(int(term.year)+1,3,28).date()
+      return date_compare
+  def list(self,request):
+    params = request.query_params
+    if params.get('student_major_number') is not None and params.get('term_id') is not None:
+      date_compare = self.getDate(params.get('term_id'))
+      major_list = models.Major.objects.all()
+      current_major = {}
+      length = 0
+      for major in major_list:
+        serializer = serializers.MajorSerializer(major)
+        student_major_length = len(models.StudentMajor.objects.filter(major_id=major.id,dateDeclared__gt=date_compare['start_date'],dateDeclared__lt=date_compare['end_date']))
+        current_major[major.id] = {'major':serializer.data,'length':student_major_length}
+      return Response({'data':current_major},status=status.HTTP_200_OK)
+    if params.get('student_course_number') is not None and params.get('term_id') is not None and params.get('major_id'):
+      course_list = models.Major.objects.get(id=params.get('major_id')).requirement
+      course_amount_list = {}
+      for course in course_list.all():
+        serializer = serializers.CourseSerializer(course)
+        amount = len(models.Enrollment.objects.filter(course_section__course__id=course.id, course_section__term__id=params.get('term_id')))
+        course_amount_list[course.id] = {'course':serializer.data,'amount':amount}
+      return Response({'data':course_amount_list},status=status.HTTP_200_OK)
+    if params.get('student_minor_number') is not None and params.get('term_id') is not None:
+      date_compare = self.getDate(params.get('term_id'))
+      minor_list = models.Minor.objects.all()
+      current_minor = {}
+      length = 0
+      for minor in minor_list:
+        serializer = serializers.MinorSerializer(minor)
+        student_minor_length = len(models.StudentMinor.objects.filter(minor_id=minor.id,dateDeclared__gt=date_compare['start_date'],dateDeclared__lt=date_compare['end_date']))
+        current_minor[minor.id] = {'minor':serializer.data,'amount':student_minor_length}
+      return Response({'data':current_minor},status=status.HTTP_200_OK)
+    if params.get('student_slot_number') is not None and params.get('term_id') is not None:
+      slot_list = models.Slot.objects.all()
+      slot_list_amount = {}
+      for slot in slot_list:
+        serializer = serializers.SlotSerializer(slot)
+        amount = len(models.CourseSection.objects.filter(term_id=params.get('term_id'),slot__id=slot.id))
+        slot_list_amount[slot.id] = {'slot':serializer.data,'amount':amount}
+      return Response({'data':slot_list_amount},status=status.HTTP_200_OK)
+    return Response({'message':"Failed! Something went wrong"},status=status.HTTP_400_BAD_REQUEST)

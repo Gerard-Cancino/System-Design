@@ -69,7 +69,7 @@ class StudentTranscript extends Component {
               <form className="col-md-12" onSubmit={this.handleSubmit}>
                 <div className="form-group">
                   <label>Student</label>
-                  <input className="form-control" onChange={this.handleChange} name="email" placeholder="username"/>
+                  <input className="form-control" onChange={this.handleChange} name="email" placeholder="username" required/>
                 </div>
                 <button type="submit" className="col-md-12 btn btn-primary">Get Transcript</button>
               </form>

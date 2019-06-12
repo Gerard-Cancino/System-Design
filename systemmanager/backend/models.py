@@ -210,7 +210,7 @@ class Day(models.Model):
       ("TU", "Tuesday"),
       ("WE", "Wednesday"),
       ("TH", "Thursday"),
-      ("FR", "Friday"),
+      ('F',"Friday"),
       ("SA", "Saturday")
     )
     name = models.CharField(choices=DAY_TYPE, max_length=2, null=False)
@@ -329,12 +329,12 @@ class Transcript(models.Model):
 
 class Attendance(models.Model):
     REQUIRED_FIELDS = ('Enrollment')
-    id = models.AutoField(primary_key=True)
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     isPresent = models.BooleanField()
     dayAttended = models.DateField(default=datetime.now)
     class Meta:
         db_table = "attendance"
+        unique_together = (('enrollment','dayAttended'))
 
 class Grade(models.Model):
     REQUIRED_FIELDS = ('Student', 'CourseSection', 'type')

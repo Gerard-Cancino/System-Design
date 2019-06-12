@@ -80,7 +80,7 @@ class DegreeAudit extends Component {
   }
   getTranscript(){
     axios
-    .get(`/transcript-list.json/${this.state.email}`)
+    .get(`/transcript-list.json/${this.props.user}`)
     .then(res=>{
       this.setState({transcriptList: res.data.data,result:res})
       this.getOverallGPA(res.data.data)
@@ -93,28 +93,34 @@ class DegreeAudit extends Component {
     axios
     .get(`/student-major-list.json`,{
       params:{
-        email:this.state.email
+        email:this.props.user
       }
     })
     .then(res=>{
       this.setState({majorList:res.data.data,result:res})
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   getStudentMinorList(){
     axios
     .get(`/student-minor-list.json`,{
       params:{
-        email:this.state.email
+        email:this.props.user
       }
     })
     .then(res=>{
       this.setState({minorList:res.data.data,result:res})
     })
+    .catch(err=>{
+      this.setState({result:err})
+    })
   }
   componentDidMount(){
-  }
-  componentDidUpdate(){
-    
+    this.getTranscript()
+    this.getStudentMajorList()
+    this.getStudentMinorList()
   }
   handleChange = e => {
     const name = e.target.name;
@@ -125,16 +131,11 @@ class DegreeAudit extends Component {
       return newState;
     })
   }
-  handleSubmit = (e) =>{
-    e.preventDefault();
-    this.getTranscript();
-    this.getStudentMajorList()
-    this.getStudentMinorList()
-  }
   render(){
     if(this.state.transcriptList!=undefined&&this.state.nonRequirementList==undefined){
       this.getNonMajor_MinorTranscript()
     }
+
     return(
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user}/>
@@ -142,21 +143,10 @@ class DegreeAudit extends Component {
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded m-4 p-4">
               <h2 className="col-md-12 text-center">View Student's Degree Audit</h2>
-              <form className="col-md-12" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <label>Student</label>
-                  <input className="form-control" onChange={this.handleChange} name="email" placeholder="username" required/>
-                </div>
-                <button type="submit" className="col-md-12 btn btn-primary">Get Degree Audit</button>
-              </form>
-              <br />
               {this.state.transcriptList==undefined?(
                 <p></p>
               ):(
-                this.state.transcriptList.length==0?(
-                  <p className="text-center col-md-12">Student is not enrolled in any class nor has he taken any class</p>
-                ):(
-                  <div className="col-md-12">
+                <div className="col-md-12">
                   <h3 className="col-md-12 text-center">{this.state.transcriptList[0].student.user.firstName} {this.state.transcriptList[0].student.user.lastName}</h3>
                   <p className="col-md-12 text-right">Overall GPA: {this.state.overallGPA}</p>
                   
@@ -227,7 +217,6 @@ class DegreeAudit extends Component {
                     </table>
                   )}
                 </div>
-                )
               )}
             </div>
           </div> 

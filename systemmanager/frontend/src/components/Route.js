@@ -30,6 +30,7 @@ import AdminViewStudentTranscript from './admin/View_Student_Transcript.js';
 import AdminViewCourseDetails from './admin/View_Course_Details.js';
 import AdminUpdateStudentGrade from './admin/Update_Student_Grade.js';
 import AdminAssignStudentMajorMinor from './admin/Assign_Student_Major_Minor.js';
+import AdminViewCatalog from './admin/ViewCourseCatalog.js';
 
 // npm run dev to create main.js
 import FacultyMain from './faculty/Main.js';
@@ -54,6 +55,8 @@ import StudentViewTranscript from './student/View_Transcript.js';
 import StudentViewDegreeAudit from './student/View_Degree_Audit.js';
 import StudentViewSectionDetails from './student/View_Section_Details.js';
 import StudentViewInfo from './student/View_Info.js';
+
+import ResearcherMain from './researcher/Main.js';
 
 
 
@@ -114,8 +117,8 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
           return null;
         }
         else if (user.role=='R'){
-          <Redirect to="/researcher/main"/>
-          return undefined;
+          window.location.replace("/researcher/main")
+          return null;
         }
       }
       return <GuestMain />
@@ -159,6 +162,7 @@ class MyRoute extends Component {
     const AAdminViewCourseDetails = Authorization(this.state.user,this.handleUser.bind(this),AdminViewCourseDetails,['A']);
     const AAdminUpdateStudentGrade = Authorization(this.state.user,this.handleUser.bind(this),AdminUpdateStudentGrade,['A']);
     const AAdminAssignStudentMajorMinor = Authorization(this.state.user,this.handleUser.bind(this),AdminAssignStudentMajorMinor,['A']);
+    const AAdminViewCatalog = Authorization(this.state.user,this.handleUser.bind(this),AdminViewCatalog,['A']);
 
     const FFacultyMain = Authorization(this.state.user,this.handleUser.bind(this), FacultyMain, ['F']);
     const FFacultyViewSectionList = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewSectionList,['F']);
@@ -182,6 +186,8 @@ class MyRoute extends Component {
     const SStudentViewDegreeAudit = Authorization(this.state.user,this.handleUser.bind(this),StudentViewDegreeAudit,['S']);
     const SStudentViewSectionDetails = Authorization(this.state.user,this.handleUser.bind(this),StudentViewSectionDetails,['S']);
     const SStudentViewInfo = Authorization(this.state.user,this.handleUser.bind(this),StudentViewInfo,['S']);
+
+    const RResearcherMain = Authorization(this.state.user,this.handleUser.bind(this), ResearcherMain,['R']);
 
     return (
       <BrowserRouter>
@@ -212,6 +218,7 @@ class MyRoute extends Component {
           <Route path="/admin/view-course-details" component={AAdminViewCourseDetails} />
           <Route path="/admin/update-student-grade" component={AAdminUpdateStudentGrade} />
           <Route path="/admin/assign-student-major-minor" component={AAdminAssignStudentMajorMinor} />
+          <Route path="/admin/view-catalog" component={AAdminViewCatalog} />
 
 
           <Route path="/faculty/main" component={FFacultyMain} />
@@ -237,6 +244,7 @@ class MyRoute extends Component {
           <Route path="/student/view-section-details" component={SStudentViewSectionDetails} />
           <Route path="/student/view-info" component={SStudentViewInfo} />
 
+          <Route path="/researcher/main" component={RResearcherMain} />
 
         </div>
       </BrowserRouter>

@@ -126,7 +126,8 @@ class ViewStudentInfo extends Component {
       axios
       .get(`/attendance-list.json`,{
         params:{
-          enrollment_id: this.props.data.state.enrollmentID
+          course_section_id: this.props.data.state.courseSectionID,
+          student_email:this.props.data.state.studentEmail
         }
       })
       .then(res=>{this.setState({attendanceList:res.data.data})})

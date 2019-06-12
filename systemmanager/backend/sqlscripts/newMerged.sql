@@ -1,4 +1,3 @@
-USE system;
 
 -- Faculty in the 10000
 -- Admins in the 20000
@@ -39,7 +38,6 @@ INSERT INTO `user`
 (30001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'R', 'shawp', 'Paul', 'Shaw', '45 Mill Rd', 'Valley', 'NY', 'USA', '11570', '5164506000', 0, 'randomemail19@gmail.com'),
 (30002, '4010','R','thomase','Eddie','Thomas','112 Carl Ave','Lynbrook','NY','USA','11563','5167122020', 0, 'randomemail20@gmail.com');
 
-USE system;
 -- Student
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES

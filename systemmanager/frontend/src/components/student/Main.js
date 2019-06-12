@@ -31,14 +31,21 @@ class Main extends Component {
               </div>
               <div className="row m-2 p-4 bg-danger">
                 <h3 className="col-md-12 text-center text-white">Student Academic Information</h3>
-                <div className="col-md-6 ">
+                <div className="col-md-4 ">
+                  <div className="card">
+                    <div className="card-body">
+                      <p className="text-center h3"><Link to="/student/view-term">View Term</Link></p>
+                    </div>
+                  </div>
+                </div>    
+                <div className="col-md-4 ">
                   <div className="card">
                     <div className="card-body">
                       <p className="text-center h3"><Link to="/student/view-transcript">View Transcript</Link></p>
                     </div>
                   </div>
                 </div>    
-                <div className="col-md-6 ">
+                <div className="col-md-4 ">
                   <div className="card">
                     <div className="card-body">
                       <p className="text-center h3"><Link to="/student/view-degree-audit">View Degree Audit</Link></p>

@@ -52,8 +52,7 @@ class UpdateStudentGrade extends Component {
     term: undefined,
     studentUsername: undefined,
     enrollmentList: undefined,
-    enrollment: undefined,
-    grade:undefined,
+    gradeList:undefined,
     letterGrade: 'A',
     result:undefined
   }
@@ -79,7 +78,7 @@ class UpdateStudentGrade extends Component {
       }
     })
     .then(res => {
-      this.setState({enrollmentList: res.data.data,result:undefined})
+      this.setState({enrollmentList: res.data.data})
     })
     .catch(err=>{
       this.setState({result:err})
@@ -92,9 +91,15 @@ class UpdateStudentGrade extends Component {
   handleGrade = e => {
     console.log(e.target.value)
     axios
-    .get(`/grade-details.json/${this.state.studentUsername}/${e.target.value}`)
+    .get(`/grade-list.json`,{
+      params:{
+        student_email:this.state.studentUsername,
+        course_section_id:e.target.value
+      }
+    })
     .then(res=>{
-      this.setState({grade:res.data.data,result:undefined})
+      console.log(res.data.data)
+      this.setState({gradeList:res.data.data})
     })
     .catch(err=>{
       this.setState({result:err})
@@ -103,17 +108,17 @@ class UpdateStudentGrade extends Component {
   handleLetterGrade = e => {
     this.setState({letterGrade:e.target.value || undefined})
   }
-  changeGrade = (e,type) => {
+  changeGrade = (e,type,id) => {
     e.preventDefault()
     axios
-    .put(`/grade-details.json/${this.state.studentUsername}/${this.state.grade.course_section.id}`,{
+    .put(`/grade-details.json/${id}`,{
       'grade':this.state.letterGrade,
       'type': type
     })
     .then(res=>{
       this.setState({result:res})
       axios
-      .get(`/grade-details.json/${this.state.studentUsername}/${this.state.grade.course_section.id}`)
+      .get(`/grade-details.json/${id}`)
       .then(res=>{
         this.setState({grade:res.data.data,result:undefined})
       })
@@ -124,6 +129,64 @@ class UpdateStudentGrade extends Component {
     .catch(err=>{
       this.setState({result:err})
     })
+  }
+  getGrade = () => {
+    let isFinal = checkAddDrop(this.state.gradeList[0].course_section.term) == 'F';
+    let selectedGrade = undefined;
+    if (isFinal) {
+      for (let el of this.state.gradeList){
+        if (el.type=='F'){
+          selectedGrade = el;
+        }
+      }
+      return(
+        <form onSubmit={(e) => {this.changeGrade(e,'F',selectedGrade.id)}} className="col-md-12">
+          <div className="form-group">
+            <label>Edit Final Grade</label>
+            <select className="form-control" onChange={this.handleLetterGrade}>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="F">F</option>
+            </select>
+            {this.state.grade==undefined?(
+              <p className="text-secondary">Current Grade: {selectedGrade.letterGrade}</p>
+            ):(
+              <p className="text-secondary">Current Grade: {this.state.grade.letterGrade}</p>
+            )}
+            <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
+          </div>
+        </form>
+      )
+    }
+    else {
+      for (let el of gradeList){
+        if (grade.type=='M'){
+          selectedGrade = el;
+        }
+      }
+      return(
+        <form onSubmit={(e) => {this.changeGrade(e,'M',selectedGrade.id)}} className="col-md-12">
+          <div className="form-group">
+            <label>Edit Midterm Grade</label>
+            <select className="form-control" onChange={this.handleLetterGrade}>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="F">F</option>
+            </select>
+            {this.state.grade==undefined?(
+              <p className="text-secondary">Current Grade: {selectedGrade.letterGrade}</p>
+            ):(
+              <p className="text-secondary">Current Grade: {this.state.grade.letterGrade}</p>
+            )}
+            <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
+          </div>
+        </form>
+      )
+    }
   }
   render() {
     return (
@@ -147,46 +210,16 @@ class UpdateStudentGrade extends Component {
                   <button className="col-md-12 btn btn-primary" type="submit">Search Term</button>
                 </form>
               ):(
-                this.state.grade==undefined?(     
+                this.state.gradeList==undefined?(     
                 <div className="col-md-12">
                   <br />
                   <TableGrade enrollmentList={this.state.enrollmentList} handleGrade={this.handleGrade.bind(this)}/>
                 </div>
                 ):(
-                  checkAddDrop(this.state.grade.course_section.term)=='M'?(
-                    <form onSubmit={(e) => this.changeGrade(e,'M')} className="col-md-12">
-                      <div className="form-group">
-                        <label>Edit Midterm Grade</label>
-                        <select className="form-control" onChange={this.handleLetterGrade}>
-                          <option value="A">A</option>
-                          <option value="B">B</option>
-                          <option value="C">C</option>
-                          <option value="D">D</option>
-                          <option value="F">F</option>
-                        </select>
-                        <p className="text-secondary">Current Grade: {this.state.grade.letterGrade}</p>
-                        <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
-                      </div>
-                    </form>
+                  this.state.gradeList.length == 0?(
+                    <p className="col-md-12 text-center">The student does not any grades assigned.  Please contact the faculty to create a grade </p>
                   ):(
-                    checkAddDrop(this.state.grade.course_section.term)=='F'?(
-                      <form onSubmit={(e) => this.changeGrade(e,'F')}>
-                        <div className="form-group">
-                          <label>Edit Final Grade</label>
-                          <select className="form-control" onChange={this.handleLetterGrade}>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="F">F</option>
-                          </select>    
-                          <p className="text-secondary">Current Grade: {this.state.grade.letterGrade}</p>   
-                        </div>
-                        <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
-                      </form>
-                    ):(
-                      <p></p>
-                    )
+                    this.getGrade() 
                   )
                 )
               )}

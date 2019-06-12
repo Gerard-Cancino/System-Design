@@ -170,20 +170,20 @@ class UpdateSectionMaster extends Component {
         ) : (
           <form className="col-md-12">
             <hr />
-            <table className="col-md-12">
-              <thead className="col-md-12">
-                <tr className="col-md-12">
-                  <td className="col-md-4">Day</td>
-                  <td className="col-md-7">Time</td>
-                  <td className="col-md-1"></td>
+            <table className="table table-striped">
+              <thead>
+                <tr >
+                  <td >Day</td>
+                  <td >Time</td>
+                  <td ></td>
                 </tr>
               </thead>
-              <tbody className="col-md-12">
+              <tbody >
                 {this.state.slotList.map(el=> (
-                  <tr className="col-md-12" key={el.id}>
-                    <td className="col-md-4">{el.day.name}</td>
-                    <td className="col-md-7">{el.time.start} - {el.time.end}</td>
-                    <td className="col-md-1"><button className="col-md-12 btn btn-info" type="submit" onClick={this.handleAdd(el.id)}>Add</button></td>
+                  <tr key={el.id}>
+                    <td >{el.day.name}</td>
+                    <td >{el.time.start} - {el.time.end}</td>
+                    <td ><button className="col-md-12 btn btn-info" type="submit" onClick={this.handleAdd(el.id)}>Add</button></td>
                   </tr>
                 ))}
               </tbody>

@@ -21,14 +21,18 @@ class DegreeAudit extends Component {
   getNonMajor_MinorTranscript(){
     let requirementList = new Array();
     let nonMajorTranscript = new Array();
-    for (let major of this.state.majorList){
-      for (let requirement of major.major.requirement){
-        requirementList.push(requirement)
+    if (this.state.majorList!=undefined){
+      for (let major of this.state.majorList){
+        for (let requirement of major.major.requirement){
+          requirementList.push(requirement)
+        }
       }
     }
-    for (let minor of this.state.minorList){
-      for (let requirement of minor.minor.requirement){
-        requirementList.push(requirement)
+    if (this.state.minorList!=undefined){
+      for (let minor of this.state.minorList){
+        for (let requirement of minor.minor.requirement){
+          requirementList.push(requirement)
+        }
       }
     }
     for (let transcript of this.state.transcriptList){
@@ -128,9 +132,10 @@ class DegreeAudit extends Component {
     })
   }
   render(){
-    if(this.state.majorList!=undefined&&this.state.minorList!=undefined&&this.state.transcriptList!=undefined&&this.state.nonRequirementList==undefined){
+    if(this.state.transcriptList!=undefined&&this.state.nonRequirementList==undefined){
       this.getNonMajor_MinorTranscript()
     }
+
     return(
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user}/>
@@ -138,19 +143,23 @@ class DegreeAudit extends Component {
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded m-4 p-4">
               <h2 className="col-md-12 text-center">View Student's Degree Audit</h2>
-              {this.state.transcriptList==undefined || this.state.majorList == undefined || this.state.majorList.length==0?(
+              {this.state.transcriptList==undefined?(
                 <p></p>
               ):(
-                <div className="col-md-12">
+                this.state.transcriptList.length==0?(
+                  <p className="text-center col-md-12">Student is not enrolled in any class nor has he taken any class</p>
+                ):(
+                  <div className="col-md-12">
                   <h3 className="col-md-12 text-center">{this.state.transcriptList[0].student.user.firstName} {this.state.transcriptList[0].student.user.lastName}</h3>
                   <p className="col-md-12 text-right">Overall GPA: {this.state.overallGPA}</p>
-                  {this.state.majorList.map(major=>(
+                  
+                  {this.state.majorList==undefined?(null):(this.state.majorList.map(major=>(
                     <DegreeAuditTable transcriptSectionList={this.state.transcriptList} major={major.major} isMajor={true}/>
-                  ))}
-                  {this.state.minorList.map(minor=>(
+                  )))}
+                  {this.state.minorList==undefined?(null):(this.state.minorList.map(minor=>(
                     <DegreeAuditTable transcriptSectionList={this.state.transcriptList} major={minor.minor} isMajor={false}/>
-                  ))}
-                  {this.state.nonRequirementList==undefined?(
+                  )))}
+                  {this.state.nonRequirementList==undefined || this.state.nonRequirementList.length==0?(
                     <p></p>
                   ):(
                     <table className="table table-striped"> 
@@ -211,6 +220,7 @@ class DegreeAudit extends Component {
                     </table>
                   )}
                 </div>
+                )
               )}
             </div>
           </div> 

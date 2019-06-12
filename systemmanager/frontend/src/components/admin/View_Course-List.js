@@ -56,16 +56,16 @@ class ViewCourseCatalog extends Component {
           <tbody>
             {this.state.course.map(el => (
               <tr key={el.id}>
-                <td className='col-md-1'>{el.id}</td>
-                <td className='col-md-4'>{el.name}</td>
-                <td className='col-md-1'>{el.numberOfCredits}</td>
-                <td className='col-md-3'>
+                <td >{el.id}</td>
+                <td >{el.name}</td>
+                <td >{el.numberOfCredits}</td>
+                <td >
                   <Link to={{
                     pathname: '/admin/create-section',
                     state: {courseID: el.id}
                   }} className="col-md-12 btn btn-success">Create Section</Link>
                 </td>
-                <td className='col-md-3'>
+                <td>
                   <Link to={{
                     pathname: '/admin/view-course-details',
                     state: {courseID: el.id}

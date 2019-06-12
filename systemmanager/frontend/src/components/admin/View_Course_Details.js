@@ -77,11 +77,11 @@ class CourseDetails extends Component {
             <div className="row justify-content-center">
               <div className="col-md-10 border rounded m-4 p-4">
                 <div className="col-md-12 ">
-                  <button className="col-md-2 btn btn-danger float-right" onClick={e=>this.handleRemove(e)}>Remove</button>
+                  <button className="col-md-2 btn btn-danger float-right" onClick={e=>this.handleRemove(e)}>Delete This Course</button>
                   <Link to={{
                     pathname: '/admin/update-course',
                     state: {courseID: this.state.course.id}
-                  }} className="col-md-2 btn btn-info float-right">Update</Link>
+                  }} className="col-md-3 btn btn-info float-right">Update</Link>
                 </div>
                 <h3><strong>{this.state.course.id} {this.state.course.name}</strong></h3>
                 <h4>Description:</h4>

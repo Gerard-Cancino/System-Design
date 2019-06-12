@@ -29,13 +29,13 @@ urlpatterns = [
     path('day-list.json', api.DayList.as_view()),
     path('department-details.json/<int:code>', api.DepartmentDetails.as_view()),
     path('department-list.json', api.DepartmentList.as_view()),
-    path('enrollment-details.json/<int:section_id>/<int:student_id>',api.EnrollmentDetails.as_view()),
+    path('enrollment-details.json/<int:course_section_id>/<str:student_email>',api.EnrollmentDetails.as_view()),
     path('enrollment-list.json', api.EnrollmentList.as_view()),
     path('faculty-details.json/<str:email>', api.FacultyDetails.as_view()),
     path('faculty-list.json', api.FacultyList.as_view()),
     path('transcript-list.json/<str:email>', api.TranscriptList.as_view()),
     path('attendance-list.json', api.AttendanceList.as_view()),
-    path('grade-details.json/<str:email>/<str:course_section_id>', api.GradeDetails.as_view()),
+    path('grade-details.json/<int:id>', api.GradeDetails.as_view()),
     path('grade-list.json', api.GradeList.as_view()),
     path('hold-list.json', api.HoldList.as_view()),
     path('room-list.json', api.RoomList.as_view()),
@@ -56,5 +56,5 @@ urlpatterns = [
     path('term-details.json/<str:season>/<int:year>', api.TermDetails.as_view()),
     path('term-list.json', api.TermList.as_view()),
     path('user-details.json/<str:email>', api.UserDetails.as_view()),
-
+    path('popular.json',api.Popular.as_view()),
 ]

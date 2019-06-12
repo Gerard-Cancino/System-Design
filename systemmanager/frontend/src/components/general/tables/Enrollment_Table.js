@@ -79,7 +79,7 @@ class SearchTerm extends PureComponent {
                     <td className="col-md-1"><button className="btn btn-danger" disabled>Drop</button></td>
                   ):(
                     <td className="col-md-1">
-                      <button className="col-md-12 btn btn-danger" onClick={(e)=>handleDrop(e,el.course_section.id,el.student.user.id)}>Drop</button>
+                      <button className="col-md-12 btn btn-danger" onClick={(e)=>handleDrop(e,el.course_section.id,el.student.user.email)}>Drop</button>
                     </td>
                   )}
                 </tr>

@@ -97,6 +97,9 @@ class UpdateSectionMaster extends Component {
         numOfSeats: res.data.data.numOfSeats
       })
     })
+    .catch(err=>{
+      this.setState({result:err})
+    })
     
   }
   render(){

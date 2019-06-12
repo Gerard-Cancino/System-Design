@@ -12,9 +12,18 @@ class StudentSectionDetails extends Component {
   state = {
     section: undefined,
     prerequisiteList:undefined,
+    enrollment:undefined,
     result: undefined
   }
   componentDidMount(){
+    axios
+    .get(`/enrollment-details.json/${this.props.data.state.course_section_id}/${this.props.user}`)
+    .then(res=>{
+      this.setState({enrollment:res.data.data})
+    })
+    .catch(err=>{
+      this.setState({result:err})
+    })
     axios
     .get(`/course-section-details.json/${this.props.data.state.course_section_id}`)
     .then(res=>{
@@ -64,6 +73,7 @@ class StudentSectionDetails extends Component {
                 <h4 className="col-md-12"><strong>Course Section:</strong> {this.state.section.id}</h4>
                 <p className="col-md-12"><strong>Number:</strong> {this.state.section.number}</p>
                 <p className="col-md-12"><strong>Professor:</strong> {this.state.section.faculty.user.firstName} {this.state.section.faculty.user.lastName}</p>
+                <p className="col-md-12"><strong>Date of Enrollment:</strong> {this.state.enrollment==undefined?(null):(this.state.enrollment.dateEnrolled)}</p>
                 <div className="col-md-12">
                   <p><strong>Seats</strong></p>
                   <p className="col-md-4">Available: {this.state.section.numOfSeats - this.state.section.numOfTaken}</p>
@@ -82,7 +92,6 @@ class StudentSectionDetails extends Component {
                     ))
                   )}
                 </div>
-
                 {this.state.gradeList==undefined?(
                   <p></p>
                 ):(

@@ -13,6 +13,7 @@ class ViewStudentRecord extends Component {
     studentUsername: undefined,
     student: undefined,
     placeholder: undefined,
+    facultyList:undefined,
     advisor: undefined,
     isLoaded: false,
     newAdvisor: undefined,
@@ -60,18 +61,7 @@ class ViewStudentRecord extends Component {
     })
     .then(res=>{
       this.setState({majorList:res.data.data})
-      axios
-      .get(`/faculty-list.json`,{
-        params:{
-          department:res.data.data[0].major.department.code
-        }
-      })
-      .then(res=>{
-        this.setState({facultyList:res.data.data})
-        this.setState({newAdvisor:res.data.data[0].user.id})
-      })
-      .catch(err=>{
-        this.setState({result:err})
+      if(res.data.data.length==0){
         axios
         .get(`/faculty-list.json`)
         .then(res=>{
@@ -81,7 +71,23 @@ class ViewStudentRecord extends Component {
         .catch(err=>{
           this.setState({result:err})
         })
-      })
+      }
+      else{
+        axios
+        .get(`/faculty-list.json`,{
+          params:{
+            department:res.data.data[0].major.department.code
+          }
+        })
+        .then(res=>{
+          this.setState({facultyList:res.data.data})
+          this.setState({newAdvisor:res.data.data[0].user.id})
+        })
+        .catch(err=>{
+          console.log('failed')
+          this.setState({result:err})
+        })
+      }
     })
     axios
     .get(`/student-minor-list.json`,{
@@ -182,7 +188,7 @@ class ViewStudentRecord extends Component {
             <form className="col-md-12" onSubmit={this.handleSubmit}>
               <div className="form-group">
                 <label htmlFor="studentUsername"></label>
-                <input type="text" className="form-control" id="studentUsername" placeholder="Enter Student's Username" onChange={this.handleChange}/>
+                <input type="text" className="form-control" id="studentUsername" placeholder="Enter Student's Username" onChange={this.handleChange} required/>
                 <br />
                 <button type="submit" className="btn btn-primary">Submit</button> 
               </div>
