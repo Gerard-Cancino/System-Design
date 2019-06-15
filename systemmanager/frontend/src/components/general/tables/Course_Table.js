@@ -8,31 +8,33 @@ class CourseTable extends PureComponent {
       !courseList?(
         <p></p>
       ) : (
-        courseList.length != 0 ? (
+        courseList.length == 0 ? (
+          <p></p>
+        ):(
           <section className="container-fluid h-100">
             <div className="row border rounded m-4 p-4 h-100">
-                <table>
-                  <thead>
+                <table className="table table-striped">
+                  <thead style={{backgroundColor:"#696969", color:"white"}}>
                     <tr>
-                      <td className='col-md-1'>ID</td>
-                      <td className='col-md-3'>Course Name</td>
-                      <td className='col-md-7'>Course Description</td>
-                      <td className='col-md-1'># of Credits</td>
-                      <td className='col-md-1'></td>
-                      <td className='col-md-1'></td>
+                      <td >ID</td>
+                      <td >Course Name</td>
+                      <td >Course Description</td>
+                      <td ># of Credits</td>
+                      <td ></td>
+                      <td ></td>
                     </tr>
                   </thead>
                   <tbody>
                     {courseList.map(el => (
                       <tr key={el.number}>
-                        <td className='col-md-1'>{el.department_id}{el.number}</td>
-                        <td className='col-md-3'>{el.name}</td>
-                        <td className='col-md-7'>{el.description}</td>
-                        <td className='col-md-1'>{el.numberOfCredits}</td>
-                        <td className='col-md-1'>
+                        <td >{el.department_id}{el.number}</td>
+                        <td >{el.name}</td>
+                        <td >{el.description}</td>
+                        <td >{el.numberOfCredits}</td>
+                        <td >
                           <button>Add</button>
                         </td>
-                        <td className='col-md-1'>
+                        <td >
                           <button>Remove</button>
                         </td>
                       </tr>
@@ -41,6 +43,7 @@ class CourseTable extends PureComponent {
                 </table>
               </div>
             </section>
+        )
       )
     )
   }

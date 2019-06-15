@@ -8,6 +8,7 @@ import Footer from './layout/Footer.js';
 class CourseDetails extends Component {
   state = {
     course: undefined,
+    sectionList:undefined,
     prerequisiteList: undefined,
     result:undefined
   }
@@ -20,6 +21,13 @@ class CourseDetails extends Component {
     .catch(err=>{
       this.setState({result:err})
     })
+    axios
+    .get(`/course-section-list.json`,{
+      params:{
+        courseID:this.props.data.state.courseID
+      }
+    })
+    .then(res=>{this.setState({sectionList:res.data.data})})
     axios
     .get('/prerequisite-list.json',{
       params:{
@@ -44,6 +52,13 @@ class CourseDetails extends Component {
     .catch(err=>{
       this.setState({result:err})
     })
+    axios
+    .get(`/course-section-list.json`,{
+      params:{
+        courseID:this.props.data.state.courseID
+      }
+    })
+    .then(res=>{this.setState({sectionList:res.data.data})})
     axios
     .get('/prerequisite-list.json',{
       params:{
@@ -77,7 +92,15 @@ class CourseDetails extends Component {
             <div className="row justify-content-center">
               <div className="col-md-10 border rounded m-4 p-4">
                 <div className="col-md-12 ">
-                  <button className="col-md-2 btn btn-danger float-right" onClick={e=>this.handleRemove(e)}>Delete This Course</button>
+                  {this.state.sectionList==undefined?(
+                    <p></p>
+                  ):(
+                    this.state.sectionList.length == 0?(
+                      <button className="col-md-2 btn btn-danger float-right" onClick={e=>this.handleRemove(e)}>Delete This Course</button>
+                    ):(
+                      <button className="col-md-2 btn btn-danger float-right" onClick={e=>this.handleRemove(e)} disabled>Delete This Course</button>
+                    )
+                  )}
                   <Link to={{
                     pathname: '/admin/update-course',
                     state: {courseID: this.state.course.id}

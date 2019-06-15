@@ -217,7 +217,7 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
       try:
         confirmation_email = mail.EmailMessage(
           'Course: ' + str(course.id),
-          'The course was removed and all enrollments were deleted',
+          'The course was removed and all enrollments were dropped',
           'auto@garageuniversity.me',
           [enrollment.student.user.second_email],
           connection=connection,
@@ -327,7 +327,6 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     if params.get('faculty') is not None:
       faculty = models.Faculty.objects.get(user_id=params.get('faculty'))
       if queryset.slot.count() != 0:
-        print(queryset.slot.count())
         for slot in queryset.slot:
           try:
             section = models.CourseSection.objects.get(faculty=faculty, slot__day__id=slot.day.id, slot__time__id=slot.time.id, term_id=section.term.id)
@@ -351,9 +350,14 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     connection = mail.get_connection()
     for enrollment in enrollment_list:
       try:
+        transcript = models.Transcript.objects.get(year=enrollment.course_section.term.year,season=enrollment.course_section.term.season,course_id=enrollment.course_section.course.id,student_id=enrollment.student.user.id)
+        transcript.delete()
+      except:
+        print('Could not find transcript')
+      try:
         confirmation_email = mail.EmailMessage(
           'Course Section: ' + str(enrollment.course_section.id),
-          'The course was removed and all enrollments were deleted',
+          'The course section was removed and all enrollments were dropped',
           'auto@garageuniversity.me',
           [enrollment.student.user.second_email],
           connection=connection,
@@ -423,7 +427,6 @@ class CourseSectionList(generics.ListCreateAPIView):
         queryset = None
         if len(days) == 0:
           queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).distinct()
-          print(queryset)
         else:
           queryset = models.CourseSection.objects.filter(reduce(Q.__and__,filters)).exclude(slot__day__id__in=days).distinct()
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
@@ -517,9 +520,14 @@ class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
     course_section.save()
     connection = mail.get_connection()
     try:
+      transcript = models.Transcript.objects.get(year=enrollment.course_section.term.year,season=enrollment.course_section.term.season,course_id=enrollment.course_section.course.id,student_id=enrollment.student.user.id)
+      transcript.delete()
+    except:
+      print('Could not find transcript')
+    try:
       confirmation_email = mail.EmailMessage(
         'Enrollment: ' + str(course_section.id),
-        'The course was removed and all enrollments were deleted',
+        'The student was dropped from a course',
         'auto@garageuniversity.me',
         [enrollment.student.user.second_email],
         connection=connection,
@@ -560,7 +568,6 @@ class EnrollmentList(generics.ListCreateAPIView):
       return Response({'data':serializer.data,'message':"Successful!"})
   def post(self,request):
     params = request.data
-    print(params)
     if params.get('section') is not None:
       if params.get('student') is not None:
         user = models.User.objects.get(email=params.get('student'))
@@ -616,9 +623,7 @@ class EnrollmentList(generics.ListCreateAPIView):
           if enroll.course_section.id == params.get('section'):
             return Response({'message':"Student is already enrolled in this class"},status=status.HTTP_400_BAD_REQUEST)
           for slot in section.slot.all():
-            print(slot.id)
             enrollment = models.Enrollment.objects.filter(course_section__term__id=enroll.course_section.term.id,course_section__slot__time__id=slot.time.id,course_section__slot__day__id=slot.day.id)
-            print(enrollment.count())
             if enrollment.count() != 0:
               return Response({'message': "The student is enrolled in a class with the same time slot"},status=status.HTTP_400_BAD_REQUEST)
  
@@ -631,7 +636,7 @@ class EnrollmentList(generics.ListCreateAPIView):
         connection = mail.get_connection()
         confirmation_email = mail.EmailMessage(
           'Course Section: ' + str(enrollment.course_section.id),
-          'The section was removed from the term',
+          'The student is enrolled in the class',
           'auto@garageuniversity.me',
           [enrollment.student.user.second_email],
           connection=connection,
@@ -909,7 +914,6 @@ class UserList(APIView):
     serializer = serializers.UserSerializer(user)
     return Response({'data':serializer.data,'message':"Successful!"})
   def post(self, request):
-    print(request.data)
     regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]') 
     if not regex.search(request.data.get('password')):
       return Response({'message':"Password must contain a special character"},status=status.HTTP_400_BAD_REQUEST)
@@ -953,7 +957,6 @@ class AdvisorList(generics.ListCreateAPIView):
     serializer_class=serializers.AdvisorSerializer
     def list(self,request):
         params = request.query_params
-        print(params)
         if params.get('faculty_email') is not None:
             advisor = models.Advisor.objects.filter(faculty__user__email=params.get('faculty_email'))
             serializer = serializers.AdvisorSerializer(advisor, many=True)
@@ -1081,7 +1084,6 @@ class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
     def get_object(self, id, course_section_id):
         try:
             gradeObject=models.Grade.objects.get(student__user__email=id, course_section_id=course_section_id)
-            print(gradeObject)
             return gradeObject
         except models.Grade.DoesNotExist:
             raise Http404
@@ -1100,8 +1102,6 @@ class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
             queryset = models.Grade.objects.get(student__user__email=id, course_section_id=course_section_id)
             #grade = models.Grade.objects.get(id=params.get('grade'))
             serializer = serializers.GradeSerializer(queryset)
-            print(queryset)
-            print(serializer)
             return Response({'data':serializer.data,'message':"Successful!"})
         queryset = self.get_object(id)
 
@@ -1139,6 +1139,7 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
               return Response({'message':"Failed.  The system cannot find a correlating transcript"},status=status.HTTP_400_BAD_REQUEST)
             queryset.letterGrade = params.get('grade')
             queryset.save()
+            connection = mail.get_connection()
             try:
               confirmation_email = mail.EmailMessage(
                 'Course Section:' + str(grade.course_section.id),
@@ -1167,7 +1168,6 @@ class GradeList(generics.ListCreateAPIView):
   serializer_class=serializers.GradeSerializer
   def list(self,request):
     params = request.query_params
-    print(params)
     if params.get('student_email') is not None and params.get('course_section_id') is not None:
       gradeList = models.Grade.objects.filter(student__user__email=params.get('student_email'),course_section_id=params.get('course_section_id'))
       serializer = serializers.GradeSerializer(gradeList,many=True)
@@ -1183,14 +1183,12 @@ class GradeList(generics.ListCreateAPIView):
     return Response({'message':"Could not retrieve grade. Please check the query"},status=status.HTTP_400_BAD_REQUEST)
   def post(self,request):
     params = request.data
-    print(params)
     if params.get('course_section_id') is not None and params.get('student_email') is not None:
       date = datetime.now().date()
       start_date = None
       end_date = None
       section = models.CourseSection.objects.get(id=params.get('course_section_id'))
       term = section.term
-      print(term.season)
       try:
         if params.get('type') == 'F':
           if term.season == 'SP':
@@ -1265,7 +1263,6 @@ class PrerequisiteList(generics.ListCreateAPIView):
 class StudentList(generics.ListCreateAPIView):
   def post(self,request):
     params = request.data
-    print(params)
     if params.get('user_id') is not None:
       student = models.Student.objects.create(user_id=params.get('user_id'))
       student.save()
@@ -1276,6 +1273,7 @@ class StudentList(generics.ListCreateAPIView):
 class StudentMajorDetails(generics.RetrieveUpdateDestroyAPIView):
   def delete(self,request,student,major):
     student_major = models.StudentMajor.objects.get(student__user__email=student,major_id=major)
+    connection = mail.get_connection()
     try:
       confirmation_email = mail.EmailMessage(
         'Student Major' + str(student_major.major.name),
@@ -1295,6 +1293,7 @@ class StudentMajorDetails(generics.RetrieveUpdateDestroyAPIView):
 class StudentMinorDetails(generics.RetrieveUpdateDestroyAPIView):
   def delete(self,request,student,minor):
     student_minor = models.StudentMinor.objects.get(student__user__email=student,minor_id=minor)
+    connection = mail.get_connection()
     try:
       confirmation_email = mail.EmailMessage(
         'Student Minor' + str(student_minor.minor.name),
@@ -1330,13 +1329,12 @@ class StudentMajorList(generics.ListCreateAPIView):
       if len(majors)>3:
         return Response({'message':"The student is limited to two majors"},status=status.HTTP_400_BAD_REQUEST)
       for major in majors:
-        print(major.major.id)
-        print(params.get('major'))
         if major.major.id==int(params.get('major')):
           return Response({'message':"The student is already assigned to this major"},status=status.HTTP_400_BAD_REQUEST)
       major = models.Major.objects.get(id=params.get('major'))
       student_major = models.StudentMajor.objects.create(student_id=student.user_id,major_id=major.id,dateDeclared=datetime.today().date())
       student_major.save()
+      connection = mail.get_connection()
       try:
         confirmation_email = mail.EmailMessage(
           'Student Major' + str(student_major.major.name),
@@ -1370,6 +1368,7 @@ class StudentMinorList(generics.ListCreateAPIView):
       minor = models.Minor.objects.get(id=params.get('minor'))
       student_minor = models.StudentMinor.objects.create(student_id=student.user_id,minor_id=minor.id,dateDeclared=datetime.today().date())
       student_minor.save()
+      connection = mail.get_connection()
       try:
         confirmation_email = mail.EmailMessage(
           'Student Minor' + str(student_minor.minor.name),
