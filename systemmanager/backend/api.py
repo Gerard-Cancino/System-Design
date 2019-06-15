@@ -210,7 +210,23 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer = serializers.CourseSerializer(course)
     return Response({'data':serializer.data,'message':"Successful! Course has been updated"})
   def delete(self,request,id):
-    course = self.get_object(id).delete()
+    course = self.get_object(id)
+    enrollment_list = models.Enrollment.objects.filter(course_section__course__id=course.id)
+    connection = mail.get_connection()
+    for enrollment in enrollment_list:
+      try:
+        confirmation_email = mail.EmailMessage(
+          'Course: ' + str(course.id),
+          'The course was removed and all enrollments were deleted',
+          'auto@garageuniversity.me',
+          [enrollment.student.user.second_email],
+          connection=connection,
+        )
+        confirmation_email.send()
+      except:
+        print('student needs second email')
+    connection.close()
+    course.delete()
     return Response({'message':"Successful! Removed the course. Please return to the course list"},status=status.HTTP_200_OK)
 class CourseList(generics.ListCreateAPIView):
   serializer_class =serializers.CourseSerializer
@@ -331,6 +347,21 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
     return Response({'data':serializer.data,'message':"Successful!"})
   def delete(self, request,id):
     queryset = self.get_object(id)
+    enrollment_list = models.Enrollment.objects.filter(course_section__id=queryset.id)
+    connection = mail.get_connection()
+    for enrollment in enrollment_list:
+      try:
+        confirmation_email = mail.EmailMessage(
+          'Course Section: ' + str(enrollment.course_section.id),
+          'The course was removed and all enrollments were deleted',
+          'auto@garageuniversity.me',
+          [enrollment.student.user.second_email],
+          connection=connection,
+        )
+        confirmation_email.send()
+      except:
+        print('student needs second email')
+    connection.close()
     queryset.delete()
     return Response({'message': 'Successfully deleted section'}, status=status.HTTP_200_OK)
 @method_decorator(csrf_exempt, name='dispatch')
@@ -469,10 +500,34 @@ class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
       end_date=datetime(int(term.year)+1,2,15).date()
     if start_date > date > end_date:
       return Response({'message':"Failed! The student cannot drop at this time"},status=status.HTTP_400_BAD_REQUEST)
+    if term.season =='F':
+      start_date=datetime(int(term.year),11,1).date()
+      end_date=datetime(int(term.year),12,31).date()
+    else:
+      start_date=datetime(int(term.year),3,1).date()
+      end_date=datetime(int(term.year),5,31).date()
+    transcript = models.Transcript.objects.get(student__user__email=student_email,course_id=enrollment.course_section.course.id,year=term.year,season=term.season)
+    if start_date < date < end_date:
+      transcript.gradeReceived = 'F'
+    else:
+      transcript.delete()
     enrollment.delete()
     course_section = enrollment.course_section
     course_section.numOfTaken = course_section.numOfTaken - 1
     course_section.save()
+    connection = mail.get_connection()
+    try:
+      confirmation_email = mail.EmailMessage(
+        'Enrollment: ' + str(course_section.id),
+        'The course was removed and all enrollments were deleted',
+        'auto@garageuniversity.me',
+        [enrollment.student.user.second_email],
+        connection=connection,
+      )
+      confirmation_email.send()
+    except:
+      print('student needs second email')
+    connection.close()
     return Response({'message':'Successfully dropped class'},status=status.HTTP_200_OK)
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -572,7 +627,7 @@ class EnrollmentList(generics.ListCreateAPIView):
         serializer = serializers.EnrollmentSerializer(enrollment)
         section.numOfTaken = section.numOfTaken+1
         section.save()
-
+        transcript = models.Transcript.objects.create(course_id=section.course.id,student_id=student.user_id,year=section.term.year,season=section.term.season)
         connection = mail.get_connection()
         confirmation_email = mail.EmailMessage(
           'Course Section: ' + str(enrollment.course_section.id),
@@ -1084,6 +1139,18 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
               return Response({'message':"Failed.  The system cannot find a correlating transcript"},status=status.HTTP_400_BAD_REQUEST)
             queryset.letterGrade = params.get('grade')
             queryset.save()
+            try:
+              confirmation_email = mail.EmailMessage(
+                'Course Section:' + str(grade.course_section.id),
+                'The grade for this section has been changed',
+                'auto@garageuniversity.me',
+                [grade.student.user.second_email],
+                connection=connection,
+              )
+              confirmation_email.send()
+            except:
+              print('student needs second email')
+            connection.close()
             serializer = serializers.GradeSerializer(queryset)
             return Response({'message':"Successful!! Grade has been updated"}, status=status.HTTP_200_OK)
         return Response({'message':"Failed! Could not find grade"},status=status.HTTP_400_BAD_REQUEST)
@@ -1209,6 +1276,18 @@ class StudentList(generics.ListCreateAPIView):
 class StudentMajorDetails(generics.RetrieveUpdateDestroyAPIView):
   def delete(self,request,student,major):
     student_major = models.StudentMajor.objects.get(student__user__email=student,major_id=major)
+    try:
+      confirmation_email = mail.EmailMessage(
+        'Student Major' + str(student_major.major.name),
+        "The student's major has been changed",
+        'auto@garageuniversity.me',
+        [student_major.student.user.second_email],
+        connection=connection,
+      )
+      confirmation_email.send()
+    except:
+      print('student needs second email')
+    connection.close()
     student_major.delete()
     #Email
     return Response({'message':"Successful! Removed the students major"},status=status.HTTP_200_OK)
@@ -1216,6 +1295,18 @@ class StudentMajorDetails(generics.RetrieveUpdateDestroyAPIView):
 class StudentMinorDetails(generics.RetrieveUpdateDestroyAPIView):
   def delete(self,request,student,minor):
     student_minor = models.StudentMinor.objects.get(student__user__email=student,minor_id=minor)
+    try:
+      confirmation_email = mail.EmailMessage(
+        'Student Minor' + str(student_minor.minor.name),
+        "The student's minor has been changed",
+        'auto@garageuniversity.me',
+        [student_minor.student.user.second_email],
+        connection=connection,
+      )
+      confirmation_email.send()
+    except:
+      print('student needs second email')
+    connection.close()
     student_minor.delete()
     #Email
     return Response({'message':"Successful! Removed the students minor"},status=status.HTTP_200_OK)
@@ -1246,6 +1337,18 @@ class StudentMajorList(generics.ListCreateAPIView):
       major = models.Major.objects.get(id=params.get('major'))
       student_major = models.StudentMajor.objects.create(student_id=student.user_id,major_id=major.id,dateDeclared=datetime.today().date())
       student_major.save()
+      try:
+        confirmation_email = mail.EmailMessage(
+          'Student Major' + str(student_major.major.name),
+          "The student's major has been changed",
+          'auto@garageuniversity.me',
+          [student_major.student.user.second_email],
+          connection=connection,
+        )
+        confirmation_email.send()
+      except:
+        print('student needs second email')
+      connection.close()
       serializer = serializers.StudentMajorSerializer(student_major)
       return Response({'data':serializer.data, 'message':'Successful!!  The student is assigned to the major'},status=status.HTTP_201_CREATED)
     return Response({'message':"Could not find student or section"},status=status.HTTP_400_BAD_REQUEST)
@@ -1267,6 +1370,18 @@ class StudentMinorList(generics.ListCreateAPIView):
       minor = models.Minor.objects.get(id=params.get('minor'))
       student_minor = models.StudentMinor.objects.create(student_id=student.user_id,minor_id=minor.id,dateDeclared=datetime.today().date())
       student_minor.save()
+      try:
+        confirmation_email = mail.EmailMessage(
+          'Student Minor' + str(student_minor.minor.name),
+          "The student's minor has been changed",
+          'auto@garageuniversity.me',
+          [student_minor.student.user.second_email],
+          connection=connection,
+        )
+        confirmation_email.send()
+      except:
+        print('student needs second email')
+      connection.close()
       serializer = serializers.StudentMinorSerializer(student_minor)
       return Response({'data':serializer.data, 'message':"Successful!!  The student is assigned to the minor"},status=status.HTTP_201_CREATED)
     return Response({'message':"Could not find student or section"}, status=status.HTTP_400_BAD_REQUEST)

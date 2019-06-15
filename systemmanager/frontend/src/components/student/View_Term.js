@@ -85,7 +85,7 @@ class StudentTerm extends Component{
   handleDrop = (event,enrollment,student) => {
     event.preventDefault()
     axios
-    .delete(`/enrollment-details.json/${enrollment}/${student}`)
+    .delete(`/enrollment-details.json/${enrollment}/${this.props.user}`)
     .then(res => {
       console.log(res)
       this.setState({result:res})
