@@ -1,3 +1,58 @@
+-- Users
+INSERT INTO `user`
+(`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
+(19909, '123', 'F', 'math1teacher', 'Kim', 'Miss', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'mathemail1@gmail.com'),
+(19901, '123', 'F', 'math2teacher', 'Chuckee', 'Miss', '110 Main St', 'Lynbrrok', 'NY', 'USA', '11562', '5167900656', 0, 'mathemail2@gmail.com'),
+(19902, '123', 'F', 'math3teacher', 'Zhao', 'Miss', '120 Main St', 'Lynbrrok', 'NY', 'USA', '11564', '5167900646', 0, 'mathemail3@gmail.com'),
+(19903, '123', 'F', 'math4teacher', 'Zhao', 'Lan', '130 Main St', 'Lynbrrok', 'NY', 'USA', '11565', '5167900636', 0, 'mathemail4@gmail.com'),
+(19904, '123', 'F', 'GE1teacher', 'Sarah', 'Miss', '140 Main St', 'Lynbrrok', 'NY', 'USA', '11863', '5167900626', 0, 'GEemail1@gmail.com'),
+(19905, '123', 'F', 'GE2teacher', 'Williams', 'Miss', '150 Main St', 'Lynbrrok', 'NY', 'USA', '11763', '5167900616', 0, 'GEemail2@gmail.com'),
+(19906, '123', 'F', 'GE3teacher', 'GENEDTEACHER', 'Miss', '160 Main St', 'Lynbrrok', 'NY', 'USA', '11663', '5167900606', 0, 'GEemail3@gmail.com'),
+(19907, '123', 'F', 'GE4teacher', 'GE', 'Miss', '170 Main St', 'Lynbrrok', 'NY', 'USA', '11463', '5167900661', 0, 'GEemail4@gmail.com'),
+(19908, '123', 'F', 'PH1teacher', 'Alizee', 'Miss', '180 Main St', 'Lynbrrok', 'NY', 'USA', '11263', '5167900662', 0, 'GEemail1@gmail.com'),
+(19910, '123', 'F', 'PH2teacher', 'Gup', 'Na', '190 Main St', 'Lynbrrok', 'NY', 'USA', '11513', '5167900663', 0, 'PHemail2@gmail.com'),
+(19911, '123', 'F', 'PH3teacher', 'Physic', 'MS', '200 Main St', 'Lynbrrok', 'NY', 'USA', '11593', '5167900664', 0, 'PHemail3@gmail.com'),
+(19912, '123', 'F', 'PH4teacher', 'Physic', 'MR', '210 Main St', 'Lynbrrok', 'NY', 'USA', '11963', '5167900665', 0, 'PHemail4@gmail.com');
+
+
+
+-- enrollmentprocess faculty
+
+INSERT INTO `faculty` (`user_id`, `isFullTime`, `department_id`, `room_id`) VALUES
+(19909, 1, 'MA', 'ET16'), 
+(19901, 1, 'MA', 'ET17'),
+(19902, 1, 'MA', 'ET18'),
+(19903, 1, 'MA', 'ET19'),
+(19904, 1, 'GE', 'ET20'), 
+(19905, 1, 'GE', 'ET21'),
+(19906, 1, 'GE', 'ET22'),
+(19907, 1, 'GE', 'ET23'),
+(19908, 1, 'PH', 'ET35'), 
+(19910, 1, 'PH', 'ET36'),
+(19911, 1, 'PH', 'ET37'),
+(19912, 1, 'PH', 'ET38');
+
+
+-- SIDE NOTE ALSO MADE MORE EE FACULTY FOR GERTZ EE ENROLLMENT
+
+INSERT INTO `user`
+(`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
+(19913, '123', 'F', 'EE1teacher', 'EE', 'Miss', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'mathemail1@gmail.com'),
+(19914, '123', 'F', 'EE2teacher', 'ChuckEE', 'Miss', '110 Main St', 'Lynbrrok', 'NY', 'USA', '11562', '5167900656', 0, 'mathemail2@gmail.com'),
+(19915, '123', 'F', 'EE3teacher', 'EE', 'Miss', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'mathemail1@gmail.com'),
+(19916, '123', 'F', 'EE4teacher', 'ChuckEE', 'Miss', '110 Main St', 'Lynbrrok', 'NY', 'USA', '11562', '5167900656', 0, 'mathemail2@gmail.com');
+
+
+
+
+
+INSERT INTO `faculty` (`user_id`, `isFullTime`, `department_id`, `room_id`) VALUES
+(19913, 1, 'EE', 'ET36'),
+(19914, 1, 'EE', 'ET37'),
+(19915, 1, 'EE', 'ET38'),
+(19916, 1, 'EE', 'ET39');
+
+
 -- Physics inserts
 INSERT INTO `course` (`id`, `department_id`, `number`, `name`, `description`, `numberOfCredits`, `isGraduateCourse`, `isActive`, `isInCatalog`) VALUES
 ('PH131','PH',131, 'Classical Physics', "With laboratories",4,0,1,1),
@@ -13,15 +68,14 @@ INSERT INTO `minor` (`id`,`name`,`department_id`) VALUES (2,'Physics', 'PH');
 INSERT INTO `major` (`id`,`name`,`type`,`department_id`) VALUES (4, 'Physics','BS','PH');
 
 -- minor req for physics
-INSERT INTO `minor_requirement` (`id`,`minor_id`,`course_id`) VALUES 
-(21,2,'PH131'),
-(22,2,'PH251'),
-(23,2,'PH277'),
-(24,2,'PH300'),
-(25,2,'PH303'),
-(26,2,'PH306'),
-(27,2,'PH308');
-
+INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
+(110,4,'PH131'),
+(111,4,'PH251'),
+(112,4,'PH277'),
+(113,4,'PH300'),
+(114,4,'PH303'),
+(115,4,'PH306'),
+(116,4,'PH308');
 
 INSERT INTO `prerequisite` (`id`,`requiredGrade`,`course_id`,`prereq_id`) VALUES
 (31,'C','MA302','MA110'),
@@ -74,8 +128,10 @@ INSERT INTO `course` (`id`, `department_id`, `number`, `name`, `description`, `n
 ('EE101','EE',101, 'EE BASICS', "With EE laboratories",4,0,1,1),
 ('EE102','EE',102, 'EE BASICS 2', "With Modern EE laboratories",4,0,1,1),
 ('EE321','EE',321, 'Computation for EE', "With phyiscal EE laboratories",4,0,1,1);
-
+SET SQL_SAFE_UPDATES=0;
+delete from transcript;
 -- TRANSCRIPT INSERTS TOOTHG HAS GE, GERTZ HAS GE AND EE
+
 INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`student_id`) VALUES
 (11,'B','2016','F','EE101','40201'),
 (12,'B','2016','F','EE102','40201'),
@@ -110,7 +166,6 @@ INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`stud
 (41,'B','2017','SP','GE104','40001'),
 (42,'A','2017','SP','MA224','40001'),
 (43,'C','2017','SP','GE105','40001'),
-(44,'B','2017','SP','GE104','40001'),
 (45,'A','2018','F','MA240','40001'),
 (46,'B','2018','F','MA302','40001'),
 (47,'A','2018','F','GE106','40001'),
@@ -123,58 +178,6 @@ INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`stud
 
 -- ENROLLMENT PROCESS made user then fac users then course section ids for enrollment then enrollment for attendance
 --
-INSERT INTO `user`
-(`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
-(19909, '123', 'F', 'math1teacher', 'Kim', 'Miss', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'mathemail1@gmail.com'),
-(19901, '123', 'F', 'math2teacher', 'Chuckee', 'Miss', '110 Main St', 'Lynbrrok', 'NY', 'USA', '11562', '5167900656', 0, 'mathemail2@gmail.com'),
-(19902, '123', 'F', 'math3teacher', 'Zhao', 'Miss', '120 Main St', 'Lynbrrok', 'NY', 'USA', '11564', '5167900646', 0, 'mathemail3@gmail.com'),
-(19903, '123', 'F', 'math4teacher', 'Zhao', 'Lan', '130 Main St', 'Lynbrrok', 'NY', 'USA', '11565', '5167900636', 0, 'mathemail4@gmail.com'),
-(19904, '123', 'F', 'GE1teacher', 'Sarah', 'Miss', '140 Main St', 'Lynbrrok', 'NY', 'USA', '11863', '5167900626', 0, 'GEemail1@gmail.com'),
-(19905, '123', 'F', 'GE2teacher', 'Williams', 'Miss', '150 Main St', 'Lynbrrok', 'NY', 'USA', '11763', '5167900616', 0, 'GEemail2@gmail.com'),
-(19906, '123', 'F', 'GE3teacher', 'GENEDTEACHER', 'Miss', '160 Main St', 'Lynbrrok', 'NY', 'USA', '11663', '5167900606', 0, 'GEemail3@gmail.com'),
-(19907, '123', 'F', 'GE4teacher', 'GE', 'Miss', '170 Main St', 'Lynbrrok', 'NY', 'USA', '11463', '5167900661', 0, 'GEemail4@gmail.com'),
-(19908, '123', 'F', 'PH1teacher', 'Alizee', 'Miss', '180 Main St', 'Lynbrrok', 'NY', 'USA', '11263', '5167900662', 0, 'GEemail1@gmail.com'),
-(19910, '123', 'F', 'PH2teacher', 'Gup', 'Na', '190 Main St', 'Lynbrrok', 'NY', 'USA', '11513', '5167900663', 0, 'PHemail2@gmail.com'),
-(19911, '123', 'F', 'PH3teacher', 'Physic', 'MS', '200 Main St', 'Lynbrrok', 'NY', 'USA', '11593', '5167900664', 0, 'PHemail3@gmail.com'),
-(19912, '123', 'F', 'PH4teacher', 'Physic', 'MR', '210 Main St', 'Lynbrrok', 'NY', 'USA', '11963', '5167900665', 0, 'PHemail4@gmail.com');
-
-
--- enrollmentprocess faculty
-INSERT INTO `faculty` (`user_id`, `isFullTime`, `department_id`, `room_id`) VALUES
-(19909, 1, 'MA', 'ET16'), 
-(19901, 1, 'MA', 'ET17'),
-(19902, 1, 'MA', 'ET18'),
-(19903, 1, 'MA', 'ET19'),
-(19904, 1, 'GE', 'ET20'), 
-(19905, 1, 'GE', 'ET21'),
-(19906, 1, 'GE', 'ET22'),
-(19907, 1, 'GE', 'ET23'),
-(19908, 1, 'PH', 'ET35'), 
-(19910, 1, 'PH', 'ET36'),
-(19911, 1, 'PH', 'ET37'),
-(19912, 1, 'PH', 'ET38');
-
-
-
-
--- SIDE NOTE ALSO MADE MORE EE FACULTY FOR GERTZ EE ENROLLMENT
-INSERT INTO `user`
-(`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `secondEmail`) VALUES
-(19913, '123', 'F', 'EE1teacher', 'EE', 'Miss', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'mathemail1@gmail.com'),
-(19914, '123', 'F', 'EE2teacher', 'ChuckEE', 'Miss', '110 Main St', 'Lynbrrok', 'NY', 'USA', '11562', '5167900656', 0, 'mathemail2@gmail.com'),
-(19915, '123', 'F', 'EE3teacher', 'EE', 'Miss', '100 Main St', 'Lynbrrok', 'NY', 'USA', '11563', '5167900666', 0, 'mathemail1@gmail.com'),
-(19916, '123', 'F', 'EE4teacher', 'ChuckEE', 'Miss', '110 Main St', 'Lynbrrok', 'NY', 'USA', '11562', '5167900656', 0, 'mathemail2@gmail.com');
-
-
-
-
-INSERT INTO `faculty` (`user_id`, `isFullTime`, `department_id`, `room_id`) VALUES
-(19913, 1, 'EE', 'ET36'),
-(19914, 1, 'EE', 'ET37'),
-(19915, 1, 'EE', 'ET38'),
-(19916, 1, 'EE', 'ET39');
-
-
 -- COURSE SECTIONS FOR ALL CLASSES IN TRANSCRIPTS TO TEST
 
 INSERT INTO `course_section` (`id`,`course_id`,`number`,`faculty_id`,`numOfSeats`,`numOfTaken`,`term_id`,`room_id`) VALUES
@@ -458,10 +461,10 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (600,1,'2017-11-19', 110),
 (601,1,'2017-11-24', 110),
 (93,1,'2017-11-22', 111),
-(602,1,'2017-11-22', 111),
-(603,1,'2017-11-22', 111),
-(94,1,'2017-11-24', 112),
-(604,1,'2017-11-26', 112),
+(602,1,'2017-11-24', 111),
+(603,1,'2017-11-26', 111),
+(94,1,'2017-11-28', 112),
+(604,1,'2017-11-30', 112),
 (605,1,'2017-12-03', 112),
 (606,1,'2017-12-05', 112),
 (95,1,'2018-05-10', 113),
@@ -525,6 +528,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (655,1,'2019-05-26', 121);
 
 
+
 -- ATTENDANCE FOR TOOTHG
 INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (104,1,'2016-03-24', 122),
@@ -575,7 +579,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (739,1,'2016-04-25', 125),
 (740,1,'2016-05-02', 125),
 
-(108,1,'2017-10-24', 129),
+(108,1,'2017-10-06', 129),
 (741,1,'2017-10-08', 129),
 (742,1,'2017-10-10', 129),
 (743,1,'2017-10-15', 129),
@@ -587,7 +591,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (749,1,'2017-11-08', 129),
 (750,1,'2017-11-22', 129),
 
-(109,1,'2017-10-24', 130),
+(109,1,'2017-10-06', 130),
 (751,1,'2017-10-08', 130),
 (752,1,'2017-10-10', 130),
 (753,1,'2017-10-15', 130),
@@ -599,7 +603,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (759,1,'2017-11-08', 130),
 (760,1,'2017-11-22', 130),
 
-(110,1,'2017-10-24', 131),
+(110,1,'2017-10-06', 131),
 (761,1,'2017-10-08', 131),
 (762,1,'2017-10-10', 131),
 (763,1,'2017-10-15', 131),
@@ -647,7 +651,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (799,1,'2017-04-25', 128),
 (800,1,'2017-05-02', 128),
 
-(114,1,'2018-10-24', 132),
+(114,1,'2018-10-06', 132),
 (801,1,'2018-10-08', 132),
 (802,1,'2018-10-10', 132),
 (803,1,'2018-10-15', 132),
@@ -659,7 +663,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (809,1,'2018-11-08', 132),
 (810,1,'2018-11-22', 132),
 
-(115,1,'2018-10-24', 133),
+(115,1,'2018-10-06', 133),
 (811,1,'2018-10-08', 133),
 (812,1,'2018-10-10', 133),
 (813,1,'2018-10-15', 133),
@@ -672,7 +676,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (820,1,'2018-11-22', 133),
 
 
-(116,1,'2018-10-24', 134),
+(116,1,'2018-10-06', 134),
 (821,1,'2018-10-08', 134),
 (822,1,'2018-10-10', 134),
 (823,1,'2018-10-15', 134),
@@ -685,7 +689,7 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (830,1,'2018-11-22', 134),
 
 
-(117,1,'2018-10-24', 135),
+(117,1,'2018-10-06', 135),
 (831,1,'2018-10-08', 135),
 (832,1,'2018-10-10', 135),
 (833,1,'2018-10-15', 135),
@@ -744,4 +748,5 @@ INSERT INTO `attendance` (`id`,`isPresent`,`dayAttended`,`enrollment_id`) VALUES
 (878,1,'2018-04-23', 139),
 (879,1,'2018-04-25', 139),
 (880,1,'2018-05-02', 139);
+
 
