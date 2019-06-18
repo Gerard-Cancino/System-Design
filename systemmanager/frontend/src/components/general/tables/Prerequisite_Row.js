@@ -25,7 +25,7 @@ class PrerequisiteRow extends PureComponent {
           <td className="text-right">Prerequisites:</td>
           <td colspan="2">
             {this.state.prerequisiteList.map(el=>(
-              el.course.id + " " 
+              el.prereq.id + " " 
             ))}
             </td>
         </tr>

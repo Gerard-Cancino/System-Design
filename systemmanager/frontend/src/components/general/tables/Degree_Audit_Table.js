@@ -116,7 +116,11 @@ class DegreeAuditTable extends PureComponent {
       ):(
         <React.Fragment>
           {isMajor==true?(
-            <h4 className="col-md-12 text-center">{major.type} in {major.name}</h4>
+            major.id == 5?(
+              <h4 className="col-md-12 text-center">{major.name}</h4>
+            ):(
+              <h4 className="col-md-12 text-center">{major.type} in {major.name}</h4>
+            )
           ):(
             <h4 className="col-md-12 text-center">Minor in {major.name}</h4>
           )}

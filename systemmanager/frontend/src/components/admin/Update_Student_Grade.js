@@ -22,7 +22,7 @@ function checkAddDrop(term) {
         return 'M';
       }
       beginTerm = new Date(year,'04','01');
-      endTerm = new Date(year,'06','01');
+      endTerm = new Date(year,'09','01');
       console.log(beginTerm)
       console.log(endTerm)
       if(beginTerm<today && today<endTerm){

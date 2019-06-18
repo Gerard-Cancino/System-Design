@@ -79,19 +79,20 @@ def auth_view(request):
 class AdvisorDetails(APIView):
   serializer_class = serializers.AdvisorSerializer
   def get_object(self,student):
-    try:
+    # try:
       user = models.User.objects.get(email=student)
-      advisor = models.Advisor.objects.get(student_id=user.id)
+      print(user.id)
+      advisor = models.Advisor.objects.get(student__user__id=user.id)
       return advisor
-    except models.Advisor.DoesNotExist:
-      raise Http404
+    # except models.Advisor.DoesNotExist:
+    #   raise Http404
   def get(self, request, student):
-    try:
+    # try:
       advisor = self.get_object(student)
       serializer = serializers.AdvisorSerializer(advisor)
-      return Response({'data':serializer.data,'message':"Successful! Obtained the advisor"})
-    except:
-      return Response({'message':'The Student does not have an advisor.  This is a mistake.  Please contact an admininistrator'},status=status.HTTP_400_BAD_REQUEST)
+      return Response({'data':serializer.data,'message':"Successful! Obtained the advisor"},status=status.HTTP_200_OK)
+    # except:
+    #   return Response({'message':'The Student does not have an advisor.  This is a mistake.  Please contact an admininistrator'},status=status.HTTP_400_BAD_REQUEST)
   def delete(self, request, student):
     advisor = self.get_object(student)
     advisor.delete()
@@ -509,11 +510,14 @@ class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
     else:
       start_date=datetime(int(term.year),3,1).date()
       end_date=datetime(int(term.year),5,31).date()
-    transcript = models.Transcript.objects.get(student__user__email=student_email,course_id=enrollment.course_section.course.id,year=term.year,season=term.season)
-    if start_date < date < end_date:
-      transcript.gradeReceived = 'F'
-    else:
-      transcript.delete()
+    try:
+      transcript = models.Transcript.objects.get(student__user__email=student_email,course_id=enrollment.course_section.course.id,year=term.year,season=term.season)
+      if start_date < date < end_date:
+        transcript.gradeReceived = 'F'
+      else:
+        transcript.delete()
+    except:
+      print('student is missing transcript')
     enrollment.delete()
     course_section = enrollment.course_section
     course_section.numOfTaken = course_section.numOfTaken - 1
@@ -627,12 +631,15 @@ class EnrollmentList(generics.ListCreateAPIView):
             if enrollment.count() != 0:
               return Response({'message': "The student is enrolled in a class with the same time slot"},status=status.HTTP_400_BAD_REQUEST)
  
+        try:
+          transcript = models.Transcript.objects.create(course_id=section.course.id,student_id=student.user_id,year=section.term.year,season=section.term.season)
+        except:
+          return Response({'message':"Student has a course section of the same term similar to this one."},status=status.HTTP_400_BAD_REQUEST)
         enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
         enrollment = models.Enrollment.objects.get(id=enrollment.id)
         serializer = serializers.EnrollmentSerializer(enrollment)
         section.numOfTaken = section.numOfTaken+1
         section.save()
-        transcript = models.Transcript.objects.create(course_id=section.course.id,student_id=student.user_id,year=section.term.year,season=section.term.season)
         connection = mail.get_connection()
         confirmation_email = mail.EmailMessage(
           'Course Section: ' + str(enrollment.course_section.id),
@@ -980,25 +987,6 @@ class AdvisorList(generics.ListCreateAPIView):
         serializer = serializers.AdvisorSerializer(advisor)
         return Response({'data':serializer.data, 'message':"Successful!! The advisor was assigned to the student"}, status=status.HTTP_201_CREATED)
 
-@method_decorator(csrf_exempt, name='dispatch')
-class AdviseeDetails(APIView):
-  serializer_class = serializers.AdvisorSerializer
-  def get_object(self,student):
-    try:
-      user = models.User.objects.get(email=student)
-      advisor = models.Advisor.objects.get(student_id=user.id)
-      return advisor
-    except models.Advisor.DoesNotExist:
-      raise Http404
-  def get(self, request, student):
-    advisor = self.get_object(student)
-    serializer = serializers.AdvisorSerializer(advisor)
-    return Response({'data':serializer.data,'message':"Successful!"})
-  def delete(self, request, student):
-    advisor = self.get_object(student)
-    advisor.delete()
-    return Response({'message':"Successfully removed advisor"}, status=status.HTTP_200_OK)
-
 @method_decorator(csrf_exempt, name='dispatch') ##not going to work unless student id is a foreign key in attendance
 class AttendanceList(generics.ListCreateAPIView):
   serializer_class = serializers.EnrollmentSerializer
@@ -1131,10 +1119,12 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
             queryset = models.Grade.objects.get(id=id)
             if queryset.letterGrade == params.get('grade'):
               return Response({'message':"Failed.  The submitted grade is equivalent to the grade already submitted"},status=status.HTTP_400_BAD_REQUEST)
-            try:
-              transcript = models.Transcript.objects.get(student__user__email=queryset.student.user.email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
-              transcript.gradeReceived = params.get('grade')
-              transcript.save()
+            try:  
+              if params.get('type')=='F':           
+                transcript = models.Transcript.objects.filter(student__user__email=queryset.student.user.email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
+                print(len(transcript))
+                transcript.gradeReceived = str(params.get('grade'))
+                transcript.save()
             except:
               return Response({'message':"Failed.  The system cannot find a correlating transcript"},status=status.HTTP_400_BAD_REQUEST)
             queryset.letterGrade = params.get('grade')

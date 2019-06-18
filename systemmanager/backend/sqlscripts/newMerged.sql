@@ -41,7 +41,7 @@ INSERT INTO `user`
 -- Student
 INSERT INTO `user`
 (`id`, `password`, `type`, `email`, `firstName`, `lastName`, `address`, `city`, `state`, `country`, `zipCode`, `phoneNumber`, `isLockout`, `second_email`) VALUES
-(40001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'S', 'toothG', 'George', 'Tooth', '223 Grand Ave', 'Garden City', 'NY', 'USA', '11530', '5165601525', 0, 'randomemail21@gmail.com'), -- Chemical Engineering Freshmen // Minor Math
+(40001, 'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=', 'S', 'toothG', 'George', 'Tooth', '223 Grand Ave', 'Garden City', 'NY', 'USA', '11530', '5165601525', 0, 'gerard.cancino@gmail.com'), -- Chemical Engineering Freshmen // Minor Math
 (40002, '1415', 'S','millH','Harry','Mill','78 Bail Rd','White Plains','NY','USA','11710','9146321550', 0, 'randomemail22@gmail.com'), 
 (40003, '1516', 'S','LynerC','Carl','Lyner','890 Wake Rd', 'Garden City', 'NY', 'USA', '11530', '5169698500', 0, 'randomemail23@gmail.com'),
 (40004,'2223','S','GuzmanG', 'Garry', 'Guzman', '45 Lewis Rd', 'Riverdale', 'NY', 'USA', '11710', '9144507777', 0, 'randomemail24@gmail.com'),
@@ -81,7 +81,7 @@ INSERT INTO `user`
 (40118,'1218','S','DesrosiersR', 'Rebecca', 'Desrosiers', '3517 Centennial Farm Road', 'Wall Lake', 'IA', 'USA', '51466', '7126640082', 0, 'randomemail58@gmail.com'),
 (40119,'1219','S','DicksonJ', 'Jeff', 'Dickson', '1410 Zappia Drive', 'Lexington', 'KY', 'USA', '40507', '8593681491', 0, 'randomemail59@gmail.com'),
 (40120,'1220','S','TregreL', 'Linh', 'Tregre', '2518 Cedarstone Drive', 'Defiance', 'OH', 'USA', '43512', '4194984411',0, 'randomemail60@gmail.com'),
-(40201,'1221','S','GertzG', 'George', 'Gertz', '1092 Pooh Bear Lane', 'Greenville', 'SC', 'USA', '29607', '8647064684', 0, 'randomemail61@gmail.com'), -- Computer Engineering Freshmen
+(40201,'pbkdf2_sha256$150000$LZzTo2xc3Zwd$qM/uFkJ1qCJypiGFOR/3EDsJ1ZummPfZDbPrpGKurE8=','S','GertzG', 'George', 'Gertz', '1092 Pooh Bear Lane', 'Greenville', 'SC', 'USA', '29607', '8647064684', 0, 'randomemail61@gmail.com'), -- Computer Engineering Freshmen
 (40202,'1120','S','ChuckR', 'Rose', 'Chuck', '232 Hammer St', 'Hicksville', 'NY', 'USA', '11801', '5168291212', 0, 'randomemail62@gmail.com'),
 (40203,'1121','S','mathewK', 'Kill', 'mathew', '334 Park Ave', 'Union', 'PA', 'USA', '20560', '7065669923', 0, 'randomemail63@gmail.com'),
 (40204,'1122','S','CriagD', 'Denna', 'Criag', '549 Moonside St', 'Valley Stream', 'NY', 'USA', '11580', '5166238080', 0, 'randomemail64@gmail.com'),
@@ -473,8 +473,8 @@ INSERT INTO `advisor` (`id`, `faculty_id`, `student_id`,`dateAssigned`) VALUES
 (97,10005, 40417, '2017-07-22'),
 (98,10005, 40418, '2017-07-22'),
 (99,10005, 40419, '2017-07-22'),
-(100,10005, 40420, '2017-07-22'),
-(101,10006, 40001, '2017-07-21');
+(100,10005, 40420, '2017-07-22');
+-- (101,10006, 40001, '2017-07-21');
 
 INSERT INTO `admin` (`user_id`) VALUES
 (20001),
@@ -1058,7 +1058,6 @@ INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 (11,1,'EE310'),
 (12,1,'EE342'),
 (13,1,'EE365'),
-(14,1,'EE303'),
 (15,1,'EE360'),
 (16,1,'MA302'),
 (17,1,'MA303');
@@ -1085,27 +1084,18 @@ INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 -- General Elective
 INSERT INTO `major_requirement` (`id`,`major_id`,`course_id`) VALUES
 (60,5,'PH101'),
-(61,5,'PH102'),
-(62,5,'PH103'),
 (63,5,'HU101'),
 (64,5,'HU102'),
-(65,5,'HU103'),
-(66,5,'HU104'),
 (67,5,'MA110'),
 (68,5,'MA111'),
 (69,5,'MA113'),
-(70,5,'MA223'),
 (71,5,'MA224'),
 (72,5,'GE101'),
 (73,5,'GE102'),
 (74,5,'GE103'),
 (75,5,'GE104'),
-(76,5,'GE105'),
 (77,5,'GE106'),
-(78,5,'GE107'),
-(79,5,'GE108'),
-(80,5,'GE109'),
-(81,5,'GE110');
+(78,5,'GE107');
 
 
 INSERT INTO `slot` (`id`,`day_id`,`time_id`) VALUES

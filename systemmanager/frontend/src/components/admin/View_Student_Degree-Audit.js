@@ -37,6 +37,7 @@ class DegreeAudit extends Component {
     }
     for (let transcript of this.state.transcriptList){
       let isExist = false;
+      console.log(transcript.id)
       for (let requirement of requirementList){
         if(requirement.id==transcript.course.id){
           isExist = true;
@@ -132,7 +133,7 @@ class DegreeAudit extends Component {
     this.getStudentMinorList()
   }
   render(){
-    if(this.state.transcriptList!=undefined&&this.state.nonRequirementList==undefined){
+    if(this.state.transcriptList!=undefined&&this.state.nonRequirementList==undefined&&this.state.majorList!=undefined&&this.state.minorList!=undefined){
       this.getNonMajor_MinorTranscript()
     }
     return(
@@ -169,62 +170,65 @@ class DegreeAudit extends Component {
                   {this.state.nonRequirementList==undefined || this.state.nonRequirementList.length==0?(
                     <p></p>
                   ):(
-                    <table className="table table-striped"> 
-                      <thead style={{backgroundColor:"#696969", color:"white"}}>
-                        <tr> 
-                          <td>Status</td>
-                          <td>Course ID</td>
-                          <td>Name</td>
-                          <td>Grade</td>
-                          <td>GPA</td>
-                          <td>Credits</td>
-                          <td>Term</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.nonRequirementList.map(transcript=>(
-                            transcript.gradeReceived==undefined?(
-                              <tr className="table-warning">
-                                {transcript.gradeReceived==undefined?(
-                                  <td>P</td>
-                                ):(
-                                  <td>C</td>
-                                )}
-                                <td>{transcript.course.id}</td>
-                                <td>{transcript.course.name}</td>                        
-                                <td>{transcript.gradeReceived}</td>
-                                {transcript.gradeReceived==undefined?(<td></td>):(null)}        
-                                {transcript.gradeReceived=='A'?(<td><p>4</p></td>):(null)}
-                                {transcript.gradeReceived=='B'?(<td><p>3</p></td>):(null)}
-                                {transcript.gradeReceived=='C'?(<td><p>2</p></td>):(null)}
-                                {transcript.gradeReceived=='D'?(<td><p>1</p></td>):(null)}
-                                {transcript.gradeReceived=='F'?(<td><p>0</p></td>):(null)}
-                                <td>{transcript.course.numberOfCredits}</td>
-                                <td>{transcript.season} {transcript.year}</td>
-                              </tr>
-                            ):(
-                              <tr className="table-success">
-                                {transcript.gradeReceived==undefined?(
-                                  <td>P</td>
-                                ):(
-                                  <td>C</td>
-                                )}
-                                <td>{transcript.course.id}</td>
-                                <td>{transcript.course.name}</td>                        
-                                <td>{transcript.gradeReceived}</td>
-                                {transcript.gradeReceived==undefined?(<td></td>):(null)}        
-                                {transcript.gradeReceived=='A'?(<td><p>4</p></td>):(null)}
-                                {transcript.gradeReceived=='B'?(<td><p>3</p></td>):(null)}
-                                {transcript.gradeReceived=='C'?(<td><p>2</p></td>):(null)}
-                                {transcript.gradeReceived=='D'?(<td><p>1</p></td>):(null)}
-                                {transcript.gradeReceived=='F'?(<td><p>0</p></td>):(null)}
-                                <td>{transcript.course.numberOfCredits}</td>
-                                <td>{transcript.season} {transcript.year}</td>
-                              </tr>
-                            )
-                        ))}
-                      </tbody>
-                    </table>
+                    <div className="col-md-12">
+                      <h5 className="col-md-12 text-center">Non-Required Courses</h5>
+                      <table className="table table-striped"> 
+                        <thead style={{backgroundColor:"#696969", color:"white"}}>
+                          <tr> 
+                            <td>Status</td>
+                            <td>Course ID</td>
+                            <td>Name</td>
+                            <td>Grade</td>
+                            <td>GPA</td>
+                            <td>Credits</td>
+                            <td>Term</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {this.state.nonRequirementList.map(transcript=>(
+                              transcript.gradeReceived==undefined?(
+                                <tr className="table-warning">
+                                  {transcript.gradeReceived==undefined?(
+                                    <td>P</td>
+                                  ):(
+                                    <td>C</td>
+                                  )}
+                                  <td>{transcript.course.id}</td>
+                                  <td>{transcript.course.name}</td>                        
+                                  <td>{transcript.gradeReceived}</td>
+                                  {transcript.gradeReceived==undefined?(<td></td>):(null)}        
+                                  {transcript.gradeReceived=='A'?(<td><p>4</p></td>):(null)}
+                                  {transcript.gradeReceived=='B'?(<td><p>3</p></td>):(null)}
+                                  {transcript.gradeReceived=='C'?(<td><p>2</p></td>):(null)}
+                                  {transcript.gradeReceived=='D'?(<td><p>1</p></td>):(null)}
+                                  {transcript.gradeReceived=='F'?(<td><p>0</p></td>):(null)}
+                                  <td>{transcript.course.numberOfCredits}</td>
+                                  <td>{transcript.season} {transcript.year}</td>
+                                </tr>
+                              ):(
+                                <tr className="table-success">
+                                  {transcript.gradeReceived==undefined?(
+                                    <td>P</td>
+                                  ):(
+                                    <td>C</td>
+                                  )}
+                                  <td>{transcript.course.id}</td>
+                                  <td>{transcript.course.name}</td>                        
+                                  <td>{transcript.gradeReceived}</td>
+                                  {transcript.gradeReceived==undefined?(<td></td>):(null)}        
+                                  {transcript.gradeReceived=='A'?(<td><p>4</p></td>):(null)}
+                                  {transcript.gradeReceived=='B'?(<td><p>3</p></td>):(null)}
+                                  {transcript.gradeReceived=='C'?(<td><p>2</p></td>):(null)}
+                                  {transcript.gradeReceived=='D'?(<td><p>1</p></td>):(null)}
+                                  {transcript.gradeReceived=='F'?(<td><p>0</p></td>):(null)}
+                                  <td>{transcript.course.numberOfCredits}</td>
+                                  <td>{transcript.season} {transcript.year}</td>
+                                </tr>
+                              )
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   )}
                 </div>
                 )

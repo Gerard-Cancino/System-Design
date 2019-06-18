@@ -8,6 +8,23 @@ import Footer from './layout/Footer.js';
 import ProfileUser from '../general/User_Profile.js';
 import StudentAdvisor from '../general/Student_Advisor.js';
 
+const findGeneral = (isStudent,majorList) => {
+  if(isStudent==true){
+    for (let i = 0; i<majorList.length; i++) {
+      if (majorList[i].major.id == 5)
+        majorList.splice(i,1);
+    }
+    return majorList
+  }
+  else{
+    for (let i = 0; i<majorList.length; i++) {
+      if (majorList[i].id == 5)
+        majorList.splice(i,1);
+    }
+    return majorList
+  }
+}
+
 class ViewStudentRecord extends Component {
   state = {
     student: undefined,
@@ -47,7 +64,7 @@ class ViewStudentRecord extends Component {
       }
     })
     .then(res=>{
-      this.setState({majorList:res.data.data})
+      this.setState({majorList:findGeneral(true,res.data.data)})
     })
     axios
     .get(`/student-minor-list.json`,{

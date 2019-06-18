@@ -51,6 +51,7 @@ class UpdateCourse extends Component {
     .then(res=>{
       this.setState({result:res})
     })
+    .catch(err=>{this.setState({result:err})})
   }
   render(){
     return(

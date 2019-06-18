@@ -26,7 +26,7 @@ function checkTerm() {
   // Fall
   else if((month>=8&&month<=12)){
     let beginTerm = new Date(year,'03','01');
-    let endTerm = new Date(year,'08','01');
+    let endTerm = new Date(year,'09','01');
     console.log(beginTerm)
     console.log(endTerm)
     if(beginTerm<today<endTerm){

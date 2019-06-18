@@ -5,6 +5,23 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
+const findGeneral = (isStudent,majorList) => {
+  if(isStudent==true){
+    for (let i = 0; i<majorList.length; i++) {
+      if (majorList[i].major.id == 5)
+        majorList.splice(i,1);
+    }
+    return majorList
+  }
+  else{
+    for (let i = 0; i<majorList.length; i++) {
+      if (majorList[i].id == 5)
+        majorList.splice(i,1);
+    }
+    return majorList
+  }
+}
+
 class FindStudent extends PureComponent {
   componentWillReceiveProps(){
     this.forceUpdate
@@ -57,7 +74,7 @@ class AssignStudentMajorMinor extends Component {
     axios
     .get('/major-list.json')
     .then(res=>{
-      this.setState({allMajorList:res.data.data})
+      this.setState({allMajorList:findGeneral(false,res.data.data)})
       this.setState({majorMinorChange1:res.data.data[0].id})
       this.setState({majorMinorChange2:res.data.data[0].id})
     })
@@ -95,7 +112,7 @@ class AssignStudentMajorMinor extends Component {
       }
     })
     .then(res=>{
-      this.setState({majorList:res.data.data})
+      this.setState({majorList:findGeneral(true,res.data.data)})
     })
     .catch(err=>{
       this.setState({result:err})

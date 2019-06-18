@@ -223,7 +223,7 @@ class Slot(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
     class Meta:
         db_table = "slot"
-
+        
 class Course(models.Model):
     REQUIRED_FIELDS = ('Department',)
     id = models.CharField(max_length=5, primary_key=True)
