@@ -219,7 +219,7 @@ class SectionForm extends Component {
             <p></p>
           ):(
             this.props.handleEnroll!=undefined?(
-              <SectionTable handleEnroll={this.props.handleEnroll.bind(this)} handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
+              <SectionTable isAdmin={this.props.isAdmin} handleEnroll={this.props.handleEnroll.bind(this)} handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
             ):(            
               <SectionTable handleResult={handleResult.bind(this)} student={student} sectionList={this.state.courseSect} SearchCourseSection={this.SearchCourseSection.bind(this)}/>
             )

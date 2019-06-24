@@ -11,7 +11,7 @@ from backend import api
 
 urlpatterns = [
     path('login.json', LoginView.as_view()),
-    path('token-auth', api.auth_jwt.as_view()),
+    path('token-auth', api.AuthJWT.as_view()),
     path('current-user', api.current_user),
     path('token-user', api.TokenUser.as_view()),
     path('user-password-change', api.UserPasswordChange.as_view()),
@@ -20,7 +20,7 @@ urlpatterns = [
 
     path('advisor-details.json/<str:student>', api.AdvisorDetails.as_view()),
     path('advisor-list.json', api.AdvisorList.as_view()),
-    path('building-details.json-<int:code>', api.BuildingDetails.as_view()),
+    path('building-details.json/<int:code>', api.BuildingDetails.as_view()),
     path('building-list.json', api.BuildingList.as_view()),
     path('course-details.json/<str:id>', api.CourseDetails.as_view()),
     path('course-list.json', api.CourseList.as_view()),

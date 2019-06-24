@@ -8,7 +8,7 @@ import Footer from './layout/Footer.js';
 
 // Add Grade Too
 
-class StudentSectionDetails extends Component {
+class AdminSectionDetails extends Component {
   state = {
     section: undefined,
     prerequisiteList:undefined,
@@ -73,7 +73,7 @@ class StudentSectionDetails extends Component {
                     <p><strong>Prerequisites:</strong></p>
                     {this.state.prerequisiteList.map(el=>(
                       <Link to={{
-                        pathname: '/student/view-course-details',
+                        pathname: '/admin/view-course-details',
                         state: {courseID: el.prereq.id}
                       }} className="col-md-3 btn btn-info m-1">{el.prereq.name}</Link>
                     ))}
@@ -108,22 +108,6 @@ class StudentSectionDetails extends Component {
                     ))
                   )}
                 </div>
-                {this.state.gradeList==undefined?(
-                  <p></p>
-                ):(
-                  <div className="col-md-12">
-                    <p><strong>Grades</strong></p>
-                    {this.state.gradeList.length==0?(
-                      <p className="col-md-12">No Grades were assigned</p>
-                    ):(
-                      <div className="col-md-12 p-0 m-0">
-                        {this.state.gradeList.map(el=>(
-                          <p className="col-md-6">{el.type=='F'?('Final'):('Midterm')}: {el.letterGrade}</p>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </section>
@@ -134,4 +118,4 @@ class StudentSectionDetails extends Component {
   }
 }
 
-export default StudentSectionDetails;
+export default AdminSectionDetails;

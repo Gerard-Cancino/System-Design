@@ -337,7 +337,7 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
         queryset.save()
     if params.get('numOfSeats') is not None:
       try:
-        if queryset.numOfTaken >= int(params.get('numOfSeats')):
+        if queryset.numOfTaken > int(params.get('numOfSeats')):
           return Response({'message':'The inputted number of seats is smaller than the number of seats taken'},status=status.HTTP_400_BAD_REQUEST)
       except:
         return Response({'message':"Please input an integer for number of seats total"},status=status.HTTP_400_BAD_REQUEST)
@@ -433,7 +433,7 @@ class CourseSectionList(generics.ListCreateAPIView):
         serializer = serializers.CourseSectionSerializer(queryset, many=True)
         return Response({'data':serializer.data,"message":"Successfully retrieved a list of courses"})
     except models.CourseSection.DoesNotExist:
-      raise Response({'message':"Could not find sections with inputted fields"})
+      raise Response({'message':"Could not find sections with inputted fields"},status=status.HTTP_400_BAD_REQUEST)
   def post(self,request):
     params = request.data
     term = params.get('term')
@@ -594,12 +594,17 @@ class EnrollmentList(generics.ListCreateAPIView):
             enrollment_list = models.Enrollment.objects.exclude(course_section__term__id=section.term.id)
             for prereq in prereq_list:
               isTaken = False
-              for enrollment in enrollment_list:
-                if prereq.course.id==enrollment.course_section.course.id:
-                  transcript_list = models.Transcript.objects.filter(course_id=enrollment.course_section.course.id,student__user__id=student.user.id)
-                  for transcript in transcript_list:
-                    if transcript.gradeRecieved is None or transcript.gradeReceived <= prereq.requiredGrade:
-                      isTaken = True
+              transcript_list = models.Transcript.objects.filter(student__user__id=student.user.id)
+              for transcript in transcript_list:
+                if transcript.course.id == prereq.prereq.id:
+                  if transcript.gradeReceived is not None and transcript.gradeReceived <= prereq.requiredGrade:
+                    isTaken = True
+                  checkSeason = section.term.season
+                  isCurrentlyTaking = False
+                  if checkSeason != transcript.season:
+                    isCurrentlyTaking = True
+                  if transcript.gradeReceived is None and isCurrentlyTaking:
+                    isTaken = True
               if isTaken == False:
                 return Response({'message':"The student does not meet the prerequisites"},status=status.HTTP_400_BAD_REQUEST) 
         enrollmentList = models.Enrollment.objects.filter(student_id=student.user_id,course_section__term__id=section.term.id)

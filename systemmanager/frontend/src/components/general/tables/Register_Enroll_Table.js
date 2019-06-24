@@ -38,42 +38,43 @@ class TableSection extends PureComponent {
     student: undefined,
     sectionList: undefined
   }
-  getEnrollments(){
-    axios
-    .get(`/enrollment-list.json`,{ params:{
-      student: this.props.student.user.email
-    }})
-    .then(res=>{
-      this.setState({enrollmentList:res.data,sectionList:alreadyEnrolled(this.props.sectionList,res.data)})
-    })
-  }
+  // getEnrollments(){
+  //   axios
+  //   .get(`/enrollment-list.json`,{ params:{
+  //     student: this.props.student.user.email
+  //   }})
+  //   .then(res=>{
+  //     this.setState({enrollmentList:res.data,sectionList:alreadyEnrolled(this.props.sectionList,res.data)})
+  //   })
+  // }
   componentDidMount(){
     this.setState({
       student: this.props.student,
     })
-    this.getEnrollments(); 
+    this.setState({sectionList:this.props.sectionList})
+    // this.getEnrollments(); 
   }
   componentWillReceiveProps(newProps){
     this.setState({student:newProps.student});
-    this.getEnrollments();
+    // this.getEnrollments();
   }
   handleEnroll = (event,section) => {
     event.preventDefault()
-    if(canEnroll(section,this.state.enrollmentList)){
-      axios
-      .post(`/enrollment-list.json`,{
-        student:this.state.student.user.email,
-        section:section.id
-      })
-      .then(res => {
-        this.setState({status:res.data})
-        this.getEnrollments()
-        this.props.handleResult(res)
-      })
-      .catch(err=>{
-        this.props.handleResult(err)
-      })
-    }
+    // if(canEnroll(section,this.state.enrollmentList)){
+    axios
+    .post(`/enrollment-list.json`,{
+      student:this.state.student.user.email,
+      section:section.id
+    })
+    .then(res => {
+      this.setState({status:res.data})
+      // this.getEnrollments()
+      this.props.handleResult(res)
+    })
+    .catch(err=>{
+      this.props.handleResult(err)
+    })
+    // }
 
   }
   render () {
@@ -147,6 +148,20 @@ class TableSection extends PureComponent {
                     <td >{el.numOfSeats - el.numOfTaken}</td>     
                     <td >
                       <button className="btn btn-info" type="submit" onClick={this.props.handleEnroll?((e)=>this.props.handleEnroll(e,el)):((e)=>this.handleEnroll(e,el))}>Enroll</button>
+                    </td>
+                    <td>
+                      {this.props.isAdmin==true?(
+                        <Link to={{
+                          pathname: '/admin/view-section-details',
+                          state: {course_section_id:el.id}
+                        }} className="col-md-12 btn btn-primary">View Details</Link>
+
+                      ):(
+                        <Link to={{
+                          pathname: '/student/view-section-details',
+                          state: {course_section_id:el.id}
+                        }} className="col-md-12 btn btn-primary">View Details</Link>
+                      )}
                     </td>
                   </tr>
                 ))}

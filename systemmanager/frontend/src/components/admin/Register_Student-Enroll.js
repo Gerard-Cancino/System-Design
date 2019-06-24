@@ -110,7 +110,7 @@ class StudentTerm extends Component{
               ):(
                 <div className="col-md-12">
                   <h2 className="text-center">Enroll Student</h2>
-                  <SearchSection handleEnroll={this.handleEnrollStudent.bind(this)} handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                  <SearchSection isAdmin={true} handleEnroll={this.handleEnrollStudent.bind(this)} handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
                 </div>
               )}
             </div>
