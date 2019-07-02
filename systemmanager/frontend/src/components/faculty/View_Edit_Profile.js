@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import PropTypes from "prop-types";
 import axios from 'axios';
 
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
-
 import ProfileUser from '../general/User_Profile.js';
 import ProfileUserEdit from '../general/User_Profile_Edit.js';
 import ProfileUserChangePassword from '../general/User_Change_Password.js';
 
-class ViewStudentRecord extends Component {
+class ViewEditProfile extends Component {
   state = {
     account : undefined,
     isEdit: false,
     result: undefined
   }
-
   componentDidMount() {
     axios
     .get(`/user-details.json/${this.props.user}`)
@@ -122,4 +119,4 @@ class ViewStudentRecord extends Component {
   }
 }
 
-export default ViewStudentRecord;
+export default ViewEditProfile;

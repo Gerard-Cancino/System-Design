@@ -50,15 +50,34 @@ class CreateSection extends Component {
     .get('/building-list.json')
     .then(res => {
       this.setState({'buildingList': res.data.data})
+      let roomList = [];
       axios
       .get('/room-list.json',{
         params:{
-          'building': res.data.data[0].code
+          'building': res.data.data[0].code,
+          'type': 'C'
         }
       })
-      .then(res => {
-        this.setState({'roomList': res.data.data})
-        this.setState({'room': res.data.data[0].id})
+      .then(room => {
+        for (let el of room.data.data){
+          console.log(el)
+          roomList.push(el)
+        }
+        axios
+        .get('/room-list.json',{
+          params:{
+            'building': res.data.data[0].code,
+            'type':'L'
+          }
+        })
+        .then(room=>{
+          for (let el of room.data.data){
+            roomList.push(el)
+          }
+          this.setState({roomList:roomList})
+  
+          this.setState({'room': roomList[0].id})
+        })
       })
     })
     axios
@@ -72,16 +91,36 @@ class CreateSection extends Component {
   }
   handleBuilding = event => {   
     this.setState({ building: event.target.value });
+    let building = event.target.value;
+    let roomList = [];
     axios
-    .get('/room-list.json', {
-      params: {
-        'building': event.target.value
+    .get('/room-list.json',{
+      params:{
+        'building': building,
+        'type': 'C'
       }
     })
-    .then( res => {
-      this.setState({'roomList': res.data.data})
-      this.setState({'room': res.data.data[0].id})
-    });
+    .then(room => {
+      for (let el of room.data.data){
+        console.log(el)
+        roomList.push(el)
+      }
+      axios
+      .get('/room-list.json',{
+        params:{
+          'building': building,
+          'type':'L'
+        }
+      })
+      .then(room=>{
+        for (let el of room.data.data){
+          roomList.push(el)
+        }
+        this.setState({roomList:roomList})
+
+        this.setState({'room': roomList[0].id})
+      })
+    })
   }
   handleRoom = event => {   
     this.setState({ room: event.target.value || undefined});

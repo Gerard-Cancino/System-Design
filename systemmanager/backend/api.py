@@ -41,7 +41,7 @@ def current_user(request):
   return Response({'data':serializer.data})
 
 @method_decorator(csrf_exempt, name='dispatch')
-class auth_jwt(ObtainJSONWebToken):
+class AuthJWT(ObtainJSONWebToken):
     def post(self, request, *args, **kwargs):
       try:
         isLockout = models.User.objects.get(email=request.data.get('email')).isLockout
@@ -197,6 +197,8 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
     if isInCatalog is not None:
       course.isInCatalog = isInCatalog
     if description is not None:
+      if len(description) >1000 or len(description) == 0:
+        return Response({'message':"The maximum length for description is 1000 and min length is 1"},status=status.HTTP_400_BAD_REQUEST)
       course.description = description
     if params.get('numberOfCredits') is not None:
       try:
@@ -251,6 +253,8 @@ class CourseList(generics.ListCreateAPIView):
       params.get('numberOfCredits') is not None or \
       params.get('isInCatalog') is not None:
       department = models.Department.objects.get(code=params.get('department'))
+      if len(description) > 1000 or len(description) == 0:
+        return Response({'message':"The maximum length for description is 1000 and minimum length is 1"},status=status.HTTP_400_BAD_REQUEST)
       if isinstance(params.get('number'),int):
         return Response({'message': 'Failed! The id inputted is not a number'},status=status.HTTP_400_BAD_REQUEST)
       if isinstance(params.get('numberOfCredits'),int):
@@ -706,9 +710,14 @@ class RoomList(generics.ListCreateAPIView):
   def list(self,request):
     params = request.query_params
     if params.get('building') is not None:
-      room = models.Room.objects.filter(building=params.get('building'))
-      serializer = serializers.RoomSerializer(room, many=True)
-      return Response({'data':serializer.data,'message':"Successful!"})
+      if params.get('type') is not None:
+        room = models.Room.objects.filter(building_id=params.get('building'),type=params.get('type'))
+        serializer = serializers.RoomSerializer(room, many=True)
+        return Response({'data':serializer.data,'message':"Successful!"})
+      else:
+        room = models.Room.objects.filter(building=params.get('building'))
+        serializer = serializers.RoomSerializer(room, many=True)
+        return Response({'data':serializer.data,'message':"Successful!"})
     else:
       room = models.Room.objects.all()
       serializer = serializers.RoomSerializer(room)
@@ -826,6 +835,8 @@ class SlotList(generics.ListCreateAPIView):
       days.append('3')
     if params.get('thursday') == 'false':
       days.append('4')
+    if params.get('friday') == 'false':
+      days.append('5')
     if not filters and len(days) == 0:
       queryset = models.Slot.objects.all()
       serializer = serializers.SlotSerializer(queryset, many=True)
@@ -904,9 +915,15 @@ class UserDetails(APIView):
     if params.get('country') is not None:
       user.country = params.get('country')
     if params.get('phoneNumber') is not None:
-      user.phoneNumber = params.get('phoneNumber')
+      if isinstance(params.get('phoneNumber'),int) and len(params.get('phoneNumber')==10):
+        user.phoneNumber = params.get('phoneNumber')
+      else:
+        return Response({'message':'Phone Number needs to be 10 integers'}, status=status.HTTP_400_BAD_REQUEST)
     if params.get('zipCode') is not None:
-      user.zipCode = params.get('zipCode')
+      if isinstance(params.get('zipCode'),int):
+        user.zipCode = params.get('zipCode')
+      else:
+        return Response({'message':'Zip code needs to be integers'},status=status.HTTP_400_BAD_REQUEST)
     if params.get('isLockout') is not None:
       if user.isLockout:
         user.isLockout = False
@@ -941,25 +958,6 @@ class UserList(APIView):
       return Response({'data':serializer.data, 'message':'Successfully created the users account'}, status=status.HTTP_201_CREATED)
     return Response({'message':"Could not create an account.  The username must be unique"},status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(csrf_exempt, name='dispatch')
-class AdviseeDetailsFaculty(APIView):
-    serializer_class=serializers.AdvisorSerializer
-    def get_object(self,faculty):
-        try:
-            user = models.User.objects.get(email=faculty)
-            advisor = models.Advisor.objects.get(faculty_id=user.id)
-            return advisor
-        except models.Advisor.DoesNotExist:
-            raise Http404
-    def get(self, request, faculty):
-        advisor = self.get_object(faculty)
-        serializer = serializers.AdvisorSerializer(advisor)
-        return Response({'data':serializer.data,'message':"Successful!"})
-
-    def delete(self,request,faculty):
-        advisor=self.get_object(faculty)
-        advisor.delete()
-        return Response({'message':"Successfully deleted advisor"}, status=status.HTTP_200_OK)
 
 
 
@@ -1071,32 +1069,32 @@ class TranscriptList(generics.ListCreateAPIView):
         return Response({'message':"Failed! Could not find student"},status=status.HTTP_400_BAD_REQUEST)
         
         
-@method_decorator(csrf_exempt, name='dispatch')
-class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = serializers.GradeSerializer
-    def get_object(self, id, course_section_id):
-        try:
-            gradeObject=models.Grade.objects.get(student__user__email=id, course_section_id=course_section_id)
-            return gradeObject
-        except models.Grade.DoesNotExist:
-            raise Http404
+# @method_decorator(csrf_exempt, name='dispatch')
+# class ClassRosterDetails(generics.RetrieveUpdateDestroyAPIView):
+#     serializer_class = serializers.GradeSerializer
+#     def get_object(self, id, course_section_id):
+#         try:
+#             gradeObject=models.Grade.objects.get(student__user__email=id, course_section_id=course_section_id)
+#             return gradeObject
+#         except models.Grade.DoesNotExist:
+#             raise Http404
 
-    def get(self, request, id, course_section_id):
-        try:
-            grade = self.get_object(id, course_section_id)
-            serializer = serializers.GradeSerializer(grade)
-            return Response({'data':serializer.data,'message':"Successful!"})
-        except models.Grade.DoesNotExist:
-            raise Http404
+#     def get(self, request, id, course_section_id):
+#         try:
+#             grade = self.get_object(id, course_section_id)
+#             serializer = serializers.GradeSerializer(grade)
+#             return Response({'data':serializer.data,'message':"Successful!"})
+#         except models.Grade.DoesNotExist:
+#             raise Http404
 
-    def put(self, request, id, course_section_id):
-        params = request.data
-        if params.get('grade') is not None:
-            queryset = models.Grade.objects.get(student__user__email=id, course_section_id=course_section_id)
-            #grade = models.Grade.objects.get(id=params.get('grade'))
-            serializer = serializers.GradeSerializer(queryset)
-            return Response({'data':serializer.data,'message':"Successful!"})
-        queryset = self.get_object(id)
+#     def put(self, request, id, course_section_id):
+#         params = request.data
+#         if params.get('grade') is not None:
+#             queryset = models.Grade.objects.get(student__user__email=id, course_section_id=course_section_id)
+#             #grade = models.Grade.objects.get(id=params.get('grade'))
+#             serializer = serializers.GradeSerializer(queryset)
+#             return Response({'data':serializer.data,'message':"Successful!"})
+#         queryset = self.get_object(id)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
@@ -1117,7 +1115,6 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
         return Response({'data':serializer.data,'message':"Successful!"})
       except:
         return Response({'message':"Could not find a grade.  Please ask the faculty to create a grade"}, status=status.HTTP_400_BAD_REQUEST)
-
     def put(self, request, id):
         params = request.data
         if params.get('grade') is not None and params.get('type') is not None:
@@ -1125,9 +1122,10 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
             if queryset.letterGrade == params.get('grade'):
               return Response({'message':"Failed.  The submitted grade is equivalent to the grade already submitted"},status=status.HTTP_400_BAD_REQUEST)
             try:  
+              print(params.get('type'))
               if params.get('type')=='F':           
-                transcript = models.Transcript.objects.filter(student__user__email=queryset.student.user.email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
-                print(len(transcript))
+                transcript = models.Transcript.objects.get(student__user__email=queryset.student.user.email,course_id=queryset.course_section.course.id,year=queryset.course_section.term.year,season=queryset.course_section.term.season)
+                print(transcript)
                 transcript.gradeReceived = str(params.get('grade'))
                 transcript.save()
             except:

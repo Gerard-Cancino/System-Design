@@ -230,7 +230,7 @@ class Course(models.Model):
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
     number = models.CharField(max_length=5, null=False)
     name = models.CharField(max_length=200, null=False, unique=True)
-    description = models.TextField(null=False)
+    description = models.TextField(max_length=1000, null=False)
     numberOfCredits = models.IntegerField(max_length=1, null=False)
     isGraduateCourse = models.BooleanField(default=False, null=False)
     isActive = models.BooleanField(default=False, null=False)

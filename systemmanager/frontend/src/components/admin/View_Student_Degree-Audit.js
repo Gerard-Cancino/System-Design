@@ -98,7 +98,7 @@ class DegreeAudit extends Component {
       }
     })
     .then(res=>{
-      this.setState({majorList:res.data.data,result:res})
+      this.setState({majorList:res.data.data})
     })
   }
   getStudentMinorList(){
@@ -109,7 +109,7 @@ class DegreeAudit extends Component {
       }
     })
     .then(res=>{
-      this.setState({minorList:res.data.data,result:res})
+      this.setState({minorList:res.data.data})
     })
   }
   componentDidMount(){

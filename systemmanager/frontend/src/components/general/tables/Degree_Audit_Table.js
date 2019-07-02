@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 //I will take in the student transcrip and one major
-class DegreeAuditTable extends PureComponent {
+class DegreeAuditTable extends Component {
   // I need to get a list of all courses pertaining to a major/minor
   // Based on those courses, there needs to be status
   // if in transcript with a grade then the course is already taken
