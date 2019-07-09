@@ -7,21 +7,67 @@ import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
 // Add Grade Too
+function checkTerm() {
+  let today = new Date();
+  let year = parseInt(today.getFullYear());
+  // Spring november 4 2019 to january 27 2020
+  // Fall April 1 to Sept 1
+  // Fall + Spring
+  let month = parseInt(today.getMonth());
+  // Spring
+  if((month>=1&&month<=7)){
+    let beginTerm = new Date((year),'10','04');
+    let endTerm = new Date(year+1,'01','27');
+    console.log(beginTerm)
+    console.log(endTerm)
+    if(beginTerm<today<endTerm){
+      return ({season: 'SP',year:year});
+    }
+  }
+  // Fall
+  else if((month>=8&&month<=12)){
+    let beginTerm = new Date(year,'03','01');
+    let endTerm = new Date(year,'09','01');
+    console.log(beginTerm)
+    console.log(endTerm)
+    if(beginTerm<today<endTerm){
+      return ({season: 'F',year:year});
+    }
+  }
+  return undefined;
+}
+
+
+
 
 class SectionDetails extends Component {
   state = {
     section: undefined,
-    result: undefined
+    result: undefined,
+    doesMatch:false,
   }
   componentDidMount(){
     axios
     .get(`/course-section-details.json/${this.props.data.state.courseSectionID}`)
     .then(res=>{
       this.setState({section:res.data.data})
+      this.shouldMatchDate(res.data.data)
     })
     .catch(err=>{
       this.setState({result:err})
     })
+  }
+  shouldMatchDate(section){
+    const today = new Date();
+    let isMatch = false;
+    for (let slot of section.slot)
+      if (slot.day.id==today.getDay())
+        isMatch = true;
+    let term = checkTerm()
+    if(section.term.season==term.season&&section.term.year==term.year){
+      isMatch=false;
+    }
+    this.setState({doesMatch:isMatch})
   }
   render(){
     return(
@@ -82,12 +128,16 @@ class SectionDetails extends Component {
                     courseSectionID:this.props.data.state.courseSectionID
                   }
                 }} className="col-md-6 btn btn-primary">View Class Roster</Link>
-                <Link to={{
-                  pathname:"/faculty/assign-student-attendance",
-                  state:{
-                    courseSectionID:this.props.data.state.courseSectionID
-                  }
-                }} className="col-md-6 btn btn-danger">Assign Attendance</Link>
+                {!this.state.doesMatch?(
+                  <button className="col-md-6 btn btn-danger" disabled>Disabled Assign Attendance</button>
+                ):(
+                  <Link to={{
+                    pathname:"/faculty/assign-student-attendance",
+                    state:{
+                      courseSectionID:this.props.data.state.courseSectionID
+                    }
+                  }} className="col-md-6 btn btn-danger">Assign Attendance</Link>
+                )}
               </div>
             </div>
           </section>

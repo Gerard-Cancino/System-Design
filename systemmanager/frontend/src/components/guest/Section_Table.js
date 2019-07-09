@@ -38,7 +38,7 @@ class TableSection extends PureComponent {
                 {sectionList.map(el => (
                   <tr className="col-md-12 border-top" key={el.id}>
                     <td className='col-md-1'>{el.id}</td>
-                    <td className='col-md-3'>{el.course.name}</td>
+                    <td className='col-md-3'>{el.course.id} {el.course.name}</td>
                     <td className='col-md-1'>{el.number}</td>
                     {el.faculty?(
                       <td className='col-md-1'>{el.faculty.user.lastName}</td>

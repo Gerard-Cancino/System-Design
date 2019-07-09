@@ -9,6 +9,7 @@ import GuestMain from './guest/Home.js';
 import GuestLogin from './guest/Login.js';
 import GuestSearchMasterSchedule from './guest/SearchMasterSchedule.js';
 import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
+import GuestViewFacultyRoom from './guest/View_Faculty_Room.js';
 
 import AdminMain from './admin/Main.js';
 import AdminAddPrereq from './admin/Add_Prereq.js';
@@ -45,6 +46,7 @@ import FacultyAssignStudentAttendance from './faculty/Assign_Student_Attendance.
 import FacultyViewStudentInfo from './faculty/View_Student_Info.js';
 import FacultyAssignStudentGrade from './faculty/Assign_Student_Grade.js';
 import FacultyViewAdviseeList from './faculty/View_Advisee_List.js';
+import FacultyUpdateStudentGrade from './faculty/Update_Student_Grade.js';
 
 import StudentMain from './student/Main.js';
 import StudentViewSectionList from './student/View_Section_List.js';
@@ -178,6 +180,7 @@ class MyRoute extends Component {
     const FFacultyViewStudentInfo = Authorization(this.state.user,this.handleUser.bind(this), FacultyViewStudentInfo,['F']);
     const FFacultyAssignStudentGrade  = Authorization(this.state.user,this.handleUser.bind(this),FacultyAssignStudentGrade,['F']);
     const FFacultyViewAdviseeList = Authorization(this.state.user,this.handleUser.bind(this),FacultyViewAdviseeList,['F']);
+    const FFacultyUpdateStudentGrade = Authorization(this.state.user,this.handleUser.bind(this),FacultyUpdateStudentGrade,['F']);
 
     const SStudentMain = Authorization(this.state.user,this.handleUser.bind(this),StudentMain,['S']);
     const SStudentViewSectionList = Authorization(this.state.user,this.handleUser.bind(this),StudentViewSectionList,['S']);
@@ -199,6 +202,7 @@ class MyRoute extends Component {
           <Route path="/" exact component={GGuestMain} />
           <Route path="/master-schedule" component={GuestSearchMasterSchedule} />
           <Route path="/course-catalog" component={GuestViewCourseCatalog} />
+          <Route path="/view-faculty-room" component={GuestViewFacultyRoom} />
 
           <Route path="/login" component={GGuestLogin} />
 
@@ -237,6 +241,7 @@ class MyRoute extends Component {
           <Route path="/faculty/view-student-info" component={FFacultyViewStudentInfo} />
           <Route path="/faculty/assign-student-grade" component={FFacultyAssignStudentGrade} />
           <Route path="/faculty/view-advisee-list" component={FFacultyViewAdviseeList} />
+          <Route path="/faculty/update-student-grade" component={FFacultyUpdateStudentGrade} />
 
           <Route path="/student/main" component={SStudentMain} />
           <Route path="/student/view-section-list" component={SStudentViewSectionList} />

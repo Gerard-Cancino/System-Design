@@ -318,6 +318,15 @@ class Home extends Component {
               </div>
             </div>
           </div>
+          <div className="row pb-4">
+            <div className="col-md-12">
+              <div className="card">
+                <div className="card-body">
+                  <h3 className="text-center mb-0"><Link to="/view-faculty-room">View Faculty List</Link></h3>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
         <section className="container-fluid" style={{background: 'blueviolet'}}>
           <span id="languages" style={{paddingTop:'40px'}}></span>

@@ -402,7 +402,7 @@ class CourseSectionList(generics.ListCreateAPIView):
       if params.get('courseName') is not None:
         filters.append(Q(course__name__icontains=params.get('courseName')))
       if params.get('department') is not None:
-        filters.append(Q(faculty__department=params.get('department')))
+        filters.append(Q(course__department=params.get('department')))
       if params.get('term') is not None:
         term_list = models.Term.objects.all()
         if params.get('term')==term_list.reverse()[1].id:
@@ -1003,9 +1003,14 @@ class AttendanceList(generics.ListCreateAPIView):
       attendance=models.Attendance.objects.filter(enrollment__course_section__id=params.get('course_section_id'),dayAttended=datetime.now())
       serializer = serializers.AttendanceSerializer(attendance, many=True)
       return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
+    if params.get('course_section_id') is not None:
+      attendance=models.Attendance.objects.filter(enrollment__course_section__id=params.get('course_section_id'),dayAttended=datetime.now())
+      serializer = serializers.AttendanceSerializer(attendance, many=True)
+      return Response({'data':serializer.data,'message':"Successful!"},status=status.HTTP_200_OK)
   # I need a course section id and a student
   def post(self, request):
     params = request.data
+    print(request.data)
     if params.get('course_section_id') is not None and params.get('isPresent') is not None and params.get('student_id'):
       isTrue = None
       if params.get('isPresent') == 'false':
@@ -1014,7 +1019,7 @@ class AttendanceList(generics.ListCreateAPIView):
         isTrue = True
       enrollment = models.Enrollment.objects.get(course_section_id=params.get('course_section_id'), student__user__id=params.get('student_id'))
 
-      attendance = models.Attendance.objects.filter(enrollment__course_section=params.get('course_section_id'),dayAttended=datetime.now())
+      attendance = models.Attendance.objects.filter(enrollment__course_section=params.get('course_section_id'),dayAttended=datetime.now(),enrollment__student__user__id=params.get('student_id'))
       if len(attendance) != 0:
         return Response({'message':"Failed! Student is already assigned today"},status=status.HTTP_400_BAD_REQUEST)
       attendance = models.Attendance.objects.create(enrollment=enrollment,isPresent=isTrue,dayAttended=datetime.now())
@@ -1186,7 +1191,7 @@ class GradeList(generics.ListCreateAPIView):
         if params.get('type') == 'F':
           if term.season == 'SP':
             start_date = datetime(int(term.year),5,1).date()
-            end_date = datetime(int(term.year),7,1).date()
+            end_date = datetime(int(term.year),8,1).date()
           else:
             start_date = datetime(int(term.year),12,1).date()
             end_date = datetime(int(term.year),12,31).date()

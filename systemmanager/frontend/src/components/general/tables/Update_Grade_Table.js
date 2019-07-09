@@ -35,8 +35,8 @@ class SearchTerm extends PureComponent {
             <tbody className="col-md-12">
               {this.state.enrollmentList.map(el => (
                 <tr className="col-md-12" key={el.course_section.id}>
-                  <td className="col-md-1">{el.course_section.course.id}</td>
-                  <td className="col-md-2">{el.course_section.course.name}</td>
+                  <td className="col-md-1">{el.course_section.id}</td>
+                  <td className="col-md-2">{el.course_section.course.id} {el.course_section.course.name}</td>
                   <td className="col-md-1">{el.course_section.number}</td>
                   <td className="col-md-2">{el.course_section.faculty.user.firstName} {el.course_section.faculty.user.lastName}</td>
                   <td className="col-md-3">

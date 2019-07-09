@@ -147,6 +147,13 @@ class ViewStudentInfo extends Component {
           <div className="row border rounded m-4 p-4 h-100">
             <div className="col-md-12">
             <Link to={{
+              pathname:"/faculty/update-student-grade",
+              state: {
+                student_username: this.props.data.state.studentEmail,
+                course_section_id: this.props.data.state.courseSectionID
+              }
+            }} className="float-right col-md-3 btn btn-success">Update Grade</Link>
+            <Link to={{
               pathname:"/faculty/assign-student-grade",
               state: {
                 studentEmail:this.props.data.state.studentEmail,

@@ -18,7 +18,7 @@ function checkAddDrop(term) {
       }
     }
     // Fall
-    else if((month>5||month<10)&&term.season=="F"){
+    else if((month>5&&month<10)&&term.season=="F"&&year==term.year){
       let beginTerm = new Date(term.year+"-04-01");
       let endTerm = new Date(term.year+"-09-01");
       if(beginTerm<today<endTerm){

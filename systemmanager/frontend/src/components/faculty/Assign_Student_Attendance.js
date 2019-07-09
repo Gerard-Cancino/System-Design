@@ -45,7 +45,8 @@ class AssignStudentAttendance extends Component {
     comparedList: undefined,
     result:undefined,
     isCorrectTerm:false,
-    doesMatch:false
+    doesMatch:false,
+    hasAttendance:false,
   }
   getEnrollmentAttendance(){
     axios
@@ -102,6 +103,19 @@ class AssignStudentAttendance extends Component {
     })
     this.getEnrollmentAttendance()
   }
+  getAttendance(){
+    axios
+    .get(`/attendance-list.json`,{
+      params:{
+        course_section_id:this.props.data.state.courseSectionID
+      }
+    })
+    .then(res=>{
+      this.setState({attendanceList:res.data.data})
+      if(res.data.data.length==0)
+        this.setState({hasAttendance:false})
+    })
+  }
   handleAttendance(e,studentID){
     let submitAttendanceList = this.state.submitAttendanceList;
     submitAttendanceList.set(studentID,e.target.value)
@@ -124,10 +138,16 @@ class AssignStudentAttendance extends Component {
       .then(res=>{this.setState({result:res})})
       .catch(err=>{this.setState({result:err})})
       current = itMap.next()
+      if(current.done){
+        this.setState({hasAttendance:true}) 
+      }
     }
   }
   render(){
     const today = new Date()
+    if(this.state.hasAttendance){
+      this.getAttendance();
+    }
     return(
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user} />
@@ -143,58 +163,59 @@ class AssignStudentAttendance extends Component {
                   <p className="col-md-12 text-center">The term has not started</p>
                 )
               ):(
-                <div>
-                <p className="col-md-12 text-center text-secondary">Once submitted attendance cannot be assigned for today</p>
-                {this.state.attendanceList==undefined?(
-                  <p>Loading...</p>
+                this.state.enrollmentList==undefined||this.state.attendanceList==undefined?(
+                  <p className="col-md-12 text-center">Loading...</p>
                 ):(
-                  this.state.enrollmentList.length==0?(
-                    <p className="col-md-12 text-center">No students are enrolled in this class</p>
-                  ):(
-                  <form onSubmit={this.submitAttendance}>
-                    <table className="table table-striped">
-                      <thead style={{backgroundColor:"#696969", color:"white"}}>
-                        <tr><td>Student ID</td><td>Student Name</td><td>Is Present</td></tr>
-                      </thead>
-                      <tbody>
-                        {this.state.attendanceList!=0?(
-                          this.state.attendanceList.map(el=>(
-                            <tr>
-                              <td>{el.enrollment.student.user.id}</td>
-                              <td>{el.enrollment.student.user.firstName} {el.enrollment.student.user.lastName}</td>
-                              <td>{el.isPresent==false?("No"):("Yes")}</td>
-                            </tr>
-                          ))
-                        ):(
-                          this.state.enrollmentList.map(el=>(
-                            <tr>
-                              <td>{el.student.user.id}</td>
-                              <td>{el.student.firstName} {el.student.lastName}</td>
-                              <td>
-                                <label>
-                                  <input type="radio" value='true' checked={this.state.submitAttendanceList.get(el.student.user.id) == 'true'} onChange={e=>this.handleAttendance(e,el.student.user.id)}/>
-                                  Yes
-                                </label>
-                                <label>
-                                  <input type="radio" value='false' checked={this.state.submitAttendanceList.get(el.student.user.id) == 'false'} onChange={e=>this.handleAttendance(e,el.student.user.id)}/>
-                                  No   
-                                </label>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                    {this.state.attendanceList.length!=0?(
-                      <p></p>
-                    ):(
-                      <button type="submit" className="col-md-12 btn btn-primary">Submit Attendance</button>
-                    )}
-                  </form>
+                  <div>
+                    <p className="col-md-12 text-center text-secondary">Once submitted attendance cannot be assigned for today</p>
+                      {this.state.enrollmentList.length==0?(
+                        <p className="col-md-12 text-center">No students are enrolled in this class</p>
+                      ):(
+                    <form onSubmit={this.submitAttendance}>
+                      <table className="table table-striped">
+                        <thead style={{backgroundColor:"#696969", color:"white"}}>
+                          <tr><td>Student ID</td><td>Student Name</td><td>Is Present</td></tr>
+                        </thead>
+                        <tbody>
+                          {this.state.attendanceList!=0?(
+                            this.state.attendanceList.map(el=>(
+                              <tr>
+                                <td>{el.enrollment.student.user.id}</td>
+                                <td>{el.enrollment.student.user.firstName} {el.enrollment.student.user.lastName}</td>
+                                <td>{el.isPresent==false?("No"):("Yes")}</td>
+                              </tr>
+                            ))
+                          ):(
+                            this.state.enrollmentList.map(el=>(
+                              <tr>
+                                <td>{el.student.user.id}</td>
+                                <td>{el.student.user.firstName} {el.student.user.lastName}</td>
+                                <td>
+                                  <label>
+                                    <input type="radio" value='true' checked={this.state.submitAttendanceList.get(el.student.user.id) == 'true'} onChange={e=>this.handleAttendance(e,el.student.user.id)}/>
+                                    Yes
+                                  </label>
+                                  <label>
+                                    <input type="radio" value='false' checked={this.state.submitAttendanceList.get(el.student.user.id) == 'false'} onChange={e=>this.handleAttendance(e,el.student.user.id)}/>
+                                    No   
+                                  </label>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                      {this.state.attendanceList.length!=0?(
+                        <p></p>
+                      ):(
+                        <button type="submit" className="col-md-12 btn btn-primary">Submit Attendance</button>
+                      )}
+                    </form>
+                  )
+                }
+              </div>
                 )
               )}
-              </div>
-            )}
             </div>
           </div>
         </section>
