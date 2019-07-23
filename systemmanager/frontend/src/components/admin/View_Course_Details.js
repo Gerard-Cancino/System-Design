@@ -88,7 +88,7 @@ class CourseDetails extends Component {
         {this.state.course==undefined?(
           <p>The course does not exist</p>
         ):(
-          <section className="container-fluid">
+          <section className="container-fluid h-100">
             <div className="row justify-content-center">
               <div className="col-md-10 border rounded m-4 p-4">
                 <div className="col-md-12 ">

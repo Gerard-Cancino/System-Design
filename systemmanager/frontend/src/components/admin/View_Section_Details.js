@@ -61,7 +61,7 @@ class AdminSectionDetails extends Component {
         {this.state.section==undefined?(
           <p></p>
         ):(
-          <section className="container-fluid">
+          <section className="container-fluid h-100">
             <div className="row justify-content-center">
               <div className="col-md-10 border rounded p-4 m-4">
                 <h2 className="col-md-12 text-center"><strong>Course Section Details</strong></h2>

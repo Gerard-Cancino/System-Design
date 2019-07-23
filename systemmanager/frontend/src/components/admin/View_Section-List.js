@@ -17,7 +17,7 @@ class MasterSchedule extends Component {
     return(
       <React.Fragment>
         <Header res={this.state.result}  username={this.props.user}/>
-        <section className="container-fluid">
+        <section className="container-fluid h-100">
           <div className="row justify-content-center">
             <div className="col-md-10 rounded border p-4 m-4">
               <h2 className="col-md-12 text-center">Master Schedule</h2>

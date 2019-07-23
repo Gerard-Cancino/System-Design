@@ -46,7 +46,7 @@ class ViewCourseCatalog extends Component {
         <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-md-10 border rounded m-4 p-4 h-100">
+            <div className="col-md-10 border rounded m-4 p-4">
               <h2 className="col-md-12 text-center">Faculty List</h2>
               <DepartmentSearch onChange={this.handleDepartment} departmentList={this.state.departmentList} isRequired={true} />
               {this.state.facultyList==undefined?(

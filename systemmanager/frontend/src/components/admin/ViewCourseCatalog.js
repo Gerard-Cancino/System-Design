@@ -28,7 +28,7 @@ class ViewCourseCatalog extends Component {
         <Header res={this.state.result}/>
         <section className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-md-10 border rounded m-4 p-4 h-100">
+            <div className="col-md-10 border rounded m-4 p-4">
               <h2 className="col-md-12 text-center">Course Catalog</h2>
               {this.state.departmentList==undefined?(
                 <p></p>

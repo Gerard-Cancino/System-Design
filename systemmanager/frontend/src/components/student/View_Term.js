@@ -112,7 +112,7 @@ class StudentTerm extends Component{
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
+          <div className="row border rounded m-4 p-4">
           <div className="col-md-12">
             <Link to={{
                   pathname: '/student/register-enroll'

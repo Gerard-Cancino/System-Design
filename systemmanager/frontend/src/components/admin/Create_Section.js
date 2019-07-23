@@ -161,7 +161,7 @@ class CreateSection extends Component {
           {this.state.course==undefined?(
             <p>Loading or Error</p>
           ):(
-            <div className="row border rounded m-4 p-4 h-100"> 
+            <div className="row border rounded m-4 p-4"> 
               {this.state.section==undefined?(
                 <p></p>
               ):(

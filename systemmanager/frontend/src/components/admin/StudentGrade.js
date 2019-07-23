@@ -73,7 +73,7 @@ class ViewStudentGrades extends Component {
       <React.Fragment>
         <Header />
         <section className="container-fluid h-100">
-          <div className="row border rounded m-4 p-4 h-100">
+          <div className="row border rounded m-4 p-4">
           <h2 className="col-md-12 text-center">Student Grade</h2>
           <form className="col-md-12" onSubmit={this.handleSubmit}>
             <div className="form-group">

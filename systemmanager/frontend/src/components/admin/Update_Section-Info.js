@@ -149,7 +149,7 @@ class UpdateSectionMaster extends Component {
             {this.state.section==undefined?(
               <p></p>
             ) : (
-              <div className="row border rounded m-4 p-4 h-100">
+              <div className="row border rounded m-4 p-4">
                 <div className="col-md-12">
                   <Link to={{
                     pathname: '/admin/update-section-slot',

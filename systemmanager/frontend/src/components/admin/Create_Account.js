@@ -111,7 +111,7 @@ class CreateAccount extends Component {
     return(
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user}/>
-        <section className="container-fluid">
+        <section className="container-fluid h-100">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">
               <h3 className="text-center">Create Account</h3>

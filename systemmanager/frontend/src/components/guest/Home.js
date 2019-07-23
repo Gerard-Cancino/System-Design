@@ -25,7 +25,7 @@ class Home extends Component {
           <span id="home" style={{paddingTop:'40px'}}></span>
         </section>
         <section className="container-fluid col-md-12" style={{background: '#fe0000',height:'300px', color:'white'}}>
-          <div className="text-center h-100 align-items-center row p-4 justify-content-center" >
+          <div className="text-center align-items-center row p-4 justify-content-center" >
             <div className="col-md-8">
               <h2><strong>Disclaimer:</strong></h2>
               <p>This is not a real university.

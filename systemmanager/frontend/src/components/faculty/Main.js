@@ -9,7 +9,7 @@ class Main extends Component {
     return(
       <React.Fragment>
         <Header username={this.props.user}/>
-        <section className="container-fluid">
+        <section className="container-fluid h-100">
           <div className="row justify-content-center">
             <div className="col-md-10">
               <div className="row m-2 p-4 bg-info">

@@ -139,7 +139,7 @@ class DegreeAudit extends Component {
     return(
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user}/>
-        <section className="container-fluid">
+        <section className="container-fluid h-100">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded m-4 p-4">
               <h2 className="col-md-12 text-center">View Student's Degree Audit</h2>
