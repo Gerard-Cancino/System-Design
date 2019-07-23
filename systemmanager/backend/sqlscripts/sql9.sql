@@ -1,3 +1,22 @@
+-- setting a number to 2 which needed to be 2
+UPDATE course_section
+SET number = 2
+WHERE id = 41036;
+
+UPDATE course_section
+SET number = 2
+WHERE id = 41038;
+
+UPDATE course_section 
+SET numOfTaken =20
+WHERE id = 41037 AND 41038;
+
+delete from enrollment where course_section_id = 20857;
+INSERT INTO `course_section` (`id`,`number`,`numOfSeats`,`numOfTaken`,`course_id`,`room_id`,`term_id`,`faculty_id`) VALUES
+(500010, 1, 40, 40, 'MA240', 'ET12', 5, 19901);
+INSERT INTO `course_section` (`id`,`number`,`numOfSeats`,`numOfTaken`,`course_id`,`room_id`,`term_id`,`faculty_id`) VALUES
+(500011, 1, 40, 40, 'MA224', 'ET12', 5, 19901);
+
 INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
 (501,'2017-12-20',31029,'40301'),
 (502,'2017-12-20',31031,'40301'),
@@ -1507,7 +1526,6 @@ INSERT INTO `grade` (`id`,`type`,`letterGrade`,`course_section_id`,`student_id`)
 (931,'F','B',41036,40420),
 (932,'M','B',41038,40420),
 (933,'F','A',41038,40420);
-select * from transcript;
 
 
 -- transcript
@@ -1656,7 +1674,6 @@ INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`stud
 (172,'B','2019','SP','EE241','40311'),
 (173,'A','2019','SP','EE264','40311');
 
-SELECT * FROM COURSE_SECTION WHERE ID = 500010;
 INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`student_id`) VALUES
 (174,'A','2018','SP','EE150','40312'),
 (175,'A','2018','SP','EE160','40312'),
@@ -1693,219 +1710,6 @@ INSERT INTO `transcript` (`id`,`gradeReceived`,`year`,`season`,`course_id`,`stud
 (202,'A','2018','F','EE300','40314'),
 (203,'D','2018','F','EE310','40314'),
 (204,'A','2019','SP','EE251','40314'),
-Skip to content
-Using Gmail with screen readers
-4 of 532
-cancino transcripts+e nrollment+grade working with recent db
-Inbox
-	x
-DonOfNY15 .
-	
-AttachmentsMon, Jul 8, 10:24 PM (15 hours ago)
-	
-to me
-
-Attachments area
-Preview attachment cleanedsql.rtf
-[Rich Text]
-	
-	
-	
-Page
-1
-/58
-Page 1 of 58
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(501,'2017-12-20',31029,'40301'),
-
-(502,'2017-12-20',31031,'40301'),
-
-(503,'2017-12-20',31014,'40301'),
-
-(504,'2017-12-20',500010,'40301'),
-
-(505,'2017-12-20',500011,'40301'),
-
-(506,'2018-05-20',40027,'40301'),
-
-(507,'2018-05-20',40029,'40301'), -- 18 more DONT GO OVER 18
-
-(508,'2018-05-20',40031,'40301'), -- 18 more
-
-(509,'2018-12-20',41037,'40301'), -- only 19 more of these
-
-(510,'2018-12-20',41035,'40301'),
-
-(512,'2019-05-20',50037,'40301'),
-
-(513,'2019-05-20',50031,'40301');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(514,'2017-12-20',31029,'40302'),
-
-(515,'2017-12-20',31031,'40302'),
-
-(516,'2017-12-20',31014,'40302'),
-
-(517,'2017-12-20',500010,'40302'),
-
-(518,'2017-12-20',500011,'40302'),
-
-(519,'2018-05-20',40027,'40302'),
-
-(520,'2018-05-20',40029,'40302'), -- 17 more DONT GO OVER 18
-
-(521,'2018-05-20',40031,'40302'), -- 17 more
-
-(522,'2018-12-20',41037,'40302'), -- only 18 more of these
-
-(523,'2018-12-20',41035,'40302'),
-
-(526,'2019-05-20',50037,'40302'),
-
-(527,'2019-05-20',50031,'40302');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(528,'2017-12-20',31029,'40303'),
-
-(529,'2017-12-20',31031,'40303'),
-
-(530,'2017-12-20',31014,'40303'),
-Page 1Page 1 of 58
-Page 2 of 58
-
-(531,'2017-12-20',500010,'40303'),
-
-(532,'2017-12-20',500011,'40303'),
-
-(533,'2018-05-20',40027,'40303'),
-
-(534,'2018-05-20',40029,'40303'), -- 16 more DONT GO OVER 18
-
-(535,'2018-05-20',40031,'40303'), -- 16 more
-
-(536,'2018-12-20',41037,'40303'), -- only 17 more of these
-
-(537,'2018-12-20',41035,'40303'),
-
-(540,'2019-05-20',50037,'40303'),
-
-(541,'2019-05-20',50031,'40303');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(542,'2017-12-20',31029,'40304'),
-
-(543,'2017-12-20',31031,'40304'),
-
-(544,'2017-12-20',31014,'40304'),
-
-(545,'2017-12-20',500010,'40304'),
-
-(546,'2017-12-20',500011,'40304'),
-
-(547,'2018-05-20',40027,'40304'),
-
-(548,'2018-05-20',40029,'40304'), -- 15 more DONT GO OVER 18
-
-(549,'2018-05-20',40031,'40304'), -- 15 more
-
-(550,'2018-12-20',41037,'40304'), -- only 16 more of these
-
-(551,'2018-12-20',41035,'40304'),
-
-(554,'2019-05-20',50037,'40304'),
-
-(555,'2019-05-20',50031,'40304');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(556,'2017-12-20',31029,'40305'),
-
-(557,'2017-12-20',31031,'40305'),
-
-(558,'2017-12-20',31014,'40305'),
-
-(559,'2017-12-20',500010,'40305'),
-
-(560,'2017-12-20',500011,'40305'),
-
-(561,'2018-05-20',40027,'40305'),
-
-(562,'2018-05-20',40029,'40305'), -- 14 more DONT GO OVER 18
-
-(563,'2018-05-20',40031,'40305'), -- 14 more
-
-(564,'2018-12-20',41037,'40305'), -- only 15 more of these
-
-(565,'2018-12-20',41035,'40305'),
-Page 2 of 58
-Page 3 of 58
-
-(568,'2019-05-20',50037,'40305'),
-
-(569,'2019-05-20',50031,'40305');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(570,'2017-12-20',31029,'40306'),
-
-(571,'2017-12-20',31031,'40306'),
-
-(572,'2017-12-20',31014,'40306'),
-
-(573,'2017-12-20',500010,'40306'),
-
-(574,'2017-12-20',500011,'40306'),
-
-(575,'2018-05-20',40027,'40306'),
-
-(576,'2018-05-20',40029,'40306'), -- 13 more DONT GO OVER 18
-
-(577,'2018-05-20',40031,'40306'), -- 13 more
-
-(578,'2018-12-20',41037,'40306'), -- only 14 more of these
-
-(579,'2018-12-20',41035,'40306'),
-
-(582,'2019-05-20',50037,'40306'),
-
-(583,'2019-05-20',50031,'40306');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-
-(584,'2017-12-20',31029,'40307'),
-
-(585,'2017-12-20',31031,'40307'),
-
-(586,'2017-12-20',31014,'40307'),
-
-(587,'2017-12-20',500010,'40307'),
-
-(588,'2017-12-20',500011,'40307'),
-
-(589,'2018-05-20',40027,'40307'),
-
-(590,'2018-05-20',40029,'40307'), -- 12 more DONT GO OVER 18
-
-(591,'2018-05-20',40031,'40307'), -- 12 more
-
-(592,'2018-12-20',41037,'40307'), -- only 13 more of these
-
-(593,'2018-12-20',41035,'40307'),
-
-(596,'2019-05-20',50037,'40307'),
-
-(597,'2019-05-20',50031,'40307');
-
-INSERT INTO `enrollment` (`id`,`dateEnrolled`,`course_section_id`,`student_id`) VALUES
-Page 3 of 58
-cleanedsql.rtf
-Page 1 of 58
 (205,'B','2019','SP','EE241','40314'),
 (206,'A','2019','SP','EE264','40314');
 

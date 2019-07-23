@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route,Redirect} from 'react-router-dom';
+import {BrowserRouter, Route,Redirect,Switch} from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -10,6 +10,7 @@ import GuestLogin from './guest/Login.js';
 import GuestSearchMasterSchedule from './guest/SearchMasterSchedule.js';
 import GuestViewCourseCatalog from './guest/ViewCourseCatalog.js';
 import GuestViewFacultyRoom from './guest/View_Faculty_Room.js';
+import Guest404 from './guest/404.js'
 
 import AdminMain from './admin/Main.js';
 import AdminAddPrereq from './admin/Add_Prereq.js';
@@ -18,6 +19,7 @@ import AdminCreateCourse from './admin/Create_Course.js';
 import AdminCreateSection from './admin/Create_Section.js';
 import AdminRegisterStudentEnroll from './admin/Register_Student-Enroll';
 import AdminUpdateCourse from './admin/Update_Course';
+import AdminUpdateCourseMajor from './admin/Update_Course_Major.js';
 import AdminUpdateSectionInfo from './admin/Update_Section-Info';
 import AdminUpdateSectionSlot from './admin/Update_Section-Slots.js';
 import AdminViewAddStudentHold from './admin/View_Add_Student-Hold';
@@ -66,16 +68,6 @@ import ResearcherMain from './researcher/Main.js';
 
 const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
   return class WithAuthorization extends React.Component {
-    state = {
-      props: '',
-      user: {
-        email: undefined,
-        role: 'G',
-      }
-    }
-    componentDidMount(){
-      this.setState({user:user})
-    }
     getUser () {
       axios
       .get('/token-user',{
@@ -95,20 +87,20 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
       this.getUser()
     }
     render(){
-      if (localStorage.getItem('token')!=undefined && user.email==undefined){
-        this.getUser()
-      }
       if (localStorage.getItem('token')==undefined && user.email!=undefined){
         handleUser(undefined,'G')
         window.location.replace("/login")
         return null;
 
       }
-      if (allowedRoles.includes(user.role)) {
+      if (localStorage.getItem('token')!=undefined && user.email==undefined){
+        this.getUser()
+      }
+      else if (allowedRoles.includes(user.role)) {
         return <WrappedComponent handleGetToken={this.handleGetToken.bind(this)} user={user.email} data={this.props.location}/>
       }
       else{
-        if (user.role=="A"){
+        if (user.role=='A'){
           window.location.replace("/admin/main")
           return null;
         }
@@ -122,6 +114,10 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
         }
         else if (user.role=='R'){
           window.location.replace("/researcher/main")
+          return null;
+        }
+        else if (user.role=='G'){
+          window.location.replace("/404")
           return null;
         }
       }
@@ -138,13 +134,13 @@ class MyRoute extends Component {
       role: 'G',
     }
   }
-  
   handleUser = (email,role) =>{
     this.setState({user:{email:email,role:role}})
   }
   render() {
     const GGuestMain = Authorization(this.state.user,this.handleUser.bind(this),GuestMain,['G'])
     const GGuestLogin = Authorization(this.state.user,this.handleUser.bind(this),GuestLogin,['G'])
+    const GGuest404 = Authorization(this.state.user,this.handleUser.bind(this),Guest404,['G'])
 
     const AAdminAddPrereq = Authorization(this.state.user,this.handleUser.bind(this),AdminAddPrereq,['A']);
     const AAdminCreateAccount = Authorization(this.state.user,this.handleUser.bind(this),AdminCreateAccount,['A']);
@@ -153,6 +149,7 @@ class MyRoute extends Component {
     const AAdminMain = Authorization(this.state.user,this.handleUser.bind(this),AdminMain,['A']);
     const AAdminRegisterStudentEnroll = Authorization(this.state.user,this.handleUser.bind(this),AdminRegisterStudentEnroll,['A']);
     const AAdminUpdateCourse = Authorization(this.state.user,this.handleUser.bind(this),AdminUpdateCourse,['A']);
+    const AAdminUpdateCourseMajor = Authorization(this.state.user,this.handleUser.bind(this),AdminUpdateCourseMajor,['A']);
     const AAdminUpdateSectionInfo = Authorization(this.state.user,this.handleUser.bind(this),AdminUpdateSectionInfo,['A']);
     const AAdminUpdateSectionSlot = Authorization(this.state.user,this.handleUser.bind(this),AdminUpdateSectionSlot,['A']);
     const AAdminViewAddStudentHold = Authorization(this.state.user,this.handleUser.bind(this),AdminViewAddStudentHold,['A']);
@@ -198,11 +195,12 @@ class MyRoute extends Component {
 
     return (
       <BrowserRouter>
-        <div>
+        <Switch>
           <Route path="/" exact component={GGuestMain} />
           <Route path="/master-schedule" component={GuestSearchMasterSchedule} />
           <Route path="/course-catalog" component={GuestViewCourseCatalog} />
           <Route path="/view-faculty-room" component={GuestViewFacultyRoom} />
+          <Route path="/404" component={Guest404} />
 
           <Route path="/login" component={GGuestLogin} />
 
@@ -213,6 +211,7 @@ class MyRoute extends Component {
           <Route path="/admin/create-section" component={AAdminCreateSection} />
           <Route path="/admin/register-student-enroll" component={AAdminRegisterStudentEnroll} />
           <Route path="/admin/update-course" component={AAdminUpdateCourse} />
+          <Route path="/admin/update-course-major" component={AAdminUpdateCourseMajor} />
           <Route path="/admin/update-section-info" component={AAdminUpdateSectionInfo} />
           <Route path="/admin/update-section-slot" component={AAdminUpdateSectionSlot} />
           <Route path="/admin/view-add-student-hold" component={AAdminViewAddStudentHold} />
@@ -257,7 +256,9 @@ class MyRoute extends Component {
 
           <Route path="/researcher/main" component={RResearcherMain} />
 
-        </div>
+          <Route component={GGuest404} />
+
+        </Switch>
       </BrowserRouter>
     );
   }

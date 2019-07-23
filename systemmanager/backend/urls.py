@@ -42,6 +42,7 @@ urlpatterns = [
     path('prerequisite-details.json/<str:id>', api.PrerequisiteDetails.as_view()),
     path('prerequisite-list.json', api.PrerequisiteList.as_view()),
     path('major-details.json/<int:id>', api.MajorDetails.as_view()),
+    path('minor-details.json/<int:id>', api.MinorDetails.as_view()),
     path('major-list.json', api.MajorList.as_view()),
     path('minor-list.json', api.MinorList.as_view()),
     path('student-details.json/<str:email>', api.StudentDetails.as_view()),

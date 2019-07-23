@@ -90,8 +90,11 @@ class AddPrereq extends Component {
           <div className="row border rounded m-4 p-4 h-100">
             <div className="col-md-12">
               <Link to={{
-                pathname: '/admin/view-course-list'
-              }} className="col-md-2 btn btn-success float-right">Back to Course List</Link>
+                pathname: '/admin/update-course-major',
+                state: {
+                  courseID:this.state.courseID
+                }
+              }} className="col-md-3 btn btn-success float-right">Add/Remove Course Major/Minor</Link>
             </div>
             {!this.state.course?(
               <p></p>

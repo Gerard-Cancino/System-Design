@@ -222,12 +222,12 @@ class CourseDetails(generics.RetrieveUpdateDestroyAPIView):
           'Course: ' + str(course.id),
           'The course was removed and all enrollments were dropped',
           'auto@garageuniversity.me',
-          [enrollment.student.user.second_email],
+          [enrollment.student.user.email + "@garageuniversity.me"],
           connection=connection,
         )
         confirmation_email.send()
       except:
-        print('student needs second email')
+        return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
     connection.close()
     course.delete()
     return Response({'message':"Successful! Removed the course. Please return to the course list"},status=status.HTTP_200_OK)
@@ -253,7 +253,7 @@ class CourseList(generics.ListCreateAPIView):
       params.get('numberOfCredits') is not None or \
       params.get('isInCatalog') is not None:
       department = models.Department.objects.get(code=params.get('department'))
-      if len(description) > 1000 or len(description) == 0:
+      if len(params.get('description')) > 1000 or len(params.get('description')) == 0:
         return Response({'message':"The maximum length for description is 1000 and minimum length is 1"},status=status.HTTP_400_BAD_REQUEST)
       if isinstance(params.get('number'),int):
         return Response({'message': 'Failed! The id inputted is not a number'},status=status.HTTP_400_BAD_REQUEST)
@@ -364,12 +364,12 @@ class CourseSectionDetails(generics.RetrieveUpdateDestroyAPIView):
           'Course Section: ' + str(enrollment.course_section.id),
           'The course section was removed and all enrollments were dropped',
           'auto@garageuniversity.me',
-          [enrollment.student.user.second_email],
+          [enrollment.student.user.email + "@garageuniversity.me"],
           connection=connection,
         )
         confirmation_email.send()
       except:
-        print('student needs second email')
+        return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
     connection.close()
     queryset.delete()
     return Response({'message': 'Successfully deleted section'}, status=status.HTTP_200_OK)
@@ -537,12 +537,12 @@ class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
         'Enrollment: ' + str(course_section.id),
         'The student was dropped from a course',
         'auto@garageuniversity.me',
-        [enrollment.student.user.second_email],
+        [enrollment.student.user.email + "@garageuniversity.me"],
         connection=connection,
       )
       confirmation_email.send()
     except:
-      print('student needs second email')
+      return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
     connection.close()
     return Response({'message':'Successfully dropped class'},status=status.HTTP_200_OK)
 
@@ -649,16 +649,19 @@ class EnrollmentList(generics.ListCreateAPIView):
         serializer = serializers.EnrollmentSerializer(enrollment)
         section.numOfTaken = section.numOfTaken+1
         section.save()
-        connection = mail.get_connection()
-        confirmation_email = mail.EmailMessage(
-          'Course Section: ' + str(enrollment.course_section.id),
-          'The student is enrolled in the class',
-          'auto@garageuniversity.me',
-          [enrollment.student.user.second_email],
-          connection=connection,
-        )
-        confirmation_email.send()
-        connection.close()
+        try:
+          connection = mail.get_connection()
+          confirmation_email = mail.EmailMessage(
+            'Course Section: ' + str(enrollment.course_section.id),
+            'The student is enrolled in the class',
+            'auto@garageuniversity.me',
+            [enrollment.student.user.email + "@garageuniversity.me"],
+            connection=connection,
+          )
+          confirmation_email.send()
+          connection.close()
+        except:
+          return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'data':serializer.data,'message':"Successful!!  The student has been enrolled to the course section"},status=status.HTTP_201_CREATED)
     return Response({'message':'Could not enroll the student'},status=status.HTTP_400_BAD_REQUEST)
@@ -722,6 +725,7 @@ class RoomList(generics.ListCreateAPIView):
       room = models.Room.objects.all()
       serializer = serializers.RoomSerializer(room)
       return Response({'data':serializer.data,'message':"Successful!"})
+@method_decorator(csrf_exempt, name='dispatch')
 class MajorDetails(generics.RetrieveUpdateDestroyAPIView):
   def get_object(self,id):
     try:
@@ -733,6 +737,37 @@ class MajorDetails(generics.RetrieveUpdateDestroyAPIView):
     major = self.get_object(id)
     serializer = serializers.MajorSerializer(major)
     return Response({'data':serializer.data,'message':"Successful!"})
+  def put(self,request,id):
+    params = request.data
+    print(params)
+    major = self.get_object(id)
+    if params.get('courseID') is not None:
+      course = models.Course.objects.get(id=params.get('courseID'))
+      if params.get('isAdding') == 'true':
+        major.requirement.add(course)
+      elif params.get('isAdding') == 'false':
+        major.requirement.remove(course)
+      major.save()
+      return Response({'message':'Successfully'}, status=status.HTTP_200_OK)
+@method_decorator(csrf_exempt, name='dispatch')
+class MinorDetails(generics.RetrieveUpdateDestroyAPIView):
+  def get_object(self,id):
+    try:
+      minor = models.Minor.objects.get(id=id)
+      return minor
+    except models.Minor.DoesNotExist:
+      raise Http404
+  def put(self,request,id):
+    params = request.data
+    minor = self.get_object(id)
+    if params.get('courseID') is not None:
+      course = models.Course.objects.get(id=params.get('courseID'))
+      if params.get('isAdding') == 'true':
+        minor.requirement.add(course)
+      elif params.get('isAdding') == 'false':
+        minor.requirement.remove(course)
+      minor.save()
+      return Response({'message':'Successfully'}, status=status.HTTP_200_OK)
 class MajorList(generics.ListCreateAPIView):
   queryset = models.Major.objects.all()
   serializer_class = serializers.MajorSerializer
@@ -741,6 +776,10 @@ class MajorList(generics.ListCreateAPIView):
     if params.get("department") is not None:
       major = models.Major.objects.filter(department_id=params.get('department'))
       serializer = serializers.MajorSerializer(major,many=True)
+      return Response({'data':serializer.data,"message":"Successful"})
+    if params.get("courseID") is not None:
+      majorList = models.Major.objects.filter(requirement=params.get('courseID'))
+      serializer = serializers.MajorSerializer(majorList,many=True)
       return Response({'data':serializer.data,"message":"Successful"})
     major = models.Major.objects.all().order_by('department')
     serializer = serializers.MajorSerializer(major,many=True)
@@ -753,6 +792,10 @@ class MinorList(generics.ListCreateAPIView):
     if params.get("department") is not None:
       minor = models.Minor.objects.filter(department_id=params.get('department'))
       serializer = serializers.MinorSerializer(minor,many=True)
+      return Response({'data':serializer.data,"message":"Successful"})
+    if params.get("courseID") is not None:
+      minorList = models.Minor.objects.filter(requirement=params.get('courseID'))
+      serializer = serializers.MinorSerializer(minorList,many=True)
       return Response({'data':serializer.data,"message":"Successful"})
     minor = models.Minor.objects.all().order_by('department')
     serializer = serializers.MinorSerializer(minor,many=True)
@@ -1143,12 +1186,12 @@ class GradeDetails(generics.RetrieveUpdateDestroyAPIView):
                 'Course Section:' + str(grade.course_section.id),
                 'The grade for this section has been changed',
                 'auto@garageuniversity.me',
-                [grade.student.user.second_email],
+                [grade.student.user.email + "@garageuniversity.me"],
                 connection=connection,
               )
               confirmation_email.send()
             except:
-              print('student needs second email')
+              return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
             connection.close()
             serializer = serializers.GradeSerializer(queryset)
             return Response({'message':"Successful!! Grade has been updated"}, status=status.HTTP_200_OK)
@@ -1277,12 +1320,12 @@ class StudentMajorDetails(generics.RetrieveUpdateDestroyAPIView):
         'Student Major' + str(student_major.major.name),
         "The student's major has been changed",
         'auto@garageuniversity.me',
-        [student_major.student.user.second_email],
+        [student_major.student.user.email + "@garageuniversity.me"],
         connection=connection,
       )
       confirmation_email.send()
     except:
-      print('student needs second email')
+      return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
     connection.close()
     student_major.delete()
     #Email
@@ -1297,12 +1340,12 @@ class StudentMinorDetails(generics.RetrieveUpdateDestroyAPIView):
         'Student Minor' + str(student_minor.minor.name),
         "The student's minor has been changed",
         'auto@garageuniversity.me',
-        [student_minor.student.user.second_email],
+        [student_minor.student.user.email + "@garageuniversity.me"],
         connection=connection,
       )
       confirmation_email.send()
     except:
-      print('student needs second email')
+      return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
     connection.close()
     student_minor.delete()
     #Email
@@ -1338,12 +1381,12 @@ class StudentMajorList(generics.ListCreateAPIView):
           'Student Major' + str(student_major.major.name),
           "The student's major has been changed",
           'auto@garageuniversity.me',
-          [student_major.student.user.second_email],
+          [student_major.student.user.email + "@garageuniversity.me"],
           connection=connection,
         )
         confirmation_email.send()
       except:
-        print('student needs second email')
+        return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
       connection.close()
       serializer = serializers.StudentMajorSerializer(student_major)
       return Response({'data':serializer.data, 'message':'Successful!!  The student is assigned to the major'},status=status.HTTP_201_CREATED)
@@ -1372,12 +1415,12 @@ class StudentMinorList(generics.ListCreateAPIView):
           'Student Minor' + str(student_minor.minor.name),
           "The student's minor has been changed",
           'auto@garageuniversity.me',
-          [student_minor.student.user.second_email],
+          [student_minor.student.user.email + "@garageuniversity.me"],
           connection=connection,
         )
         confirmation_email.send()
       except:
-        print('student needs second email')
+        return Response({'message': 'This student does not have a school email.  Please have the server manager create one.'}, status=status.HTTP_400_BAD_REQUEST)
       connection.close()
       serializer = serializers.StudentMinorSerializer(student_minor)
       return Response({'data':serializer.data, 'message':"Successful!!  The student is assigned to the minor"},status=status.HTTP_201_CREATED)

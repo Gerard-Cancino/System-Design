@@ -58,47 +58,52 @@ class UpdateCourse extends Component {
       <React.Fragment>
         <Header res={this.state.result} username={this.props.user}/>
         <section className="container-fluid h-100">
-          <div className="row h-100 p-4 m-4 border rounded">
-            <div className="col-md-12">
-              {this.state.status==undefined?(
-                <p></p>
-              ):(
-                <h3 className="col-md-3 float-left">Successfully Updated!</h3>
-              )}
-              <Link to={{
-                pathname: '/admin/add-prerequisite',
-                state: {
-                  courseID:this.state.courseID
-                }
-              }} className="col-md-2 btn btn-success float-right">Add Prerequisites</Link>
+          <div className="row justify-content-center">
+            <div className="col-md-12 p-4 m-4 border rounded">
+              <div className="col-md-12">
+                {/* {this.state.status==undefined?(
+                  <s></p>
+                ):(
+                  <h3 className="col-md-3 float-left">Successfully Updated!</h3>
+                )} */}
+                <Link to={{
+                  pathname: '/admin/add-prerequisite',
+                  state: {
+                    courseID:this.state.courseID
+                  }
+                }} className="offset-md-9 col-md-3 btn btn-success">Add Prerequisites</Link>
+              </div>
+              <div className="col-md-12">
+                <h2 className="col-md-12 text-center">Update Course</h2>
+                {this.state.course==undefined?(
+                  <p></p>
+                ):(
+                  <form className="col-md-12" onSubmit={this.handleSubmit}>
+                    <div className="form-group col-md-12">
+                      <label>Course Description</label>
+                      <textarea className="form-control" onChange={this.handleCourseDescription} placeholder={this.state.course.description}/>
+                    </div>
+                    <div className="form-group col-md-12">
+                      <label>Course Credits</label>
+                      <input className="form-control" onChange={this.handleCourseCredits} placeholder={this.state.course.numberOfCredits}/>
+                    </div>
+                    <div className="form-group radio col-md-12">
+                      <label>Course is in Catalog?</label>
+                      <label>
+                        <input type="radio" value={true} checked={this.state.courseIsInCatalog == true} onChange={this.handleIsInCatalog}/>
+                        True
+                      </label>
+                      <label>
+                        <input type="radio" value={false} checked={this.state.courseIsInCatalog == false} onChange={this.handleIsInCatalog}/>
+                        False   
+                      </label>
+                    </div> 
+                    <button className="btn btn-primary col-md-12" type="submit">Update Course</button>
+                  </form>
+                )}
+              </div>
+             
             </div>
-            <h2 className="col-md-12 text-center">Update Course</h2>
-          {this.state.course==undefined?(
-            <p></p>
-          ):(
-            <form className="col-md-12" onSubmit={this.handleSubmit}>
-              <div className="form-group col-md-12">
-                <label>Course Description</label>
-                <textarea className="form-control" onChange={this.handleCourseDescription} placeholder={this.state.course.description}/>
-              </div>
-              <div className="form-group col-md-12">
-                <label>Course Credits</label>
-                <input className="form-control" onChange={this.handleCourseCredits} placeholder={this.state.course.numberOfCredits}/>
-              </div>
-              <div className="form-group radio col-md-12">
-                <label>Course is in Catalog?</label>
-                <label>
-                  <input type="radio" value={true} checked={this.state.courseIsInCatalog == true} onChange={this.handleIsInCatalog}/>
-                  True
-                </label>
-                <label>
-                  <input type="radio" value={false} checked={this.state.courseIsInCatalog == false} onChange={this.handleIsInCatalog}/>
-                  False   
-                </label>
-              </div> 
-              <button className="btn btn-primary col-md-12" type="submit">Update Course</button>
-            </form>
-          )}
           </div>
         </section>
         <Footer />
