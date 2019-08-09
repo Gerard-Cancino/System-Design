@@ -71,6 +71,7 @@ class UpdateStudentGrade extends Component {
     })
     .then(res=>{
       this.setState({gradeList:res.data.data})
+
     })
     .catch(err=>{
       this.setState({result:err})
@@ -88,14 +89,12 @@ class UpdateStudentGrade extends Component {
     })
     .then(res=>{
       this.setState({result:res})
-      axios
-      .get(`/grade-details.json/${id}`)
-      .then(res=>{
-        this.setState({grade:res.data.data,result:undefined})
-      })
-      .catch(err=>{
-        this.setState({result:err})
-      })
+      this.props.history.push({
+        pathname: '/faculty/view-student-info',
+        state:{
+          courseSectionID:this.props.data.state.course_section_id,
+          studentEmail:this.props.data.state.student_username}
+        })
     })
     .catch(err=>{
       this.setState({result:err})

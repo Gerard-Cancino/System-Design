@@ -97,7 +97,7 @@ const Authorization = (user,handleUser, WrappedComponent, allowedRoles) => {
         this.getUser()
       }
       else if (allowedRoles.includes(user.role)) {
-        return <WrappedComponent handleGetToken={this.handleGetToken.bind(this)} user={user.email} data={this.props.location}/>
+        return <WrappedComponent handleGetToken={this.handleGetToken.bind(this)} user={user.email} data={this.props.location} history={this.props.history}/>
       }
       else{
         if (user.role=='A'){

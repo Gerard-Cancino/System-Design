@@ -101,6 +101,7 @@ class AssignStudentMajorMinor extends Component {
       this.getMajorMinor(res.data.data.user.email)
     })
     .catch(err=>{
+      this.getMajorMinor(this.state.student.user.email)
       this.setState({result:err})
     })
   }
@@ -127,6 +128,7 @@ class AssignStudentMajorMinor extends Component {
       this.setState({minorList:res.data.data})
     })
     .catch(err=>{
+      this.getMajorMinor(this.state.student.user.email)
       this.setState({result:err})
     })
   }
@@ -139,6 +141,10 @@ class AssignStudentMajorMinor extends Component {
         this.setState({result:res})
         this.getMajorMinor(this.state.student.user.email)
       })
+      .catch(err=>{
+        this.getMajorMinor(this.state.student.user.email)
+        this.setState({result:err})
+      })
     }
     else{
       axios
@@ -146,6 +152,10 @@ class AssignStudentMajorMinor extends Component {
       .then(res=>{
         this.setState({result:res})
         this.getMajorMinor(this.state.student.user.email)
+      })
+      .catch(err=>{
+        this.getMajorMinor(this.state.student.user.email)
+        this.setState({result:err})
       })
     }
   }

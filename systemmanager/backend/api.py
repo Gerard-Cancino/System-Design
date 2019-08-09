@@ -516,22 +516,21 @@ class EnrollmentDetails(generics.RetrieveUpdateDestroyAPIView):
       end_date=datetime(int(term.year),5,31).date()
     try:
       transcript = models.Transcript.objects.get(student__user__email=student_email,course_id=enrollment.course_section.course.id,year=term.year,season=term.season)
-      if start_date < date < end_date:
+      if start_date < date and date < end_date:
         transcript.gradeReceived = 'F'
       else:
+        print('test')
+        # print(str(enrollment.course.section.term.year) + ' ' +  str(enrollment.course_section.term.season) + ' ' + str(enrollment.course_section.course.id) + " " + str(enrollment.student.user.id))
         transcript.delete()
     except:
       print('student is missing transcript')
+
     enrollment.delete()
+    print('is running still')
     course_section = enrollment.course_section
     course_section.numOfTaken = course_section.numOfTaken - 1
     course_section.save()
     connection = mail.get_connection()
-    try:
-      transcript = models.Transcript.objects.get(year=enrollment.course_section.term.year,season=enrollment.course_section.term.season,course_id=enrollment.course_section.course.id,student_id=enrollment.student.user.id)
-      transcript.delete()
-    except:
-      print('Could not find transcript')
     try:
       confirmation_email = mail.EmailMessage(
         'Enrollment: ' + str(course_section.id),
@@ -635,13 +634,32 @@ class EnrollmentList(generics.ListCreateAPIView):
         for enroll in enrollmentList:
           if enroll.course_section.id == params.get('section'):
             return Response({'message':"Student is already enrolled in this class"},status=status.HTTP_400_BAD_REQUEST)
-          for slot in section.slot.all():
-            enrollment = models.Enrollment.objects.filter(course_section__term__id=enroll.course_section.term.id,course_section__slot__time__id=slot.time.id,course_section__slot__day__id=slot.day.id)
-            if enrollment.count() != 0:
-              return Response({'message': "The student is enrolled in a class with the same time slot"},status=status.HTTP_400_BAD_REQUEST)
- 
+        for slot in section.slot.all():
+          enrollment = models.Enrollment.objects.filter(course_section__term__id=section.term.id, course_section__slot__id=slot.id, student__user__id=student.user.id)
+          if enrollment.count() != 0:
+            print(slot.id)
+            return Response({'message': "The student is enrolled in a class with the same time slot"},status=status.HTTP_400_BAD_REQUEST)
+        prereqList = models.Prerequisite.objects.filter(course_id=section.course.id)
+        print(prereqList)
+        transcriptList = models.Transcript.objects.filter(student_id=student.user.id)
+        print(transcriptList)
+        hasPrerequisites = True
+        for prereq in prereqList:
+          noPrerequite = True
+          for transcript in transcriptList:
+            if prereq.course.id == transcript.course.id:
+              noPrerequite = False
+          if noPrerequite:
+            hasPrerequisites = False
+        if not hasPrerequisites:
+          print('no prereqs')
+          print(params.get('isConfirmed'))
+          if params.get('isConfirmed') == False or params.get('isConfirmed') is None:
+            return Response ({'message': "The student is missing prerequisites."},status=status.HTTP_409_CONFLICT)
         try:
+          print('creating transcript')
           transcript = models.Transcript.objects.create(course_id=section.course.id,student_id=student.user_id,year=section.term.year,season=section.term.season)
+          print('transcript created')
         except:
           return Response({'message':"Student has a course section of the same term similar to this one."},status=status.HTTP_400_BAD_REQUEST)
         enrollment = models.Enrollment.objects.create(student=student,course_section=section,dateEnrolled=datetime.now().date())
@@ -1234,7 +1252,7 @@ class GradeList(generics.ListCreateAPIView):
         if params.get('type') == 'F':
           if term.season == 'SP':
             start_date = datetime(int(term.year),5,1).date()
-            end_date = datetime(int(term.year),8,1).date()
+            end_date = datetime(int(term.year),9,1).date()
           else:
             start_date = datetime(int(term.year),12,1).date()
             end_date = datetime(int(term.year),12,31).date()

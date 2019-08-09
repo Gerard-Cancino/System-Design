@@ -53,7 +53,7 @@ class ViewClassRoster extends Component {
                     <td>{el.student.user.firstName} {el.student.user.lastName}</td>
                     <td><Link to={{
                       pathname:"/faculty/view-student-info",
-                      state:{enrollmentID:el.id,
+                      state:{
                         courseSectionID:this.props.data.state.courseSectionID,
                         studentEmail:el.student.user.email}
                       }}className="col-md-12 btn btn-info">View Student</Link>

@@ -9,18 +9,19 @@ import Footer from './layout/Footer.js';
 // Add Grade Too
 function checkTerm() {
   let today = new Date();
+  console.log(today);
   let year = parseInt(today.getFullYear());
   // Spring november 4 2019 to january 27 2020
   // Fall April 1 to Sept 1
   // Fall + Spring
   let month = parseInt(today.getMonth());
   // Spring
-  if((month>=1&&month<=7)){
-    let beginTerm = new Date((year),'10','04');
-    let endTerm = new Date(year+1,'01','27');
+  if((month>=1&&month<=9)){
+    let beginTerm = new Date((year),'00','04');
+    let endTerm = new Date(year,'08','27');
     console.log(beginTerm)
     console.log(endTerm)
-    if(beginTerm<today<endTerm){
+    if(beginTerm<today&&today<endTerm){
       return ({season: 'SP',year:year});
     }
   }
@@ -30,7 +31,7 @@ function checkTerm() {
     let endTerm = new Date(year,'09','01');
     console.log(beginTerm)
     console.log(endTerm)
-    if(beginTerm<today<endTerm){
+    if(beginTerm<today&&today<endTerm){
       return ({season: 'F',year:year});
     }
   }
@@ -64,7 +65,7 @@ class SectionDetails extends Component {
       if (slot.day.id==today.getDay())
         isMatch = true;
     let term = checkTerm()
-    if(section.term.season==term.season&&section.term.year==term.year){
+    if(section.term.season!=term.season&&section.term.year!=term.year){
       isMatch=false;
     }
     this.setState({doesMatch:isMatch})

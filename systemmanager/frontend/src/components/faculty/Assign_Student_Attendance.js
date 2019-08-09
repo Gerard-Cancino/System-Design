@@ -14,22 +14,22 @@ function checkTerm() {
   // Fall + Spring
   let month = parseInt(today.getMonth());
   // Spring
-  if((month>=1&&month<=7)){
-    let beginTerm = new Date((year),'10','04');
-    let endTerm = new Date(year+1,'01','27');
+  if((month>=1&&month<=8)){
+    let beginTerm = new Date((year),'01','04');
+    let endTerm = new Date(year+1,'09','27');
     console.log(beginTerm)
     console.log(endTerm)
-    if(beginTerm<today<endTerm){
+    if(beginTerm<today&&today<endTerm){
       return ({season: 'SP',year:year});
     }
   }
   // Fall
-  else if((month>=8&&month<=12)){
+  else if((month>=9&&month<=12)){
     let beginTerm = new Date(year,'03','01');
-    let endTerm = new Date(year,'09','01');
+    let endTerm = new Date(year,'9','28');
     console.log(beginTerm)
     console.log(endTerm)
-    if(beginTerm<today<endTerm){
+    if(beginTerm<today&&today<endTerm){
       return ({season: 'F',year:year});
     }
   }
@@ -160,7 +160,7 @@ class AssignStudentAttendance extends Component {
                 this.state.doesMatch==false?(
                   <p className="col-md-12 text-center">The class does not occur on this date</p>
                 ):(
-                  <p className="col-md-12 text-center">The term has not started</p>
+                  <p className="col-md-12 text-center">Attendance cannot be assigned to this term</p>
                 )
               ):(
                 this.state.enrollmentList==undefined||this.state.attendanceList==undefined?(

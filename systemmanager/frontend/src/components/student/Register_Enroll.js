@@ -44,8 +44,9 @@ class StudentTerm extends Component{
     studentUsername: undefined,
     student: undefined,
     enrollment: undefined,
+    isLoading: false,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.setState({studentUsername:this.props.user})
     axios
     .get(`/student-details.json/${this.props.user}`)
@@ -67,16 +68,17 @@ class StudentTerm extends Component{
   }
   handleEnrollStudent = (event,section) => {
     event.preventDefault()
+    this.setState({isLoading:true})
     axios
     .post(`/enrollment-list.json`,{
       section: section,
       student: this.state.studentUsername
     })
     .then( res => {
-      this.setState({enrollment: res.data.data,result:res})
+      this.setState({enrollment: res.data.data,result:res,isLoading:false})
     })
     .catch(err=>{
-      this.setState({result:err})
+      this.setState({result:err,isLoading:false})
     })
   }
   handleSectionList = (event,sectionList) =>{
@@ -94,7 +96,13 @@ class StudentTerm extends Component{
             <div className="col-md-10 border rounded p-4 m-4">
               <div className="col-md-12">
                 <h2 className="text-center">Enroll Student</h2>
-                <SearchSection handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                {this.state.isLoading?(
+                  <div className="col-md-12">
+                    <p className="text-center">Please wait while we process the enrollment</p>
+                  </div>
+                ):(
+                  <SearchSection handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                )}
               </div>
             </div>
           </div>

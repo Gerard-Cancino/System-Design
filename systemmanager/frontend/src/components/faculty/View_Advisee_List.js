@@ -47,7 +47,7 @@ class ViewAdviseeList extends Component {
                 {this.state.adviseeList.map(el => (
                   <tr key={el.id}>
                     <td>{el.student.user.firstName} {el.student.user.lastName}</td>
-                    <td>{el.student.user.email}</td>
+                    <td><a href={`mailto:${el.student.user.email}@garageuniversity.me`}>{el.student.user.email}@garageuniversity.me</a></td>
                     <td>{el.dateAssigned}</td>
                     <td>{el.student.user.id}</td>
                   </tr>

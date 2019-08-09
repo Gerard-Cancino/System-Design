@@ -44,6 +44,9 @@ class StudentTerm extends Component{
     studentUsername: undefined,
     student: undefined,
     enrollment: undefined,
+    isMissingPrereq: false,
+    section: undefined,
+    isLoading: false,
   }
   componentWillMount() {
     this.getTerm()
@@ -70,21 +73,53 @@ class StudentTerm extends Component{
       this.setState({result:err})
     })
   }
-  handleEnrollStudent = (event,section) => {
+  handleEnrollStudent = (event,section,isConfirmed=false) => {
     event.preventDefault()
-    console.log(this.props.user)
+    this.setState({isLoading:true})
     axios
     .post(`/enrollment-list.json`,{
       section: section.id,
       student: this.state.studentUsername,
-      admin: this.props.user
+      admin: this.props.user,
+      isConfirmed: isConfirmed
     })
     .then( res => {
-      this.setState({enrollment: res.data.data,result:res})
+      this.setState({enrollment: res.data.data,result:res,isLoading:false})
     })
     .catch(err=>{
-      this.setState({result:err})
+      console.log(err)
+      console.log(err.response.status)
+      if(err.response.status===409){
+        this.setState({isMissingPrereq:true,sectionID:section.id,isLoading:false})
+      }
+      else
+        this.setState({result:err,isLoading:false})
     })
+  }
+  handlePrereqEnroll = (event,isEnabled) => {
+    event.preventDefault()
+    this.setState({isLoading:true})
+    if(isEnabled){
+      axios
+      .post(`/enrollment-list.json`,{
+        section: this.state.sectionID,
+        student: this.state.studentUsername,
+        admin: this.props.user,
+        isConfirmed: true
+      })
+      .then( res => {
+        this.setState({enrollment: res.data.data,result:res})
+      })
+      .then(res=>{
+        this.setState({isMissingPrereq:false,sectionID:undefined,isLoading:false})
+      })
+      .catch(err=>{
+        this.setState({result:err,isLoading:false})
+      })
+    }
+    else{
+      this.setState({isMissingPrereq:false,section:undefined,isLoading:false})
+    }
   }
   handleSectionList = (event,sectionList) =>{
     this.setState({sectionList:sectionList});
@@ -99,19 +134,35 @@ class StudentTerm extends Component{
         <section className="container-fluid h-100">
           <div className="row justify-content-center">
             <div className="col-md-10 border rounded p-4 m-4">
-              {this.state.student==undefined?(       
-                <div className="col-md-12">
-                  <h4 className="col-md-12 text-center">Search Student</h4>
-                  <form className="col-md-12" onSubmit={this.handleFindStudent}>
-                    <SearchStudent onChange={this.handleStudent.bind(this)}/>
-                    <button className="col-md-12 btn btn-primary" type="submit">Search Term</button>
-                  </form>
-                </div>       
-              ):(
+              {this.state.isLoading?(
                 <div className="col-md-12">
                   <h2 className="text-center">Enroll Student</h2>
-                  <SearchSection isAdmin={true} handleEnroll={this.handleEnrollStudent.bind(this)} handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                  <p className="text-center">Please wait while we process the enrollment</p>
                 </div>
+              ):(
+                this.state.student==undefined?(       
+                  <div className="col-md-12">
+                    <h4 className="col-md-12 text-center">Search Student</h4>
+                    <form className="col-md-12" onSubmit={this.handleFindStudent}>
+                      <SearchStudent onChange={this.handleStudent.bind(this)}/>
+                      <button className="col-md-12 btn btn-primary" type="submit">Search Term</button>
+                    </form>
+                  </div>       
+                ):(
+                  !this.state.isMissingPrereq?(
+                    <div className="col-md-12">
+                      <h2 className="text-center">Enroll Student</h2>
+                      <SearchSection isAdmin={true} handleEnroll={this.handleEnrollStudent.bind(this)} handleResult={this.handleResult.bind(this)} term={this.state.term} student={this.state.student} SectionTable={EnrollmentTable} />
+                    </div>
+                  ):(
+                    <div className="col-md-12">
+                      <h2 className="text-center">Enroll Student</h2>
+                      <h4 className="text-center">The student is missing prerequisites.  Do you want to continue?</h4>
+                      <button className="col-md-6 btn btn-danger" onClick={e=>this.handlePrereqEnroll(e,false)}>No</button>
+                      <button className="col-md-6 btn btn-primary" onClick={e=>this.handlePrereqEnroll(e,true)}>Yes</button>
+                    </div>
+                  )
+                )
               )}
             </div>
           </div>

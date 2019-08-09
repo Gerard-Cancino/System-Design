@@ -40,6 +40,7 @@ function checkAddDrop(term) {
       }
     }
   }
+  console.log('nothing')
   return undefined;
 }
 
@@ -74,7 +75,15 @@ class AssignGrade extends Component {
       type:type
     })
     .then(res=>{
+      console.log(res)
       this.setState({result:res})
+      console.log('going back')
+      this.props.history.push({
+        pathname: '/faculty/view-student-info',
+        state:{
+          courseSectionID:this.props.data.state.courseSectionID,
+          studentEmail:this.props.data.state.studentEmail}
+      })
     })
     .catch(err=>{
       this.setState({result:err})
@@ -89,38 +98,42 @@ class AssignGrade extends Component {
             <div className="col-md-12">
               <h2 className="col-md-12 text-center">Assign Student's Grade</h2>
                 {this.state.courseSection==undefined?(
-                  <p>Unavailable to assign grades at this time.</p>
-                ):(checkAddDrop(this.state.courseSection.term)=='M'?(
-                  <form onSubmit={(e) => this.changeGrade(e,'M')} className="col-md-12">
-                    <div className="form-group">
-                      <label>Assign Midterm Grade</label>
-                      <select className="form-control" onChange={this.handleLetterGrade}>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="F">F</option>
-                      </select>
-                      <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
-                    </div>
-                  </form>
+                  <p>Course is processing</p>
                 ):(
-                  checkAddDrop(this.state.courseSection.term)=='F'?(
-                    <form onSubmit={(e) => this.changeGrade(e,'F')}>
+                  checkAddDrop(this.state.courseSection.term)==undefined?(
+                    <p>Unavailable to assign grades at this time.</p>
+                  ):(checkAddDrop(this.state.courseSection.term)=='M'?(
+                    <form onSubmit={(e) => this.changeGrade(e,'M')} className="col-md-12">
                       <div className="form-group">
-                        <label>Assign Final Grade</label>
+                        <label>Assign Midterm Grade</label>
                         <select className="form-control" onChange={this.handleLetterGrade}>
                           <option value="A">A</option>
                           <option value="B">B</option>
                           <option value="C">C</option>
                           <option value="D">D</option>
                           <option value="F">F</option>
-                        </select>    
+                        </select>
+                        <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
                       </div>
-                      <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
                     </form>
                   ):(
-                    <p></p>
+                    checkAddDrop(this.state.courseSection.term)=='F'?(
+                      <form onSubmit={(e) => this.changeGrade(e,'F')}>
+                        <div className="form-group">
+                          <label>Assign Final Grade</label>
+                          <select className="form-control" onChange={this.handleLetterGrade}>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="F">F</option>
+                          </select>    
+                        </div>
+                        <button className="col-md-12 btn btn-primary" type="submit">Submit</button>
+                      </form>
+                    ):(
+                      <p></p>
+                    )
                   )
                 ))}
             </div>
