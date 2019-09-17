@@ -11,12 +11,6 @@ class ViewAttendanceList extends Component {
     CourseSectionID: undefined
   }
 
-
-  componentDidMount(){
-
-  }
-
-
   handleCourseSectionID = (event) => {
     this.setState({ CourseSectionID: event.target.value || undefined});
   }

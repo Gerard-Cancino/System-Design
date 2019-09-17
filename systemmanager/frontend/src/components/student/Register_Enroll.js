@@ -69,17 +69,18 @@ class StudentTerm extends Component{
   handleEnrollStudent = (event,section) => {
     event.preventDefault()
     this.setState({isLoading:true})
-    axios
-    .post(`/enrollment-list.json`,{
-      section: section,
-      student: this.state.studentUsername
-    })
-    .then( res => {
-      this.setState({enrollment: res.data.data,result:res,isLoading:false})
-    })
-    .catch(err=>{
-      this.setState({result:err,isLoading:false})
-    })
+    console.log('test')
+    // axios
+    // .post(`/enrollment-list.json`,{
+    //   section: section,
+    //   student: this.state.studentUsername
+    // })
+    // .then( res => {
+    //   this.setState({enrollment: res.data.data,result:res,isLoading:false})
+    // })
+    // .catch(err=>{
+    //   this.setState({result:err,isLoading:false})
+    // })
   }
   handleSectionList = (event,sectionList) =>{
     this.setState({sectionList:sectionList});
@@ -96,7 +97,7 @@ class StudentTerm extends Component{
             <div className="col-md-10 border rounded p-4 m-4">
               <div className="col-md-12">
                 <h2 className="text-center">Enroll Student</h2>
-                {this.state.isLoading?(
+                {this.state.isLoading==true?(
                   <div className="col-md-12">
                     <p className="text-center">Please wait while we process the enrollment</p>
                   </div>

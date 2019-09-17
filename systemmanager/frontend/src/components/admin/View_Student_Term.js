@@ -9,32 +9,6 @@ import SearchTerm from '../general/inputs/Term_List_Search.js';
 import SearchStudent from '../general/inputs/Student_Search.js';
 import TableEnrollment from '../general/tables/Enrollment_Table.js';
 
-function checkTerm() {
-  let today = new Date();
-  let year = parseInt(today.getFullYear());
-  // Spring november 4 2019 to january 27 2020
-  // Fall April 1 to Sept 1
-  // Fall + Spring
-  let month = parseInt(today.getMonth());
-  // Spring
-  if((month<7||month>1)){
-    let beginTerm = new Date(year+"-01-01");
-    let endTerm = new Date(year+"-07-01");
-    if(beginTerm<today<endTerm){
-      return ({season: 'SP',year:year});
-    }
-  }
-  // Fall
-  else if((month>8||month<12)){
-    let beginTerm = new Date(year+"-07-02");
-    let endTerm = new Date(year+"-12-31");
-    if(beginTerm<today<endTerm){
-      return ({season: 'F',year:year});
-    }
-  }
-  return undefined;
-}
-
 class StudentTerm extends Component{
   state = {
     termList: undefined,

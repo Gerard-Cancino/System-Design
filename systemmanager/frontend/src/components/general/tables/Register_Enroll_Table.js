@@ -36,7 +36,8 @@ class TableSection extends PureComponent {
     enrollmentList: undefined,
     status: undefined,
     student: undefined,
-    sectionList: undefined
+    sectionList: undefined,
+    isLoading: undefined,
   }
   // getEnrollments(){
   //   axios
@@ -61,113 +62,124 @@ class TableSection extends PureComponent {
   handleEnroll = (event,section) => {
     event.preventDefault()
     // if(canEnroll(section,this.state.enrollmentList)){
+    this.setState({isLoading:true})
     axios
     .post(`/enrollment-list.json`,{
       student:this.state.student.user.email,
       section:section.id
     })
     .then(res => {
-      this.setState({status:res.data})
+      this.setState({status:res.data,isLoading:false})
       // this.getEnrollments()
       this.props.handleResult(res)
     })
     .catch(err=>{
+      this.setState({isLoading:false})
       this.props.handleResult(err)
     })
     // }
 
   }
   render () {
+    const {sectionList} = this.props
     return (
-      this.state.sectionList==undefined?(
+      sectionList==undefined?(
         <p></p>
       ) : (
-        this.state.sectionList.length == 0? (
+        sectionList.length == 0? (
           <p>Could not find any course sections</p>
         ) : (
-          <div className="col-md-12">
-            <h2 className="col-md-12 text-center">Search Results</h2>
-            <table className="table table-striped">
-              <thead style={{backgroundColor:"#696969", color:"white"}}>
-                <tr >
-                  <td >ID</td>
-                  <td >Course</td>
-                  <td >Section</td>
-                  <td >Professor</td>
-                  <td ># of Credits</td>
-                  <td >Time</td>
-                  <td >Term</td>
-                  <td >Building-Room</td> 
-                  <td ># of Available Seats</td>
-                  <td ></td>
-                  <td ></td>
-                </tr>
-              </thead>
-              <tbody >
-                {/* need extra conditions for null values*/}
-                {this.state.sectionList.map(el => (
-                  <tr key={el.id}>
-                    <td >{el.id}</td>
-                    <td >{el.course.id} {el.course.name}</td>
-                    <td >{el.number}</td>
-                    {el.faculty?(
-                      <td>{el.faculty.user.lastName}</td>
-                    ):(
-                      <td >TBA</td>
-                    )}
-                    <td >{el.course.numberOfCredits}</td>              
-                    {el.slot.length == 0?(                      
-                    <td > 
-                      <p>TBD</p>
-                    </td>
-                    ) : (       
-                    <td >   
-                    {el.slot.map(i => (         
-                      <p>{i.day.name} {i.time.start}-{i.time.end}</p>
-                    ))}
-                    </td>
-                    )}
-                    {el.term == undefined?(
-                      <td > 
-                        <p>TBD</p> 
-                      </td> 
-                    ) : (
-                      <td > 
-                        <p>{el.term.season} {el.term.year}</p>
-                      </td> 
-                    )}
-                    {el.room == 0?(                      
+          this.state.isLoading==true?(
+            <p>Processing enrollment please wait</p>
+          ):(
+            <div className="col-md-12">
+              <h2 className="col-md-12 text-center">Search Results</h2>
+              <table className="table table-striped">
+                <thead style={{backgroundColor:"#696969", color:"white"}}>
+                  <tr >
+                    <td >ID</td>
+                    <td >Course</td>
+                    <td >Section</td>
+                    <td >Professor</td>
+                    <td ># of Credits</td>
+                    <td >Time</td>
+                    <td >Term</td>
+                    <td >Building-Room</td> 
+                    <td ># of Available Seats</td>
+                    <td ></td>
+                    <td ></td>
+                  </tr>
+                </thead>
+                <tbody >
+                  {/* need extra conditions for null values*/}
+                  {sectionList.map(el => (
+                    <tr key={el.id}>
+                      <td >{el.id}</td>
+                      <td >{el.course.id} {el.course.name}</td>
+                      <td >{el.number}</td>
+                      {el.faculty?(
+                        <td>{el.faculty.user.lastName}</td>
+                      ):(
+                        <td >TBA</td>
+                      )}
+                      <td >{el.course.numberOfCredits}</td>              
+                      {el.slot.length == 0?(                      
                       <td > 
                         <p>TBD</p>
                       </td>
-                      ) : (      
-                      <td >      
-                        <p>{el.room.building.code} {el.room.number}</p>
-                      </td> 
-                    )}
-                    <td >{el.numOfSeats - el.numOfTaken}</td>     
-                    <td >
-                      <button className="btn btn-info" type="submit" onClick={this.props.handleEnroll?((e)=>this.props.handleEnroll(e,el)):((e)=>this.handleEnroll(e,el))}>Enroll</button>
-                    </td>
-                    <td>
-                      {this.props.isAdmin==true?(
-                        <Link to={{
-                          pathname: '/admin/view-section-details',
-                          state: {course_section_id:el.id}
-                        }} className="col-md-12 btn btn-primary">View Details</Link>
-
-                      ):(
-                        <Link to={{
-                          pathname: '/student/view-section-details',
-                          state: {course_section_id:el.id}
-                        }} className="col-md-12 btn btn-primary">View Details</Link>
+                      ) : (       
+                      <td >   
+                      {el.slot.map(i => (         
+                        <p>{i.day.name} {i.time.start}-{i.time.end}</p>
+                      ))}
+                      </td>
                       )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      {el.term == undefined?(
+                        <td > 
+                          <p>TBD</p> 
+                        </td> 
+                      ) : (
+                        <td > 
+                          <p>{el.term.season} {el.term.year}</p>
+                        </td> 
+                      )}
+                      {el.room == 0?(                      
+                        <td > 
+                          <p>TBD</p>
+                        </td>
+                        ) : (      
+                        <td >      
+                          <p>{el.room.building.code} {el.room.number}</p>
+                        </td> 
+                      )}
+                      <td >{el.numOfSeats - el.numOfTaken}</td>     
+                      <td >
+                        {el.slot.length==0?(
+                          <button className="btn btn-info" type="submit" onClick={this.props.handleEnroll?((e)=>this.props.handleEnroll(e,el)):((e)=>this.handleEnroll(e,el))} disabled>Disabled Enroll</button>
+                        ):( 
+                          <button className="btn btn-info" type="submit" onClick={this.props.handleEnroll?((e)=>this.props.handleEnroll(e,el)):((e)=>this.handleEnroll(e,el))}>Enroll</button>
+                        )}
+                      </td>
+                      <td>
+                        {this.props.isAdmin==true?(
+                          <Link to={{
+                            pathname: '/admin/view-section-details',
+                            state: {course_section_id:el.id}
+                          }} className="col-md-12 btn btn-primary">View Details</Link>
+
+                        ):(
+                          <Link to={{
+                            pathname: '/student/view-section-details',
+                            state: {course_section_id:el.id}
+                          }} className="col-md-12 btn btn-primary">View Details</Link>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         )
       )
     )

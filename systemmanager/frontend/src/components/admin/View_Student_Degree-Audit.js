@@ -53,30 +53,36 @@ class DegreeAudit extends Component {
   getOverallGPA(transcriptList){
     let semesterTotalGPA = 0;
     let semesterCredits = 0;
+    let transcriptHash = new Object;
     for(let i = 0;i<transcriptList.length;i++){
       if(transcriptList[i].gradeReceived!=undefined){
-        if(transcriptList[i].gradeReceived=='A'){
-          semesterTotalGPA += 4*parseInt(transcriptList[i].course.numberOfCredits);
-          semesterCredits += transcriptList[i].course.numberOfCredits;
-        }
-        else if(transcriptList[i].gradeReceived=='B'){
-          semesterTotalGPA += 3*parseInt(transcriptList[i].course.numberOfCredits);
-          semesterCredits += transcriptList[i].course.numberOfCredits;
-        }
-        else if(transcriptList[i].gradeReceived=='C'){
-          semesterTotalGPA += 2*parseInt(transcriptList[i].course.numberOfCredits);
-          semesterCredits += transcriptList[i].course.numberOfCredits;
-        }
-        else if(transcriptList[i].gradeReceived=='D'){
-          semesterTotalGPA += 1*parseInt(transcriptList[i].course.numberOfCredits);
-          semesterCredits += transcriptList[i].course.numberOfCredits;
-        }
-        else if(transcriptList[i].gradeReceived=='F'){
-          semesterTotalGPA += 0*parseInt(transcriptList[i].course.numberOfCredits);
-          semesterCredits += transcriptList[i].course.numberOfCredits;
+        if(transcriptHash[transcriptList[i].course.id.toString()]===undefined || transcriptHash[transcriptList[i].course.id.toString()].grade>transcriptList[i].gradeReceived){
+          transcriptHash[transcriptList[i].course.id] = {grade: transcriptList[i].gradeReceived,credits:transcriptList[i].course.numberOfCredits};
         }
       }
     }
+    Object.keys(transcriptHash).map(key=>{
+      if(transcriptHash[key].grade=='A'){
+        semesterTotalGPA += 4*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='B'){
+        semesterTotalGPA += 3*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='C'){
+        semesterTotalGPA += 2*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='D'){
+        semesterTotalGPA += 1*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='F'){
+        semesterTotalGPA += 0*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+    })
     this.setState({overallGPA:(semesterTotalGPA/semesterCredits).toString().substring(0,4)})
   }
   getTranscript(){
@@ -132,6 +138,19 @@ class DegreeAudit extends Component {
     this.getStudentMajorList()
     this.getStudentMinorList()
   }
+  filterCourses(transcriptList){
+    let transcriptHash = new Object;
+    for(let i = 0;i<transcriptList.length;i++){
+      if(transcriptHash[transcriptList[i].course.id]==undefined||transcriptHash[transcriptList[i].course.id].grade>transcriptList[i].gradeReceived){
+        transcriptHash[transcriptList[i].course.id] = {grade:transcriptList[i].gradeReceived,index:i}
+      }
+    }
+    let newTranscriptList = new Array;
+    Object.keys(transcriptHash).map(key=>{
+      newTranscriptList.push(transcriptList[transcriptHash[key].index])
+    })
+    return newTranscriptList;
+  }
   render(){
     if(this.state.transcriptList!=undefined&&this.state.nonRequirementList==undefined&&this.state.majorList!=undefined&&this.state.minorList!=undefined){
       this.getNonMajor_MinorTranscript()
@@ -162,10 +181,10 @@ class DegreeAudit extends Component {
                   <p className="col-md-12 text-right">Overall GPA: {this.state.overallGPA}</p>
                   
                   {this.state.majorList==undefined?(null):(this.state.majorList.map(major=>(
-                    <DegreeAuditTable transcriptSectionList={this.state.transcriptList} major={major.major} isMajor={true}/>
+                    <DegreeAuditTable transcriptSectionList={this.filterCourses(this.state.transcriptList)} major={major.major} isMajor={true}/>
                   )))}
                   {this.state.minorList==undefined?(null):(this.state.minorList.map(minor=>(
-                    <DegreeAuditTable transcriptSectionList={this.state.transcriptList} major={minor.minor} isMajor={false}/>
+                    <DegreeAuditTable transcriptSectionList={this.filterCourses(this.state.transcriptList)} major={minor.minor} isMajor={false}/>
                   )))}
                   {this.state.nonRequirementList==undefined || this.state.nonRequirementList.length==0?(
                     <p></p>

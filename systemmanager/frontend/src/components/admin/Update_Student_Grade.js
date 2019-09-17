@@ -232,7 +232,7 @@ class UpdateStudentGrade extends Component {
                 ):(
                   <div>
                     {this.state.gradeList.length == 0?(
-                      <p className="col-md-12 text-center">The student does not any grades assigned.  Please contact the faculty to create a grade </p>
+                      <p className="col-md-12 text-center">The student does not have any grades assigned.  Please contact the faculty to create a grade </p>
                     ):(
                       this.getGrade() 
                     )}

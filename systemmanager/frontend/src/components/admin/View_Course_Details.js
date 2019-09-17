@@ -55,7 +55,7 @@ class CourseDetails extends Component {
     axios
     .get(`/course-section-list.json`,{
       params:{
-        courseID:this.props.data.state.courseID
+        courseID:props.data.state.courseID
       }
     })
     .then(res=>{this.setState({sectionList:res.data.data})})

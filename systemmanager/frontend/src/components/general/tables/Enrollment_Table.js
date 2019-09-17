@@ -53,18 +53,20 @@ class SearchTerm extends PureComponent {
           <table className="table">
             <thead>
               <tr >
-                <td scope="col-md-1">ID</td>
+                <td scope="col-md-1">Section ID</td>
+                <td scope="col-md-1">Course ID</td>
                 <td scope="col-md-2">Name</td>
                 <td scope="col-md-1">Number</td>
                 <td scope="col-md-2">Faculty</td>
                 <td scope="col-md-3">Time</td>
-                <td scope="col-md-2">Room-Building</td>
+                <td scope="col-md-1">Room-Building</td>
                 <td scope="col-md-1"></td> {/*Drop*/}
               </tr>
             </thead>
             <tbody className="col-md-12">
               {this.state.enrollmentList.map(el => (
                 <tr className="col-md-12" key={el.course_section.id}>
+                  <td className="col-md-1">{el.course_section.id}</td>
                   <td className="col-md-1">{el.course_section.course.id}</td>
                   <td className="col-md-2">{el.course_section.course.name}</td>
                   <td className="col-md-1">{el.course_section.number}</td>
@@ -74,7 +76,7 @@ class SearchTerm extends PureComponent {
                       <p className="col-md-12">{slot.day.name} {slot.time.start}-{slot.time.end}</p>
                     ))}
                   </td>
-                  <td className="col-md-2">{el.course_section.room.building.code}{el.course_section.room.number}</td>
+                  <td className="col-md-1">{el.course_section.room.building.code}{el.course_section.room.number}</td>
                   {!checkAddDrop(el.course_section.term)?(
                     <td className="col-md-1"><button className="btn btn-danger" disabled>Drop</button></td>
                   ):(

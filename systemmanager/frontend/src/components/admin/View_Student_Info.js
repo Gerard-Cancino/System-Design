@@ -102,43 +102,44 @@ class ViewStudentRecord extends Component {
   handleSubmit0 = event => {
     event.preventDefault();
     axios
-      .put(`/user-details.json/${this.state.studentUsername}`, {
-        'isLockout': false,
-      })
-      .then(res => {    
-        axios
-        .get(`/student-details.json/${this.state.studentUsername}`)
-        .then(res => {
-          this.setState({
-            student: res.data.data,
-            result: res,
-            isLoaded: true
+    .put(`/user-details.json/${this.state.studentUsername}`, {
+      'isLockout': false,
+    })
+    .then(res => {    
+      axios
+      .get(`/student-details.json/${this.state.studentUsername}`)
+      .then(res => {
+        this.setState({
+          student: res.data.data,
+          result: res,
+          isLoaded: true
         })
       })
-      .catch(err=>{
-        this.setState({result:err})
-      })
     })
+    .catch(err=>{
+      this.setState({result:err})
+    })
+    
   }  
   handleSubmit1 = event => {
     event.preventDefault();
     axios
-      .put(`/user-details.json/${this.state.studentUsername}`,{
-        'isLockout': true,
-      })
-      .then(res => {
-        axios
-        .get(`/student-details.json/${this.state.studentUsername}`)
-        .then(res => {
-          this.setState({
-            student: res.data.data,
-            result: res,
-            isLoaded: true
-        })
-        .catch(err=>{
-          this.setState({result:err})
+    .put(`/user-details.json/${this.state.studentUsername}`,{
+      'isLockout': true,
+    })
+    .then(res => {
+      axios
+      .get(`/student-details.json/${this.state.studentUsername}`)
+      .then(res2 => {
+        this.setState({
+          student: res2.data.data,
+          result: res2,
+          isLoaded: true
         })
       })
+    })
+    .catch(err=>{
+      this.setState({result:err})
     })
   }
   updateAdvisor = (e) =>{
@@ -156,7 +157,21 @@ class ViewStudentRecord extends Component {
     })
 
   }
-
+  resetPassword = (e) =>{
+    e.preventDefault();
+    axios
+    .put('/user-password-change',{
+      email: this.state.student.user.email,
+      password: 'password123@',
+      admin: true
+    })
+    .then(res=>{
+      this.setState({result:res})
+    })
+    .catch(err =>{
+      this.setState({result:err})
+    })
+  }
 
   render(){
     const Lock = () =>
@@ -244,6 +259,13 @@ class ViewStudentRecord extends Component {
                 )}
                 <br />
                 <Lock/>
+                <div className="col-md-12">
+                  <form className="col-md-12">
+                    <div className="form-group col-md-12">
+                      <button className="col-md-12 btn btn-secondary" onClick={e=>this.resetPassword(e)}>Reset Password</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
           </div>

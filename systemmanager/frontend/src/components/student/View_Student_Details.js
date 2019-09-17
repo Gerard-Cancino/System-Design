@@ -6,43 +6,6 @@ import axios from 'axios';
 import Header from './layout/Header.js';
 import Footer from './layout/Footer.js';
 
-function checkAddDrop(term) {
-  let today = new Date();
-  console.log(today)
-  let year = parseInt(today.getFullYear());
-  if (term.year==year||term.year==year-1){
-    if(term.season=="SP"){
-      console.log("spring")
-      let beginTerm = new Date(year,'01','01');
-      console.log(beginTerm)
-      let endTerm = new Date(year,'02','01');
-      if(beginTerm<today && today<endTerm){
-        return 'M';
-      }
-      beginTerm = new Date(year,'04','01');
-      endTerm = new Date(year,'06','01');
-      console.log(beginTerm)
-      console.log(endTerm)
-      if(beginTerm<today && today<endTerm){
-        return 'F'; 
-      }
-    }
-    else if(term.season=="F"){
-      console.log("fall")
-      let beginTerm = new Date(year,'09','01');
-      let endTerm = new Date(year,'10','01');
-      if(beginTerm<today && today<endTerm){
-        return 'M';
-      }
-      beginTerm = new Date(year,'12','01');
-      endTerm = new Date((year+1),'01','01');
-      if(beginTerm<today && today<endTerm){
-        return 'F';
-      }
-    }
-  }
-  return undefined;
-}
 class StudentSectionDetails extends Component {
   state = {
     enrollment:undefined,

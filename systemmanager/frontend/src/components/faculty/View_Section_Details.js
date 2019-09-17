@@ -14,23 +14,19 @@ function checkTerm() {
   // Spring november 4 2019 to january 27 2020
   // Fall April 1 to Sept 1
   // Fall + Spring
-  let month = parseInt(today.getMonth());
+  let month = parseInt(today.getMonth())+1;
   // Spring
   if((month>=1&&month<=9)){
-    let beginTerm = new Date((year),'00','04');
+    let beginTerm = new Date(year,'00','04');
     let endTerm = new Date(year,'08','27');
-    console.log(beginTerm)
-    console.log(endTerm)
     if(beginTerm<today&&today<endTerm){
       return ({season: 'SP',year:year});
     }
   }
   // Fall
-  else if((month>=8&&month<=12)){
+  else if((month>=10&&month<=12)){
     let beginTerm = new Date(year,'03','01');
     let endTerm = new Date(year,'09','01');
-    console.log(beginTerm)
-    console.log(endTerm)
     if(beginTerm<today&&today<endTerm){
       return ({season: 'F',year:year});
     }
@@ -65,7 +61,7 @@ class SectionDetails extends Component {
       if (slot.day.id==today.getDay())
         isMatch = true;
     let term = checkTerm()
-    if(section.term.season!=term.season&&section.term.year!=term.year){
+    if(section.term.season!=term.season||section.term.year!=term.year){
       isMatch=false;
     }
     this.setState({doesMatch:isMatch})

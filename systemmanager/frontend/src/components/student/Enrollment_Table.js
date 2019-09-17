@@ -53,7 +53,8 @@ class SearchTerm extends PureComponent {
           <table className="table table-striped">
             <thead>
               <tr >
-                <td >ID</td>
+                <td>Section ID</td>
+                <td>Course ID</td>
                 <td >Name</td>
                 <td >Number</td>
                 <td >Faculty</td>
@@ -66,6 +67,7 @@ class SearchTerm extends PureComponent {
             <tbody >
               {this.state.enrollmentList.map(el => (
                 <tr key={el.course_section.id}>
+                  <td >{el.course_section.id}</td>
                   <td >{el.course_section.course.id}</td>
                   <td >{el.course_section.course.name}</td>
                   <td >{el.course_section.number}</td>

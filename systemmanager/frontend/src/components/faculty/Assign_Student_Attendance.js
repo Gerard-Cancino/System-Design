@@ -12,11 +12,11 @@ function checkTerm() {
   // Spring november 4 2019 to january 27 2020
   // Fall April 1 to Sept 1
   // Fall + Spring
-  let month = parseInt(today.getMonth());
+  let month = parseInt(today.getMonth())+1;
   // Spring
-  if((month>=1&&month<=8)){
+  if((month>=1&&month<=9)){
     let beginTerm = new Date((year),'01','04');
-    let endTerm = new Date(year+1,'09','27');
+    let endTerm = new Date(year+1,'08','27');
     console.log(beginTerm)
     console.log(endTerm)
     if(beginTerm<today&&today<endTerm){
@@ -24,9 +24,9 @@ function checkTerm() {
     }
   }
   // Fall
-  else if((month>=9&&month<=12)){
+  else if((month>=10&&month<=12)){
     let beginTerm = new Date(year,'03','01');
-    let endTerm = new Date(year,'9','28');
+    let endTerm = new Date(year,'08','28');
     console.log(beginTerm)
     console.log(endTerm)
     if(beginTerm<today&&today<endTerm){

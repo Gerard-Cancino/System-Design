@@ -14,28 +14,23 @@ class StudentTranscript extends Component {
   getTranscript(){
     let map = new Object();
     axios
-    .get(`/transcript-list.json/${this.state.email}`)
-    .then(res=>{
-      for (let el of res.data.data){
-        if (map[el.year] == undefined){
-          map[el.year] = new Object();
-        }
-        if (map[el.year][el.season] == undefined){
-          map[el.year][el.season] = new Array();
-        }
-        if (map[el.year][el.season][0] == undefined){
-          map[el.year][el.season][0]=el
-        }
-        else{
-          let length = map[el.year][el.season].length
-          map[el.year][el.season][length]=el
-        }
-      }
-      this.setState({transcriptList:map,result:res})
+    .get(`/term-list.json`)
+    .then(termList=>{
+      axios
+      .get(`/transcript-list.json/${this.state.email}`)
+      .then(res=>{
+        termList.data.data.map(term=>{
+          let transcriptTerm = res.data.data.filter(transcript=>
+            transcript.year.toString()===term.year&&transcript.season.toString()===term.season
+          )
+          map[term.id] = transcriptTerm;
+        })
+        this.setState({transcriptList:map})
+      })
+      .catch(err=>{
+        this.setState({result: err,transcriptList:undefined});
+      }) 
     })
-    .catch(err=>{
-      this.setState({result: err,transcriptList:undefined});
-    }) 
   }
   handleChange = e => {
     const name = e.target.name;

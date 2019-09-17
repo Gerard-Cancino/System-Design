@@ -13,9 +13,10 @@ class StudentHold extends Component {
     hold: undefined,
     isSuccessful: false,
     isLoaded: false,
-    result: undefined
+    result: undefined,
+    newHoldList: undefined,
   }
-  componentWillMount(){
+  componentDidMount(){
     axios
       .get('/hold-list.json')
       .then(res => {
@@ -37,6 +38,7 @@ class StudentHold extends Component {
     axios
     .get(`/student-details.json/${this.state.studentUsername}`)
     .then(res => {
+      this.filterHolds(res.data.data);
       this.setState({
         student: res.data.data,
         result: undefined
@@ -62,6 +64,7 @@ class StudentHold extends Component {
         axios
         .get(`/student-details.json/${this.state.studentUsername}`)
         .then(res => {
+          this.filterHolds(res.data.data);
           this.setState({
             student: res.data.data,
           })
@@ -82,6 +85,7 @@ class StudentHold extends Component {
         axios
         .get(`/student-details.json/${this.state.studentUsername}`)
         .then(res => {
+          this.filterHolds(res.data.data);
           this.setState({
             student: res.data.data,
           })
@@ -91,6 +95,10 @@ class StudentHold extends Component {
         this.setState({result:err})
       })
   }
+  filterHolds (student) {
+    const newHoldList = this.state.hold.filter(hold=>!student.hold.some(stuHold=>stuHold.name===hold.name))
+    this.setState({newHoldList:newHoldList,holdSelected:newHoldList[0].name})
+  }
   render(){
     const FindStudent = () => 
       this.state.student != undefined?(
@@ -98,7 +106,7 @@ class StudentHold extends Component {
           <hr />
           <form className="col-md-12" onSubmit={this.handleAdd} >
             <select value={this.state.holdSelected} className="d-inline form-control col-md-8" onChange={this.handleChange1}>
-              {this.state.hold.map(el => (
+              {this.state.newHoldList.map(el => (
                 <option key={el.name} value={el.name}>{el.description}</option>
               ))}
             </select>

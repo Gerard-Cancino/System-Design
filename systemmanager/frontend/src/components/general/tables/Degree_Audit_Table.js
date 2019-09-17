@@ -72,44 +72,44 @@ class DegreeAuditTable extends Component {
   getGPA(transcriptList,majorRequirements){
     let semesterTotalGPA = 0;
     let semesterCredits = 0;
+    let transcriptHash = new Object;
     for(let i = 0;i<transcriptList.length;i++){
       for (let major of majorRequirements){
         if(transcriptList[i].course.id==major.id){
-          if(transcriptList[i].gradeReceived!=undefined){
-            if(transcriptList[i].gradeReceived=='A'){
-              semesterTotalGPA += 4*parseInt(transcriptList[i].course.numberOfCredits);
-              semesterCredits += transcriptList[i].course.numberOfCredits;
-            }
-            else if(transcriptList[i].gradeReceived=='B'){
-              semesterTotalGPA += 3*parseInt(transcriptList[i].course.numberOfCredits);
-              semesterCredits += transcriptList[i].course.numberOfCredits;
-            }
-            else if(transcriptList[i].gradeReceived=='C'){
-              semesterTotalGPA += 2*parseInt(transcriptList[i].course.numberOfCredits);
-              semesterCredits += transcriptList[i].course.numberOfCredits;
-            }
-            else if(transcriptList[i].gradeReceived=='D'){
-              semesterTotalGPA += 1*parseInt(transcriptList[i].course.numberOfCredits);
-              semesterCredits += transcriptList[i].course.numberOfCredits;
-            }
-            else if(transcriptList[i].gradeReceived=='F'){
-              semesterTotalGPA += 0*parseInt(transcriptList[i].course.numberOfCredits);
-              semesterCredits += transcriptList[i].course.numberOfCredits;
-            }
+          if(transcriptList[i].gradeReceived!=undefined && (transcriptHash[transcriptList[i].course.id]==undefined || transcriptHash[transcriptList[i].course.id].grade>transcriptList[i].gradeReceived)){
+            transcriptHash[transcriptList[i].course.id] = {grade: transcriptList[i].gradeReceived,credits:transcriptList[i].course.numberOfCredits};
           }
         }
       }
     }
+    Object.keys(transcriptHash).map(key=>{
+      if(transcriptHash[key].grade=='A'){
+        semesterTotalGPA += 4*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='B'){
+        semesterTotalGPA += 3*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='C'){
+        semesterTotalGPA += 2*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='D'){
+        semesterTotalGPA += 1*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+      else if(transcriptHash[key].grade=='F'){
+        semesterTotalGPA += 0*parseInt(transcriptHash[key].credits);
+        semesterCredits += transcriptHash[key].credits;
+      }
+    })
     console.log(semesterTotalGPA)
-    console.log(semesterCredits)
     return (semesterTotalGPA/semesterCredits).toString().substring(0,4);
   }
 
   render () {
     const {transcriptSectionList, major, isMajor} = this.props;
-    let transcript = undefined;
-    let semesterTotalGPA = 0;
-    let semesterCredits = 0;
     return (
       transcriptSectionList==undefined || major==undefined?(
         <p></p>

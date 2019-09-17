@@ -62,13 +62,15 @@ class AssignStudentMajorMinor extends Component {
   state = {
     studentUsername: undefined,
     student: undefined,
+    newMajorList: undefined,
     majorList: undefined,
     minorList: undefined,
     allMajorList: undefined,
     allMinorList: undefined,
     majorMinorChange1: undefined,
     majorMinorChange2: undefined,
-    majorMinorChange3: undefined
+    majorMinorChange3: undefined,
+    isLoading:false
   }
   componentDidMount(){
     axios
@@ -101,7 +103,6 @@ class AssignStudentMajorMinor extends Component {
       this.getMajorMinor(res.data.data.user.email)
     })
     .catch(err=>{
-      this.getMajorMinor(this.state.student.user.email)
       this.setState({result:err})
     })
   }
@@ -113,6 +114,7 @@ class AssignStudentMajorMinor extends Component {
       }
     })
     .then(res=>{
+      this.findMajor(res.data.data);
       this.setState({majorList:findGeneral(true,res.data.data)})
     })
     .catch(err=>{
@@ -134,28 +136,29 @@ class AssignStudentMajorMinor extends Component {
   }
   handleRemoveMajorMinor = (e,majorMinor, isMajor) => {
     e.preventDefault()
+    this.setState({isLoading:true})
     if(isMajor){
       axios
       .delete(`/student-major-details.json/${this.state.student.user.email}/${majorMinor}`)
       .then(res=>{
-        this.setState({result:res})
+        this.setState({result:res,isLoading:false})
         this.getMajorMinor(this.state.student.user.email)
       })
       .catch(err=>{
         this.getMajorMinor(this.state.student.user.email)
-        this.setState({result:err})
+        this.setState({result:err,isLoading:false})
       })
     }
     else{
       axios
       .delete(`/student-minor-details.json/${this.state.student.user.email}/${majorMinor}`)
       .then(res=>{
-        this.setState({result:res})
+        this.setState({result:res,isLoading:false})
         this.getMajorMinor(this.state.student.user.email)
       })
       .catch(err=>{
         this.getMajorMinor(this.state.student.user.email)
-        this.setState({result:err})
+        this.setState({result:err,isLoading:false})
       })
     }
   }
@@ -163,6 +166,7 @@ class AssignStudentMajorMinor extends Component {
     e.preventDefault()
     let major = undefined;
     let minor = undefined;
+    this.setState({isLoading:true})
     if (num==0) {
       major = this.state.majorMinorChange1
     }
@@ -179,11 +183,11 @@ class AssignStudentMajorMinor extends Component {
         major:major
       })
       .then(res=>{
-        this.setState({result:res})
+        this.setState({result:res,isLoading:false})
         this.getMajorMinor(this.state.student.user.email)
       })
       .catch(err=>{
-        this.setState({result:err})
+        this.setState({result:err,isLoading:false})
       })
     }
     else if (minor!=undefined){
@@ -193,13 +197,17 @@ class AssignStudentMajorMinor extends Component {
         minor: minor
       })
       .then(res=>{
-        this.setState({result:res})
+        this.setState({result:res,isLoading:false})
         this.getMajorMinor(this.state.student.user.email)
       })
       .catch(err=>{
-        this.setState({result:err})
+        this.setState({result:err,isLoading:false})
       })
     }
+  }
+  findMajor (majorList) {
+    const newMajorList = this.state.allMajorList.filter(el=>!majorList.some(major=>major.major.id===el.id))
+    this.setState({newMajorList:newMajorList,majorMinorChange1:newMajorList[0].id,majorMinorChange2:newMajorList[0].id})
   }
   render(){
     return(
@@ -216,8 +224,8 @@ class AssignStudentMajorMinor extends Component {
                 <button className="col-md-12 btn btn-primary" type="submit">Find Student</button>
               </form>
             ):(
-              this.state.majorList==undefined || this.state.allMajorList==undefined || this.state.minorList==undefined || this.state.allMinorList == undefined?(
-                <p></p>
+              this.state.majorList==undefined || this.state.allMajorList==undefined || this.state.newMajorList==undefined || this.state.minorList==undefined || this.state.allMinorList == undefined || this.state.isLoading===true?(
+                <p>Please wait while we process the major</p>
               ):(
                 <div>
                   <h2 className="col-md-12 text-center">{this.state.student.user.firstName} {this.state.student.user.lastName}</h2>
@@ -229,7 +237,7 @@ class AssignStudentMajorMinor extends Component {
                         <form onSubmit={(e)=>this.handleChangeMajorMinor(e,0)}>
                           <label className="col-md-3">Update Major to:</label>
                           <select className="col-md-6" name="majorMinorChange1" onChange={this.handleChange}>
-                            {this.state.allMajorList.map(el=>(
+                            {this.state.newMajorList.map(el=>(
                               <option value={el.id}>{el.name}</option>
                             ))}
                           </select>
@@ -256,7 +264,7 @@ class AssignStudentMajorMinor extends Component {
                         <form onSubmit={(e)=>this.handleChangeMajorMinor(e,1)}>
                           <label className="col-md-3">Update Major to:</label>
                           <select className="col-md-6" name="majorMinorChange2" onChange={this.handleChange}>
-                            {this.state.allMajorList.map(el=>(
+                            {this.state.newMajorList.map(el=>(
                               <option value={el.id}>{el.name}</option>
                             ))}
                           </select>
